@@ -21,9 +21,9 @@ class FontDataset(Dataset):
     def __init__(self, data_dir, val_ratio=0.2, is_train = True):
         self.data_dir = data_dir
         self.transform = None
+        self.is_train = is_train
         if is_train:
             self.val_ratio = val_ratio
-            self.is_train = is_train
             self.setup()
             
     
@@ -38,13 +38,13 @@ class FontDataset(Dataset):
                 image_path.append(os.path.join(self.data_dir,profile,path))
                 image_label.append(idx)
             tmp_all = set(range(len(image_path)))
-            tmp_train = set(random.sample(list(range(len(image_path))), int(len(image_path) * self.val_ratio)))
-            tmp_val = tmp_all - tmp_train
+            tmp_val = set(random.sample(list(range(len(image_path))), int(len(image_path) * self.val_ratio)))
+            tmp_train = tmp_all - tmp_val
         
             self.image_paths_train.extend([image_path[x] for x in tmp_train])
             self.image_labels_train.extend([image_label[x] for x in tmp_train])
             self.image_paths_val.extend([image_path[x] for x in tmp_val])
-            self.image_labels_val.extend([image_path[x] for x in tmp_val])
+            self.image_labels_val.extend([image_label[x] for x in tmp_val])
                 
     def set_transform(self, transform):
         self.transform = transform
@@ -83,7 +83,7 @@ class TestDataset(Dataset):
         self.transform = transforms.Compose([
             transforms.Resize(resize, Image.BILINEAR),
             transforms.ToTensor(),
-            transforms.Normalize(mean=mean, std=std),
+            #transforms.Normalize(mean=mean, std=std),
         ])
 
     def __getitem__(self, index):
@@ -104,7 +104,7 @@ class BaseAugmentation:
         self.transform = transforms.Compose([
             transforms.Resize(resize, Image.BILINEAR),
             transforms.ToTensor(),
-            transforms.Normalize(mean=mean, std=std),
+            #transforms.Normalize(mean=mean, std=std),
         ])
 
     def __call__(self, image):
