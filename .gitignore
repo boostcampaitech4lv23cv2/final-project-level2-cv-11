@@ -19,3 +19,6 @@
 __pycache__/
 
 # 폴더
+wandb/
+experiment/
+notebooks/
