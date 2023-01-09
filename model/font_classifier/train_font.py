@@ -75,15 +75,16 @@ def train(data_dir, model_dir, args):
     
     
     dataset_module = getattr(import_module("dataset_font"), args.dataset)
-    dataset = dataset_module(
+    dataset_train = dataset_module(
         data_dir=data_dir,
-        val_ratio = args.val_ratio
+        val_ratio = args.val_ratio,
+        is_train = True
     )
     
     num_classes = len(os.listdir(args.data_dir)) # font의 개수
     
     # -- augmentation
-    transform_module = getattr(import_module("dataset_font"), args.augmentation)  # default: BaseAugmentation
+    transform_module = getattr(import_module("dataset_font"), args.train_augmentation)  # default: BaseAugmentation
     transform = transform_module(
         resize=args.resize,
         mean=(0.548, 0.504, 0.479), 
@@ -91,12 +92,25 @@ def train(data_dir, model_dir, args):
     )
     
     # -- data_loader & sampler
-    dataset.set_transform(transform)
-    train_set, val_set  = dataset.split_dataset()
+    dataset_train.set_transform(transform)
+    
+    dataset_val = dataset_module(
+        data_dir=data_dir,
+        val_ratio = args.val_ratio,
+        is_train = False
+    )
+    dataset_val.set_transform(transform)
+    
+    
+    transform = transform_module(
+        resize=args.resize,
+        mean=(0.548, 0.504, 0.479), 
+        std=(0.237, 0.247, 0.246)
+    )
     
     
     train_loader = DataLoader(
-        train_set,
+        dataset_train,
         batch_size=args.batch_size,
         num_workers=multiprocessing.cpu_count() // 2,
         shuffle=True,
@@ -105,7 +119,7 @@ def train(data_dir, model_dir, args):
     )
     
     val_loader = DataLoader(
-        val_set,
+        dataset_val,
         batch_size=args.valid_batch_size,
         num_workers=multiprocessing.cpu_count() // 2,
         shuffle=False,
@@ -214,8 +228,8 @@ def train(data_dir, model_dir, args):
             # -- evaluation
             f1 = MulticlassF1Score(num_classes=num_classes)
             f1_score = f1(preds_expand.type(torch.LongTensor), labels_expand.type(torch.LongTensor)).item()
-            val_loss = np.sum(val_loss_items) / len(val_set)
-            val_acc = np.sum(val_acc_items) / len(val_set)
+            val_loss = np.sum(val_loss_items) / len(dataset_val)
+            val_acc = np.sum(val_acc_items) / len(dataset_val)
             
             print(f"[Val] acc : {val_acc:4.2%}, loss: {val_loss:4.2}, f1: {f1_score:4.4} ")
             
@@ -241,14 +255,15 @@ if __name__ == '__main__':
     parser.add_argument('--seed', type=int, default=42, help='random seed (default: 42)')
     parser.add_argument('--epochs', type=int, default=200, help='number of epochs to train (default: 200)')
     parser.add_argument('--dataset', type=str, default='FontDataset', help='dataset augmentation type (default: Ma skBaseDataset)') 
-    parser.add_argument('--augmentation', type=str, default='BaseAugmentation', help='data augmentation type (default: BaseAugmentation)') ##
+    parser.add_argument('--train_augmentation', type=str, default='BaseAugmentation', help='data augmentation type (default: BaseAugmentation)')
+    parser.add_argument('--val_augmentation', type=str, default='BaseAugmentation', help='data augmentation type (default: BaseAugmentation)')
     parser.add_argument("--resize", nargs="+", type=int, default=[256, 256], help='resize size for image when training')
     parser.add_argument('--batch_size', type=int, default=64, help='input batch size for training (default: 64)')
     parser.add_argument('--valid_batch_size', type=int, default=10, help='input batch size for validing (default: 1000)')
     parser.add_argument('--model', type=str, default='ResNet50', help='model type (default: ResNet50)')
     parser.add_argument('--optimizer', type=str, default='Adam', help='optimizer type (default: Adam)')
     parser.add_argument('--lr', type=float, default=1e-3, help='learning rate (default: 1e-3)')
-    parser.add_argument('--val_ratio', type=float, default=0.2, help='ratio for validaton (default: 0.2)')
+    parser.add_argument('--val_ratio', type=float, default=0.01, help='ratio for validaton (default: 0.2)')
     parser.add_argument('--criterion', type=str, default='cross_entropy', help='criterion type (default: cross_entropy)')
     parser.add_argument('--log_interval', type=int, default=20, help='how many batches to wait before logging training status')
     parser.add_argument('--name', default='exp', help='model save at {SM_MODEL_DIR}/{name}')
