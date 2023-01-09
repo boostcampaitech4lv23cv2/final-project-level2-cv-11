@@ -9,6 +9,8 @@ from torch.utils.data import DataLoader
 
 from dataset_font import FontDataset
 
+import torch.nn.functional as F
+
 # 경고 off
 import warnings
 warnings.filterwarnings(action='ignore')
@@ -45,20 +47,22 @@ def inference(data_dir, args):
         for idx, images in enumerate(loader):
             images = images.to(device)
             predict = model(images)
-            #pred = predict.argmax(dim=-1)
-            pred_topk = torch.topk(predict, k= 2, dim = -1)
+            scores = F.softmax(predict.data, dim=1)
+            pred_topk = torch.topk(scores, k= 2, dim = -1)
             pred = pred_topk.indices
             value = pred_topk.values
             preds.extend(pred.cpu().numpy())
             values.extend(value.cpu().numpy())
             
+    
+    
     labels_list =  os.listdir(args.train_data_dir)
     print(labels_list)
     
     for i, pred in enumerate(preds):
         print(f"#{i}_{image_names[i]}")
         for j, idx in enumerate(pred):
-            print(f"{labels_list[idx]}, {values[i][j]}")
+            print(f"{labels_list[idx]}, {values[i][j]:.2%}")
 
 
 if __name__ == '__main__':
