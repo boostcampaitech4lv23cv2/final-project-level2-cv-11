@@ -36,5 +36,19 @@ with col3:
         st.image(untypical_image, caption='Uploaded Image')
         st.button('annotation', key='untypical_annotation')
 
+st.markdown("----", unsafe_allow_html=True)
+
 if background_file and typical_file and untypical_file:
-    st.button('generatoon', key='generation_button')
+    bcol1, bcol2, bcol3 , bcol4, bcol5= st.columns(5)
+    with bcol1:
+        pass
+    with bcol2:
+        pass
+    with bcol3:
+        pass
+    with bcol4:
+        pass
+    with bcol5:
+        st.button('generatoon', key='generation_button')
+
+    
