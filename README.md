@@ -12,7 +12,5 @@ poetry install
 python -m app
 
 # frontend 연결
-python -m streamlit run frontend.py
-# 연결 안될 경우 port 열어줘야함
-python -m http.server 8501
+python -m streamlit run frontend.py --server.port 30001
 ```
