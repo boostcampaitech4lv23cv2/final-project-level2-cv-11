@@ -1,7 +1,8 @@
 import streamlit as st
 from PIL import Image
 import io
-
+from streamlit_drawable_canvas import st_canvas
+import pandas as pd
 
 st.set_page_config(layout="wide")
 
@@ -19,22 +20,75 @@ with col1:
         st.image(background_image, caption='Uploaded Image')
 
 with col2:
-   st.header("Typical Text")
-   typical_file = st.file_uploader('Choose an image', type=['jpg', 'jpeg', 'png'], key='typical')
-   if typical_file:
-        typical_image_bytes  = typical_file.getvalue()
-        typical_image = Image.open(io.BytesIO(typical_image_bytes))
-        st.image(typical_image, caption='Uploaded Image')
-        st.button('annotation', key='typical_annotation')
+    st.header("Typical Text")
+    typical_image = st.file_uploader("Background image:", type=["png", "jpg"], key='Typical')
+    if typical_image:
+        img = Image.open(typical_image)
+        w, h = img.size
+    else:
+        w, h = 100, 100
+
+    inner_width = 400
+    canvas_width = inner_width
+    canvas_height = h * (canvas_width / w)
+
+    typical_canvas_result = st_canvas(
+    fill_color="rgba(255, 165, 0, 0.3)",  # Fixed fill color with some opacity
+    stroke_width=3,
+    stroke_color="#eee",
+    background_color="#eee",
+    background_image=Image.open(typical_image) if typical_image else None,
+    update_streamlit=True,
+    height=canvas_height,
+    width=canvas_width,
+    drawing_mode='rect',
+    point_display_radius=0,
+    key='typical_canvas'
+    )
+
+    if len(typical_canvas_result.json_data['objects']) > 0:
+        objects = pd.json_normalize(typical_canvas_result.json_data["objects"]) # need to convert obj to str because PyArrow
+        for col in objects.select_dtypes(include=['object']).columns:
+            objects[col] = objects[col].astype("str")
+        st.dataframe(objects[['left', 'top', 'width', 'height']])
+    else:
+        pass
+
 
 with col3:
-   st.header("UnTypical Text")
-   untypical_file = st.file_uploader('Choose an image', type=['jpg', 'jpeg', 'png'], key='untypical')
-   if untypical_file:
-        untypical_image_bytes  = untypical_file.getvalue()
-        untypical_image = Image.open(io.BytesIO(untypical_image_bytes))
-        st.image(untypical_image, caption='Uploaded Image')
-        st.button('annotation', key='untypical_annotation')
+    st.header("UnTypical Text")
+    untypical_image = st.file_uploader("Background image:", type=["png", "jpg"], key='UnTypical')
+    if untypical_image:
+        img = Image.open(untypical_image)
+        w, h = img.size
+    else:
+        w, h = 100, 100
+
+    inner_width = 300
+    canvas_width = inner_width
+    canvas_height = h * (canvas_width / w)
+
+    untypical_canvas_result = st_canvas(
+    fill_color="rgba(255, 165, 0, 0.3)",  # Fixed fill color with some opacity
+    stroke_width=3,
+    stroke_color="#eee",
+    background_color="#eee",
+    background_image=Image.open(untypical_image) if untypical_image else None,
+    update_streamlit=True,
+    height=canvas_height,
+    width=canvas_width,
+    drawing_mode='rect',
+    point_display_radius=0,
+    key='untypical_canvas'
+    )
+
+    if len(untypical_canvas_result.json_data['objects']) > 0:
+        objects = pd.json_normalize(untypical_canvas_result.json_data["objects"]) # need to convert obj to str because PyArrow
+        for col in objects.select_dtypes(include=['object']).columns:
+            objects[col] = objects[col].astype("str")
+        st.dataframe(objects[['left', 'top', 'width', 'height']])
+    else:
+        pass
 
 st.markdown("----", unsafe_allow_html=True)
 
