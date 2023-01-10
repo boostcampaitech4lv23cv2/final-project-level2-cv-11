@@ -12,24 +12,39 @@ from torchvision import transforms
 
 class FontDataset(Dataset):
     
-    image_paths = []
-    image_labels = []
+    image_paths_train = []
+    image_labels_train = []
     
-    def __init__(self, data_dir, val_ratio=0.2):
+    image_paths_val = []
+    image_labels_val = []
+    
+    def __init__(self, data_dir, val_ratio=0.2, is_train = True):
         self.data_dir = data_dir
-        self.val_ratio = val_ratio
-
         self.transform = None
-        self.setup()
+        self.is_train = is_train
+        if is_train:
+            self.val_ratio = val_ratio
+            self.setup()
+            
     
     def setup(self):
         profiles = os.listdir(self.data_dir)
         
         for idx, profile in enumerate(profiles):
             paths = os.listdir(os.path.join(self.data_dir, profile))
+            image_path = []
+            image_label = []
             for path in paths:
-                self.image_paths.append(os.path.join(self.data_dir,profile,path))
-                self.image_labels.append(idx)
+                image_path.append(os.path.join(self.data_dir,profile,path))
+                image_label.append(idx)
+            tmp_all = set(range(len(image_path)))
+            tmp_val = set(random.sample(list(range(len(image_path))), int(len(image_path) * self.val_ratio)))
+            tmp_train = tmp_all - tmp_val
+        
+            self.image_paths_train.extend([image_path[x] for x in tmp_train])
+            self.image_labels_train.extend([image_label[x] for x in tmp_train])
+            self.image_paths_val.extend([image_path[x] for x in tmp_val])
+            self.image_labels_val.extend([image_label[x] for x in tmp_val])
                 
     def set_transform(self, transform):
         self.transform = transform
@@ -40,27 +55,25 @@ class FontDataset(Dataset):
         image = self.read_image(index)
         image_transform = self.transform(image)
         
-        label = self.image_labels[index]
+        if self.is_train:
+            label = self.image_labels_train[index]
+        else:
+            label = self.image_labels_val[index]
+            
         return image_transform, label
     
     def read_image(self, index):
-        image_path = self.image_paths[index]
+        if self.is_train:
+            image_path = self.image_paths_train[index]
+        else:
+            image_path = self.image_paths_val[index]
         return Image.open(image_path).convert('RGB')
     
     def __len__(self):
-        return len(self.image_paths)
-    
-    def split_dataset(self) -> Tuple[Subset, Subset]:
-        """
-        데이터셋을 train 과 val 로 나눕니다,
-        pytorch 내부의 torch.utils.data.random_split 함수를 사용하여
-        torch.utils.data.Subset 클래스 둘로 나눕니다.
-        구현이 어렵지 않으니 구글링 혹은 IDE (e.g. pycharm) 의 navigation 기능을 통해 코드를 한 번 읽어보는 것을 추천드립니다^^
-        """
-        n_val = int(len(self) * self.val_ratio)
-        n_train = len(self) - n_val
-        train_set, val_set = random_split(self, [n_train, n_val])
-        return train_set, val_set
+        if self.is_train:
+            return len(self.image_paths_train)
+        else:
+            return len(self.image_paths_val)
     
     
     
@@ -70,7 +83,7 @@ class TestDataset(Dataset):
         self.transform = transforms.Compose([
             transforms.Resize(resize, Image.BILINEAR),
             transforms.ToTensor(),
-            transforms.Normalize(mean=mean, std=std),
+            #transforms.Normalize(mean=mean, std=std),
         ])
 
     def __getitem__(self, index):
@@ -91,7 +104,7 @@ class BaseAugmentation:
         self.transform = transforms.Compose([
             transforms.Resize(resize, Image.BILINEAR),
             transforms.ToTensor(),
-            transforms.Normalize(mean=mean, std=std),
+            #transforms.Normalize(mean=mean, std=std),
         ])
 
     def __call__(self, image):
