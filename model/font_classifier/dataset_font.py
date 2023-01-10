@@ -9,6 +9,9 @@ import torch
 from PIL import Image
 from torch.utils.data import Dataset, Subset, random_split
 from torchvision import transforms
+import albumentations as A
+from albumentations.pytorch import ToTensorV2
+import cv2
 
 class FontDataset(Dataset):
     
@@ -60,7 +63,7 @@ class FontDataset(Dataset):
         else:
             label = self.image_labels_val[index]
             
-        return image_transform, label
+        return image_transform.float(), label
     
     def read_image(self, index):
         if self.is_train:
@@ -110,16 +113,33 @@ class BaseAugmentation:
     def __call__(self, image):
         return self.transform(image)
 
-import albumentations as A
 
 class UntypicalAugmentation:
     def __init__(self, resize, mean, std, **args):
         self.transform = A.Compose([
-            A.Resize(resize),
-            A.pytorch.transforms.ToTensor(),
-            A.Normalize(mean=mean, std=std),
-            A.Affine(scale=1, rotate=10, shear=3, mode=cv2.BORDER_REPLICATE)
+            A.Resize(resize[0], resize[1]),
+            A.Normalize(mean=mean, std=std), # normalize 먼저 적용
+            A.Affine(scale=1, rotate=10, shear=3, mode=cv2.BORDER_REPLICATE),
+            ToTensorV2()
         ])
 
     def __call__(self, image):
-        return self.transform(image)
+        return self.transform(image=np.asarray(image))["image"]
+
+
+class UntypicalAugmentation_with_space:
+    def __init__(self, resize, mean, std, **args):
+        self.transform = A.Compose([
+            A.OneOf([
+                A.CenterCrop(200,200,p = 0.8),
+                A.CenterCrop(150,150,p = 1),
+                A.CenterCrop(130,130,p = 1),
+                A.CenterCrop(105,105,p = 1)
+            ],p = 1),
+            A.Resize(resize[0], resize[1]),
+            A.Affine(scale=1, rotate=10, shear=3, mode=cv2.BORDER_REPLICATE),
+            ToTensorV2(),
+        ])
+
+    def __call__(self, image):
+        return self.transform(image=np.asarray(image))["image"]
