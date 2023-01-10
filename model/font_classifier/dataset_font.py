@@ -97,4 +97,16 @@ class BaseAugmentation:
     def __call__(self, image):
         return self.transform(image)
 
-        
+import albumentations as A
+
+class UntypicalAugmentation:
+    def __init__(self, resize, mean, std, **args):
+        self.transform = A.Compose([
+            A.Resize(resize),
+            A.pytorch.transforms.ToTensor(),
+            A.Normalize(mean=mean, std=std),
+            A.Affine(scale=1, rotate=10, shear=3, mode=cv2.BORDER_REPLICATE)
+        ])
+
+    def __call__(self, image):
+        return self.transform(image)
