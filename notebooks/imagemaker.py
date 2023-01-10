@@ -13,12 +13,15 @@ def create_font(font_list, font_name, text_width, text_height, save_path, text, 
     
     for font, name in zip(font_list, font_name):
         # 이미지 객체 생성 (배경 검정)
-        canvas = Image.new('RGB', (text_width, text_height), "white")
+        w, h = font.getsize(text)
+        canvas = Image.new('RGB', (w, h), "white")
+        #canvas = Image.new('RGB', (text_width, text_height), "white")
         
         # 가운데에 그리기 (폰트 색: 하양)
         draw = ImageDraw.Draw(canvas)
-        w, h = font.getsize(text)
-        draw.text(((text_width-w)/2.0,(text_height-h)/2.0), text, 'black', font)
+        #w, h = font.getsize(text)
+        draw.text((0,0), text, 'black', font)
+        #draw.text(((text_width-w)/2.0,(text_height-h)/2.0), text, 'black', font)
         
         directory = os.path.join(save_path ,name.split(".")[0])
         createDirectory(directory)
@@ -32,7 +35,7 @@ def create_font(font_list, font_name, text_width, text_height, save_path, text, 
 
 
 ## 폰트 파일 위치
-font_path = '/opt/level3_productserving-level3-cv-11/data/fonts'
+font_path = '/opt/level3_productserving-level3-cv-11/data/fonts/untypical/'
 font_name = os.listdir(font_path)
 
 ## 한글 json 위치
@@ -50,8 +53,8 @@ save_path = os.path.join("/opt/level3_productserving-level3-cv-11/data/words", l
 font_list = [ImageFont.truetype(os.path.join(font_path, name), 100) for name in font_name]
 
 # 이미지 사이즈 지정
-text_width = 256
-text_height = 256
+text_width = 192
+text_height = 192
 
 for type in json_file.keys():
     for idx, text in enumerate(json_file[type]['character']):
