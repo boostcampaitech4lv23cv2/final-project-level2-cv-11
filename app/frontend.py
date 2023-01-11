@@ -1,8 +1,6 @@
 import streamlit as st
 import st_area
 import st_buttons
-from PIL import Image
-import io
 
 st.set_page_config(layout="wide", initial_sidebar_state="collapsed")
 
@@ -15,9 +13,8 @@ with col1:
    st.header("Background")
    background_file = st.file_uploader('Choose an image', type=['jpg', 'jpeg', 'png'], key='background',)
    if background_file:
-        background_image_bytes = background_file.getvalue()
-        background_image = Image.open(io.BytesIO(background_image_bytes))
-        st.image(background_image, caption='Uploaded Image')
+       st_area.imag_show(background_file)
+        
  
 with col2:
     st.header("Typical Text")

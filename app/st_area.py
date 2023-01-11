@@ -1,3 +1,4 @@
+import io
 import streamlit as st
 from PIL import Image
 from streamlit_drawable_canvas import st_canvas
@@ -36,3 +37,8 @@ def anno_area(input_img, key):
                 st.text_input('번역된 글자', translation, key=f'{key}_translated{str(i)}')
     else:
         pass
+
+def imag_show(img_file):
+    background_image_bytes = img_file.getvalue()
+    background_image = Image.open(io.BytesIO(background_image_bytes))
+    st.image(background_image, caption='Uploaded Image')
