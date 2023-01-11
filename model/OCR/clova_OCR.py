@@ -29,7 +29,6 @@ class Clova_OCR:
     
     def request(self, image_path):
         files =  [('file', open(image_path,'rb'))]
-        print(type(files[0]))
         response = requests.request("POST", self.api_url, headers=self.headers, data=self.payload, files=files)
         result = response.json()
         result_orga = {}
@@ -136,9 +135,9 @@ class Clova_OCR:
                 infer_texts.append(result_orga[idx][2])
             box[2] = " ".join(infer_texts)
         
-        return boxes[:3]
+        return [[x[0],x[1],x[2]]for x in boxes]
     
     def ocr(self, image_path):
         result, result_orga = self.request(image_path)
-        merged_box =  self.merge_box(result_orga)
-        return merged_box
+        merged_boxes =  self.merge_box(result_orga)
+        return merged_boxes

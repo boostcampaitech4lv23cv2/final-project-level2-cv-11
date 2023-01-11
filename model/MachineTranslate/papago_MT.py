@@ -2,7 +2,7 @@ import os
 import sys
 import requests
 
-class papago_MT:
+class Papago_MT:
     
     
     def __init__(self):
@@ -10,7 +10,7 @@ class papago_MT:
         self.client_secret = "1WBZuds5yy"
         self.url = "https://openapi.naver.com/v1/papago/n2mt"
     
-    def machine_translate(self, text):
+    def request(self, text):
         data = {'text' : text,
                 'source' : 'ko',
                 'target': 'en'}
@@ -27,4 +27,11 @@ class papago_MT:
             return send_data, trans_data
         else:
             print("Error Code:" , rescode)
+    
+    def machine_translate(self, merged_boxes):
+        for idx, box in enumerate(merged_boxes):
+            _, trans_data = self.request(box[2])
+            merged_boxes[idx].append(trans_data)
+            
+        return merged_boxes
             
