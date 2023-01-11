@@ -47,8 +47,11 @@ with col2:
         if typical_canvas_result.json_data is not None:
             typical_new_objects = typical_canvas_result.json_data['objects']
             for i, obj in enumerate(typical_new_objects):
-                obj['text'] = st.text_input('', key=i)
-                st.text(f"left:{obj['left']}  top:{obj['top']}  width:{obj['width']}  height:{obj['height']}  text:{obj['text']}")
+                with st.expander(f'anntation {i}'):
+                    obj['text'] = st.text_input('인식된 글자', key='typical'+str(i))
+                    st.text(f"left:{obj['left']}  top:{obj['top']}  width:{obj['width']}  height:{obj['height']}  text:{obj['text']}")
+                    translation = get_translate(obj['text'])
+                    st.text_input('번역된 글자', translation, key='typical_translated'+str(i))
         else:
             pass
 
@@ -81,10 +84,12 @@ with col3:
         if untypical_canvas_result.json_data is not None:
             untypical_new_objects = untypical_canvas_result.json_data['objects']
             for i, obj in enumerate(untypical_new_objects):
-                obj['text'] = st.text_input('', key='untypical'+str(i))
-                st.text(f"left:{obj['left']}  top:{obj['top']}  width:{obj['width']}  height:{obj['height']}  text:{obj['text']}")
-                translation = get_translate(obj['text'])
-                st.text(translation)
+                with st.expander(f'anntation {i}'):
+                    obj['text'] = st.text_input('인식된 글자', key='untypical'+str(i))
+                    st.text(f"left:{obj['left']}  top:{obj['top']}  width:{obj['width']}  height:{obj['height']}  text:{obj['text']}")
+                    if get_translate(obj['text']) is not None:
+                        translation = get_translate(obj['text'])
+                        st.text_input('번역된 글자', translation, key='untypical_translated'+str(i))
         else:
             pass
 
