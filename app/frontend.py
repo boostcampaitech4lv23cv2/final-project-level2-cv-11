@@ -4,7 +4,8 @@ import io
 from streamlit_drawable_canvas import st_canvas
 import pandas as pd
 from models.translation import get_translate
-st.set_page_config(layout="wide")
+
+st.set_page_config(layout="wide", initial_sidebar_state="collapsed")
 
 st.title('Generatoon!')
 
@@ -21,7 +22,7 @@ with col1:
 
 with col2:
     st.header("Typical Text")
-    typical_image = st.file_uploader("Background image:", type=["png", "jpg"], key='Typical')
+    typical_image = st.file_uploader("Background image:", type=['jpg', 'jpeg', 'png'], key='Typical')
     if typical_image:
         img = Image.open(typical_image)
         w, h = img.size
@@ -57,7 +58,7 @@ with col2:
 
 with col3:
     st.header("UnTypical Text")
-    untypical_image = st.file_uploader("Background image:", type=["png", "jpg"], key='UnTypical')
+    untypical_image = st.file_uploader("Background image:", type=['jpg', 'jpeg', 'png'], key='UnTypical')
     if untypical_image:
         img = Image.open(untypical_image)
         w, h = img.size
