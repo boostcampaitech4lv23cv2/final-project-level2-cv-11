@@ -3,7 +3,7 @@ from PIL import Image
 import io
 from streamlit_drawable_canvas import st_canvas
 import pandas as pd
-
+from models.translation import get_translate
 st.set_page_config(layout="wide")
 
 st.title('Generatoon!')
@@ -85,6 +85,8 @@ with col3:
             for i, obj in enumerate(untypical_new_objects):
                 obj['text'] = st.text_input('', key='untypical'+str(i))
                 st.text(f"left:{obj['left']}  top:{obj['top']}  width:{obj['width']}  height:{obj['height']}  text:{obj['text']}")
+                translation = get_translate(obj['text'])
+                st.text(translation)
         else:
             pass
         # pass
