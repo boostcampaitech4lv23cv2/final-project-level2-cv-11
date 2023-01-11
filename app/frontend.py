@@ -47,10 +47,10 @@ with col2:
         )
 
         if len(typical_canvas_result.json_data['objects']) > 0:
-            objects = pd.json_normalize(typical_canvas_result.json_data["objects"]) # need to convert obj to str because PyArrow
-            for col in objects.select_dtypes(include=['object']).columns:
-                objects[col] = objects[col].astype("str")
-            st.dataframe(objects[['left', 'top', 'width', 'height']])
+            typical_new_objects = typical_canvas_result.json_data['objects']
+            for i, obj in enumerate(typical_new_objects):
+                obj['text'] = st.text_input('', key=i)
+                st.text(f"left:{obj['left']}  top:{obj['top']}  width:{obj['width']}  height:{obj['height']}  text:{obj['text']}")
         else:
             pass
 
@@ -81,10 +81,10 @@ with col3:
         )
 
         if len(untypical_canvas_result.json_data['objects']) > 0:
-            objects = pd.json_normalize(untypical_canvas_result.json_data["objects"]) # need to convert obj to str because PyArrow
-            for col in objects.select_dtypes(include=['object']).columns:
-                objects[col] = objects[col].astype("str")
-            st.dataframe(objects[['left', 'top', 'width', 'height']])
+            untypical_new_objects = untypical_canvas_result.json_data['objects']
+            for i, obj in enumerate(untypical_new_objects):
+                obj['text'] = st.text_input('', key='untypical'+str(i))
+                st.text(f"left:{obj['left']}  top:{obj['top']}  width:{obj['width']}  height:{obj['height']}  text:{obj['text']}")
         else:
             pass
         # pass
