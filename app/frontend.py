@@ -30,9 +30,6 @@ with col2:
         canvas_width = inner_width
         canvas_height = h * (canvas_width / w)
 
-
-    
-
         typical_canvas_result = st_canvas(
         fill_color="rgba(255, 165, 0, 0.3)",  # Fixed fill color with some opacity
         stroke_width=3,
@@ -47,7 +44,7 @@ with col2:
         key='typical_canvas'
         )
 
-        if len(typical_canvas_result.json_data['objects']) > 0:
+        if typical_canvas_result.json_data is not None:
             typical_new_objects = typical_canvas_result.json_data['objects']
             for i, obj in enumerate(typical_new_objects):
                 obj['text'] = st.text_input('', key=i)
@@ -80,8 +77,8 @@ with col3:
         point_display_radius=0,
         key='untypical_canvas'
         )
-
-        if len(untypical_canvas_result.json_data['objects']) > 0:
+        
+        if untypical_canvas_result.json_data is not None:
             untypical_new_objects = untypical_canvas_result.json_data['objects']
             for i, obj in enumerate(untypical_new_objects):
                 obj['text'] = st.text_input('', key='untypical'+str(i))
@@ -90,7 +87,7 @@ with col3:
                 st.text(translation)
         else:
             pass
-        # pass
+
 
 st.markdown("----", unsafe_allow_html=True)
 
