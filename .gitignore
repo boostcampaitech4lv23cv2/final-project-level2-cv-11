@@ -22,3 +22,6 @@ __pycache__/
 wandb/
 experiment/
 notebooks/
+
+# 환경 변수 설정 파일
+.env

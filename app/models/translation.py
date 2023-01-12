@@ -1,9 +1,13 @@
 # translation
 import requests
+from dotenv import load_dotenv
+import os
+
+load_dotenv(verbose=True)
 
 def get_translate(text):
-    client_id = "######" # <-- client_id 기입
-    client_secret = "#######" # <-- client_secret 기입
+    client_id = os.getenv('PAPAGO_ID')
+    client_secret = os.getenv('PAPAGO_SECRET')
 
     data = {'text' : text,
             'source' : 'ko',
