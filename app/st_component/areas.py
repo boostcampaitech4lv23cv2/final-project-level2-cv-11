@@ -26,8 +26,7 @@ def anno_area(input_img, key):
         width=canvas_width,
         drawing_mode=drawing_mode,
         point_display_radius=0,
-        key=f'{key}_canvas',
-        initial_drawing=j
+        key=f'{key}_canvas'
     )
 
     # annotation 값
