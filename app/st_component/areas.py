@@ -11,7 +11,7 @@ def anno_area(input_img, key):
     canvas_width = 400
     canvas_height = h * (canvas_width / w)
 
-    flag = st.checkbox('편집')
+    flag = st.checkbox('편집', key=f'{key}_edit')
     drawing_mode = 'transform' if flag else 'rect'
 
     # 캔버스
