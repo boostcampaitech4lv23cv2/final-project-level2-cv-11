@@ -11,6 +11,9 @@ def anno_area(input_img, key):
     canvas_width = 400
     canvas_height = h * (canvas_width / w)
 
+    flag = st.checkbox('편집')
+    drawing_mode = 'transform' if flag else 'rect'
+
     # 캔버스
     canvas_result = st_canvas(
         fill_color="rgba(255, 165, 0, 0.3)",  # Fixed fill color with some opacity
@@ -21,9 +24,10 @@ def anno_area(input_img, key):
         update_streamlit=True,
         height=canvas_height,
         width=canvas_width,
-        drawing_mode='rect',
+        drawing_mode=drawing_mode,
         point_display_radius=0,
-        key=f'{key}_canvas'
+        key=f'{key}_canvas',
+        initial_drawing=j
     )
 
     # annotation 값
