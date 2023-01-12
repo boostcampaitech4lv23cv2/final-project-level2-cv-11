@@ -1,6 +1,6 @@
 import streamlit as st
-import st_area
-import st_buttons
+from st_component import areas as st_area
+from st_component import buttons as st_buttons
 
 st.set_page_config(layout="wide", initial_sidebar_state="collapsed")
 
