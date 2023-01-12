@@ -1,5 +1,6 @@
 
 import numpy as np
+import cv2
 
 class typical_pipeline():
     
