@@ -27,8 +27,10 @@ class Clova_OCR:
         self.payload = {'message': json.dumps(self.request_json).encode('UTF-8')}
         self.headers = {  'X-OCR-SECRET': self.secret_key }
     
-    def request(self, image_path):
-        files =  [('file', open(image_path,'rb'))]
+    def request(self, image):
+        #files =  [('file', open(image_path,'rb'))]
+        files = [('file',image)]
+        
         response = requests.request("POST", self.api_url, headers=self.headers, data=self.payload, files=files)
         result = response.json()
         result_orga = {}
@@ -137,7 +139,7 @@ class Clova_OCR:
         
         return [[x[0],x[1],x[2]]for x in boxes]
     
-    def ocr(self, image_path):
-        result, result_orga = self.request(image_path)
+    def ocr(self, image):
+        result, result_orga = self.request(image)
         merged_boxes =  self.merge_box(result_orga)
         return merged_boxes
