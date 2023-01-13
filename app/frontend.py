@@ -28,6 +28,7 @@ with col2:
                                      key='typical_uploader',
                                      on_change=set_ocr_flag,
                                      args=('typical_ocr_flag',))
+    # TODO: 나중에 ocr_results는 함수 바깥에서 받아와야함, ex anno_area(input_img, key, ocr_results)
     if typical_image:
         st_area.anno_area(typical_image, 'typical')
 

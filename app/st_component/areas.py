@@ -8,6 +8,7 @@ from models.ocr import dummy_ocr
 # initial_drawing object 템플릿
 RECT = {'type': 'rect', 'version': '4.4.0', 'originX': 'left', 'originY': 'top', 'left': 0, 'top': 0, 'width': 0, 'height': 0, 'fill': 'rgba(255, 165, 0, 0.3)', 'stroke': '#eee', 'strokeWidth': 3, 'strokeDashArray': None, 'strokeLineCap': 'butt', 'strokeDashOffset': 0, 'strokeLineJoin': 'miter', 'strokeUniform': True, 'strokeMiterLimit': 4, 'scaleX': 1, 'scaleY': 1, 'angle': 0, 'flipX': False, 'flipY': False, 'opacity': 1, 'shadow': None, 'visible': True, 'backgroundColor': '', 'fillRule': 'nonzero', 'paintFirst': 'fill', 'globalCompositeOperation': 'source-over', 'skewX': 0, 'skewY': 0, 'rx': 0, 'ry': 0}
 
+# TODO: 나중에 ocr_results는 함수 바깥에서 받아와야함, ex anno_area(input_img, key, ocr_results)
 def anno_area(input_img, key):
     # 이미지 사이즈 변경
     img = Image.open(input_img)
@@ -22,13 +23,13 @@ def anno_area(input_img, key):
         # OCR 결과를 initial_drawing 에 맞는 포맷으로 변환
         print(ocr_results)
         rects = []
-        # TODO: OCR 결과는 원본 이미지의 좌표를 반환하므로, 캔버스의 크기에 맞게 변환해야함
+
         for i, result in enumerate(ocr_results):
             rect = RECT.copy()
-            rect['left'] = result[0][0]
-            rect['top'] = result[0][1]
-            rect['width'] = result[1][0] - result[0][0]
-            rect['height'] = result[1][1] - result[0][1]
+            rect['left'] = result[0][0] / w * canvas_width
+            rect['top'] = result[0][1] / h * canvas_height
+            rect['width'] = (result[1][0] - result[0][0]) / w * canvas_width
+            rect['height'] = (result[1][1] - result[0][1]) / h * canvas_height
             rects.append(rect)
             st.session_state[f'{key}_anno{i}'] = result[2] # OCR 텍스트를 session_state에 저장
 
