@@ -28,14 +28,16 @@ def anno_area(input_img, key):
         point_display_radius=0,
         key=f'{key}_canvas'
     )
-
+    print(canvas_width)
+    print(canvas_height)
     # annotation 값
     if canvas_result.json_data is not None:
         new_objects = canvas_result.json_data['objects']
         for i, obj in enumerate(new_objects):
             with st.expander(f'anntation {i}'):
                 obj['text'] = st.text_input('인식된 글자', key=f'{key}_anno{str(i)}')
-                st.text(f"left:{obj['left']}  top:{obj['top']}  width:{obj['width']}  height:{obj['height']}  text:{obj['text']}")
+                st.text(f"left:{int(obj['left']/canvas_width*w)}  top:{int(obj['top']*h/canvas_height)}  width:{int(obj['width']/canvas_width*w)}  height:{int(obj['height']*h/canvas_height)}  text:{obj['text']}")
+                print(type(obj['left']))
                 translation = get_translate(obj['text'])
                 st.text_input('번역된 글자', translation, key=f'{key}_translated{str(i)}')
     else:
