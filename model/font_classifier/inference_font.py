@@ -50,6 +50,7 @@ def inference(data_dir, args):
             scores = F.softmax(predict.data, dim=1)
             pred_topk = torch.topk(scores, k= 2, dim = -1)
             pred = pred_topk.indices
+            print(pred)
             value = pred_topk.values
             preds.extend(pred.cpu().numpy())
             values.extend(value.cpu().numpy())
