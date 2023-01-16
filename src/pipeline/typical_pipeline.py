@@ -5,7 +5,7 @@ import model
 import numpy as np
 import cv2
 
-class typical_pipeline():
+class Typical_Pipeline():
     
     def __init__(self):
         self.OCR = model.Clova_OCR()

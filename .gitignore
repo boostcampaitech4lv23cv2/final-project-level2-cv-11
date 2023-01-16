@@ -22,6 +22,7 @@ __pycache__/
 wandb/
 experiment/
 notebooks/
+src/model/font_classifier/weights/
 
 # 환경 변수 설정 파일
 .env

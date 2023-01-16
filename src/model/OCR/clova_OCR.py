@@ -1,7 +1,6 @@
 import numpy as np
 import platform
 from PIL import ImageFont, ImageDraw, Image
-from matplotlib import pyplot as plt
  
 import uuid
 import json

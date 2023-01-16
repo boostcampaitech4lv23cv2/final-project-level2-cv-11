@@ -13,4 +13,5 @@ python -m app
 
 # frontend 연결
 python -m streamlit run frontend.py --server.port 30001
+#streamlit run frontend.py --server.port 30001 --server.fileWatcherType none
 ```
