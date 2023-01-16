@@ -42,10 +42,9 @@ with col2:
                                      args=('typical_ocr_flag',))
     # TODO: 나중에 ocr_results는 함수 바깥에서 받아와야함, ex anno_area(input_img, key, ocr_results)
     if typical_image:
-        st_area.anno_area(typical_image, 'typical')
         Typical_pipeline = typical_pipeline.Typical_Pipeline()
         clova_result = Typical_pipeline.clova_ocr(typical_image.getvalue())
-        print(clova_result)
+        st_area.anno_area(typical_image, 'typical', clova_result)
         mt_result = Typical_pipeline.papago(clova_result)
         print(mt_result)
     

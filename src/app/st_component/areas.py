@@ -9,7 +9,7 @@ from models.ocr import dummy_ocr
 RECT = {'type': 'rect', 'version': '4.4.0', 'originX': 'left', 'originY': 'top', 'left': 0, 'top': 0, 'width': 0, 'height': 0, 'fill': 'rgba(255, 165, 0, 0.3)', 'stroke': '#eee', 'strokeWidth': 3, 'strokeDashArray': None, 'strokeLineCap': 'butt', 'strokeDashOffset': 0, 'strokeLineJoin': 'miter', 'strokeUniform': True, 'strokeMiterLimit': 4, 'scaleX': 1, 'scaleY': 1, 'angle': 0, 'flipX': False, 'flipY': False, 'opacity': 1, 'shadow': None, 'visible': True, 'backgroundColor': '', 'fillRule': 'nonzero', 'paintFirst': 'fill', 'globalCompositeOperation': 'source-over', 'skewX': 0, 'skewY': 0, 'rx': 0, 'ry': 0}
 
 # TODO: 나중에 ocr_results는 함수 바깥에서 받아와야함, ex anno_area(input_img, key, ocr_results)
-def anno_area(input_img, key):
+def anno_area(input_img, key, ocr_results):
     # 이미지 사이즈 변경
     img = Image.open(input_img)
     w, h = img.size
@@ -18,7 +18,7 @@ def anno_area(input_img, key):
 
     # ocr_flag 를 체크하고, 필요하면 OCR 수행
     if st.session_state[f'{key}_ocr_flag']:
-        ocr_results = dummy_ocr(img)
+        ocr_results = ocr_results
 
         # OCR 결과를 initial_drawing 에 맞는 포맷으로 변환
         print(ocr_results)
