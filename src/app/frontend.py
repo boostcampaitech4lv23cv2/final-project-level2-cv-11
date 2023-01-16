@@ -1,7 +1,7 @@
 import streamlit as st
 from st_component import areas as st_area
 from st_component import buttons as st_buttons
-
+import requests
 import sys
 from os import path
 sys.path.append(path.dirname( path.dirname( path.abspath(__file__) ) ))
@@ -42,11 +42,14 @@ with col2:
                                      args=('typical_ocr_flag',))
     # TODO: 나중에 ocr_results는 함수 바깥에서 받아와야함, ex anno_area(input_img, key, ocr_results)
     if typical_image:
-        Typical_pipeline = typical_pipeline.Typical_Pipeline()
-        clova_result = Typical_pipeline.clova_ocr(typical_image.getvalue())
-        st_area.anno_area(typical_image, 'typical', clova_result)
-        mt_result = Typical_pipeline.papago(clova_result)
-        print(mt_result)
+        uploaded_file = typical_image
+        image_bytes = typical_image.getvalue()
+        files = [
+                ('files', (uploaded_file.name, image_bytes,
+                            uploaded_file.type))
+                ]
+        response = requests.post('http://localhost:30002/ocr', files=files).json()
+        st_area.anno_area(typical_image, 'typical', response)
     
     # clova_result = [[[555, 417], [958, 545], '서른다섯 배, 오백만 주로 계약했다.']]
     # mt_result = [[[555, 417], [958, 545], '서른다섯 배, 오백만 주로 계약했다.', 'Thirty-five times, five million shares signed.']]
