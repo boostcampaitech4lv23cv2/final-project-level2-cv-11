@@ -29,10 +29,3 @@ class typical_pipeline():
         # pp.pprint(result)
         return result
     
-import pickle
-with open("/opt/level3_productserving-level3-cv-11/Gobuk.pickle","rb") as fr:
-    data = pickle.load(fr)
-a = typical_pipeline()
-print(a.go(data))
-
-    

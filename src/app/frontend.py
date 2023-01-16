@@ -6,7 +6,7 @@ import sys
 from os import path
 sys.path.append(path.dirname( path.dirname( path.abspath(__file__) ) ))
 import model
-import pipeline
+from pipeline import typical_pipeline
 
 # 각 모델 사용할 때
 # model.Clova_OCR
@@ -43,7 +43,8 @@ with col2:
     # TODO: 나중에 ocr_results는 함수 바깥에서 받아와야함, ex anno_area(input_img, key, ocr_results)
     if typical_image:
         st_area.anno_area(typical_image, 'typical')
-        pipeline.typicalpipline(typical_image.getvalue())
+        Typical_pipeline = typical_pipeline()
+        print(Typical_pipeline.go(typical_image.getvalue()))
 
 with col3:
     st.header("UnTypical Text")
