@@ -12,12 +12,22 @@ class Typical_Pipeline():
         self.re_OCR = model.Tesseract_OCR()
         self.MT = model.Papago_MT()
         self.Classification = model.Typical_FC("typical_font")
+        
+    def clova_ocr(self, image):
+        encoded_img = np.fromstring(image, dtype = np.uint8)
+        self.img = cv2.imdecode(encoded_img, cv2.IMREAD_COLOR)
+        
+        merged_boxes = self.OCR.ocr(image)
+        
+        return merged_boxes
+        
+    def papago(self,classified_boxes):
+        result = self.MT.machine_translate(classified_boxes)
+        return result
     
     def go(self, image):
         encoded_img = np.fromstring(image, dtype = np.uint8)
         self.img = cv2.imdecode(encoded_img, cv2.IMREAD_COLOR)
-        #self.img = cv2.imread(image)
-        #self.img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         
         merged_boxes = self.OCR.ocr(image)
         merged_boxes_with_crop = self.re_OCR.ocr(merged_boxes, self.img)

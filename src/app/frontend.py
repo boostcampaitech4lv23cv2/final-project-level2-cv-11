@@ -44,7 +44,13 @@ with col2:
     if typical_image:
         st_area.anno_area(typical_image, 'typical')
         Typical_pipeline = typical_pipeline.Typical_Pipeline()
-        print(Typical_pipeline.go(typical_image.getvalue()))
+        clova_result = Typical_pipeline.clova_ocr(typical_image.getvalue())
+        print(clova_result)
+        mt_result = Typical_pipeline.papago(clova_result)
+        print(mt_result)
+    
+    # clova_result = [[[555, 417], [958, 545], '서른다섯 배, 오백만 주로 계약했다.']]
+    # mt_result = [[[555, 417], [958, 545], '서른다섯 배, 오백만 주로 계약했다.', 'Thirty-five times, five million shares signed.']]
 
 with col3:
     st.header("UnTypical Text")
