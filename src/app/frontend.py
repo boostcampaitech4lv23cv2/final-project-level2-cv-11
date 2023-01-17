@@ -17,6 +17,10 @@ from pipeline import typical_pipeline
 # 이미지가 업로드 될 때마다 호출되는 콜백함수
 # '(un)typical_ocr_flag' 를 True로 설정함
 def set_ocr_flag(key):
+    """
+    이미지가 업로드 될 때마다 호출되는 콜백함수
+    '(un)typical_ocr_flag' 를 True로 설정함
+    """
     st.session_state[key] = True
 
 st.set_page_config(layout="wide", initial_sidebar_state="collapsed")
