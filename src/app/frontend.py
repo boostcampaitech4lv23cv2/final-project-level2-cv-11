@@ -2,9 +2,11 @@ import streamlit as st
 from st_component import areas as st_area
 from st_component import buttons as st_buttons
 
-# 이미지가 업로드 될 때마다 호출되는 콜백함수
-# '(un)typical_ocr_flag' 를 True로 설정함
 def set_ocr_flag(key):
+    """
+    이미지가 업로드 될 때마다 호출되는 콜백함수
+    '(un)typical_ocr_flag' 를 True로 설정함
+    """
     st.session_state[key] = True
 
 st.set_page_config(layout="wide", initial_sidebar_state="collapsed")
@@ -28,7 +30,7 @@ with col2:
                                      key='typical_uploader',
                                      on_change=set_ocr_flag,
                                      args=('typical_ocr_flag',))
-    # TODO: 나중에 ocr_results는 함수 바깥에서 받아와야함, ex anno_area(input_img, key, ocr_results)
+    
     if typical_image:
         st_area.anno_area(typical_image, 'typical')
 

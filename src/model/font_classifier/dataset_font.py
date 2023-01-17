@@ -99,6 +99,24 @@ class TestDataset(Dataset):
     def __len__(self):
         return len(self.img_paths)
     
+
+class InfDataset(Dataset):
+    def __init__(self, imgs, resize = (256,256)):
+        self.imgs = imgs
+        self.transform = transforms.Compose([
+            transforms.Resize(resize, Image.BILINEAR),
+            transforms.ToTensor()
+        ])
+
+    def __getitem__(self, index):
+        image =  Image.fromarray(np.uint8(self.imgs[index])).convert('RGB')
+        if self.transform:
+            image = self.transform(image)
+        return image
+
+    def __len__(self):
+        return len(self.imgs)
+    
     
     
 
