@@ -48,8 +48,8 @@ with col2:
                 ('files', (uploaded_file.name, image_bytes,
                             uploaded_file.type))
                 ]
-        response = requests.post('http://localhost:30002/ocr', files=files).json()
-        st_area.anno_area(typical_image, 'typical', response)
+        ocr_results = requests.post('http://localhost:30002/ocr', files=files).json()
+        st_area.anno_area(typical_image, 'typical', ocr_results)
     
     # clova_result = [[[555, 417], [958, 545], '서른다섯 배, 오백만 주로 계약했다.']]
     # mt_result = [[[555, 417], [958, 545], '서른다섯 배, 오백만 주로 계약했다.', 'Thirty-five times, five million shares signed.']]

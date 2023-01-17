@@ -4,6 +4,7 @@ from PIL import Image
 from streamlit_drawable_canvas import st_canvas
 from models.translation import get_translate
 from models.ocr import dummy_ocr
+import requests
 
 # initial_drawing object 템플릿
 RECT = {'type': 'rect', 'version': '4.4.0', 'originX': 'left', 'originY': 'top', 'left': 0, 'top': 0, 'width': 0, 'height': 0, 'fill': 'rgba(255, 165, 0, 0.3)', 'stroke': '#eee', 'strokeWidth': 3, 'strokeDashArray': None, 'strokeLineCap': 'butt', 'strokeDashOffset': 0, 'strokeLineJoin': 'miter', 'strokeUniform': True, 'strokeMiterLimit': 4, 'scaleX': 1, 'scaleY': 1, 'angle': 0, 'flipX': False, 'flipY': False, 'opacity': 1, 'shadow': None, 'visible': True, 'backgroundColor': '', 'fillRule': 'nonzero', 'paintFirst': 'fill', 'globalCompositeOperation': 'source-over', 'skewX': 0, 'skewY': 0, 'rx': 0, 'ry': 0}
@@ -64,8 +65,10 @@ def anno_area(input_img, key, ocr_results):
             with st.expander(f'anntation {i}'):
                 obj['text'] = st.text_input('인식된 글자', key=f'{key}_anno{i}')
                 st.text(f"left:{int(obj['left']/canvas_width*w)}  top:{int(obj['top']*h/canvas_height)}  width:{int(obj['width']/canvas_width*w)}  height:{int(obj['height']*h/canvas_height)}  text:{obj['text']}")
-                print(type(obj['left']))
-                translation = get_translate(obj['text'])
+                print('obj text:', obj['text']) # [[[555, 417], [958, 545], '서른다섯 배, 오백만 주로 계약했다.'], [[0, 15], [406, 144], '서른다섯 배, 오백만 주로 계약했다.']]
+                # translation = get_translate(obj['text'])
+                files = [{'file': f"{obj['text']}"}]
+                translation = requests.post(f"http://localhost:30002/mt/{obj['text']}").json()
                 st.text_input('번역된 글자', translation, key=f'{key}_translated{i}')
     else:
         pass
