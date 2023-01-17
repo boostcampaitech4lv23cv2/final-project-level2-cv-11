@@ -2,17 +2,14 @@ import io
 import streamlit as st
 from PIL import Image
 from streamlit_drawable_canvas import st_canvas
-<<<<<<< HEAD
 from models.translation import get_translate
 from models.ocr import dummy_ocr
 import requests
-=======
 
 import sys
 from os import path
 sys.path.append(path.dirname( path.dirname( path.dirname( path.abspath(__file__) ) ) ))
 from pipeline import typical_pipeline
->>>>>>> origin/Develop/frontend_orc_mt
 
 # initial_drawing object 템플릿
 RECT = {'type': 'rect', 'version': '4.4.0', 'originX': 'left', 'originY': 'top', 'left': 0, 'top': 0, 'width': 0, 'height': 0, 'fill': 'rgba(255, 165, 0, 0.3)', 'stroke': '#eee', 'strokeWidth': 3, 'strokeDashArray': None, 'strokeLineCap': 'butt', 'strokeDashOffset': 0, 'strokeLineJoin': 'miter', 'strokeUniform': True, 'strokeMiterLimit': 4, 'scaleX': 1, 'scaleY': 1, 'angle': 0, 'flipX': False, 'flipY': False, 'opacity': 1, 'shadow': None, 'visible': True, 'backgroundColor': '', 'fillRule': 'nonzero', 'paintFirst': 'fill', 'globalCompositeOperation': 'source-over', 'skewX': 0, 'skewY': 0, 'rx': 0, 'ry': 0}
@@ -66,8 +63,6 @@ def anno_area(input_img, key):
         key=f'{key}_canvas',
         initial_drawing=st.session_state[f'{key}_initial_drawing'],
     )
-    print(canvas_width)
-    print(canvas_height)
     
     # annotation 값
     if canvas_result.json_data is not None:
@@ -76,15 +71,10 @@ def anno_area(input_img, key):
             with st.expander(f'anntation {i}'):
                 obj['text'] = st.text_input('인식된 글자', key=f'{key}_anno{i}')
                 st.text(f"left:{int(obj['left']/canvas_width*w)}  top:{int(obj['top']*h/canvas_height)}  width:{int(obj['width']/canvas_width*w)}  height:{int(obj['height']*h/canvas_height)}  text:{obj['text']}")
-<<<<<<< HEAD
-                print('obj text:', obj['text']) # [[[555, 417], [958, 545], '서른다섯 배, 오백만 주로 계약했다.'], [[0, 15], [406, 144], '서른다섯 배, 오백만 주로 계약했다.']]
                 # translation = get_translate(obj['text'])
                 files = [{'file': f"{obj['text']}"}]
                 translation = requests.post(f"http://localhost:30002/mt/{obj['text']}").json()
-=======
                 # 자동번역
-                translation = Typical_pipeline.papago(obj['text'])
->>>>>>> origin/Develop/frontend_orc_mt
                 st.text_input('번역된 글자', translation, key=f'{key}_translated{i}')
     else:
         pass

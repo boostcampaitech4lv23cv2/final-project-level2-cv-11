@@ -53,10 +53,6 @@ with col2:
                 ('files', (uploaded_file.name, image_bytes,
                             uploaded_file.type))
                 ]
-        ocr_results = requests.post('http://localhost:30002/ocr', files=files).json()
-        st_area.anno_area(typical_image, 'typical', ocr_results)
-    
-    if typical_image:
         st_area.anno_area(typical_image, 'typical')
 
 with col3:
