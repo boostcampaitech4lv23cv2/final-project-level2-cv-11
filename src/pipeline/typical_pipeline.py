@@ -21,9 +21,9 @@ class Typical_Pipeline():
         
         return merged_boxes
         
-    def papago(self,classified_boxes):
-        result = self.MT.machine_translate(classified_boxes)
-        return result
+    def papago(self, text):
+        ko, en = self.MT.request(text)
+        return en
     
     def go(self, image):
         encoded_img = np.fromstring(image, dtype = np.uint8)
