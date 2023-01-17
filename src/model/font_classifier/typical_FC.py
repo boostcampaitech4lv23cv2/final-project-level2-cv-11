@@ -26,7 +26,7 @@ class Typical_FC:
         self.model = torch.load(os.path.join(os.path.dirname(__file__),"weights",type,"weight.pth"), map_location = self.device)
         
     def classification(self, merged_boxes):
-        tmp = [[i[0], i[1], i[2]] for i in merged_boxes]
+        tmp = []
         for idx, boxes in enumerate(merged_boxes):
             imgs = boxes[3]
             #dataset = getattr(import_module("dataset_font"), "InfDataset")(imgs, self.resize)
@@ -52,5 +52,5 @@ class Typical_FC:
                             preds_dict[p] += v
             
             sorted_dict = sorted(preds_dict.items(), key = lambda item: item[0], reverse = True)
-            tmp[idx].append(self.font_list[sorted_dict[0][0]])
-        return tmp            
+            tmp.append(self.font_list[sorted_dict[0][0]])
+        return tmp
