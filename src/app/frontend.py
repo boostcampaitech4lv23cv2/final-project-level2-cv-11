@@ -16,7 +16,12 @@ from pipeline import typical_pipeline
 
 # 이미지가 업로드 될 때마다 호출되는 콜백함수
 # '(un)typical_ocr_flag' 를 True로 설정함
+
 def set_ocr_flag(key):
+    """
+    이미지가 업로드 될 때마다 호출되는 콜백함수
+    '(un)typical_ocr_flag' 를 True로 설정함
+    """
     st.session_state[key] = True
 
 st.set_page_config(layout="wide", initial_sidebar_state="collapsed")
@@ -51,8 +56,8 @@ with col2:
         ocr_results = requests.post('http://localhost:30002/ocr', files=files).json()
         st_area.anno_area(typical_image, 'typical', ocr_results)
     
-    # clova_result = [[[555, 417], [958, 545], '서른다섯 배, 오백만 주로 계약했다.']]
-    # mt_result = [[[555, 417], [958, 545], '서른다섯 배, 오백만 주로 계약했다.', 'Thirty-five times, five million shares signed.']]
+    if typical_image:
+        st_area.anno_area(typical_image, 'typical')
 
 with col3:
     st.header("UnTypical Text")
