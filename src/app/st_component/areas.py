@@ -60,8 +60,6 @@ def anno_area(input_img, key):
         key=f'{key}_canvas',
         initial_drawing=st.session_state[f'{key}_initial_drawing'],
     )
-    print(canvas_width)
-    print(canvas_height)
     
     # annotation 값
     if canvas_result.json_data is not None:
