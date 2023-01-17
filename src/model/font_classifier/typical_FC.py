@@ -2,10 +2,11 @@ import multiprocessing
 import os
 from importlib import import_module
 import torch
-from collections import defaultdict
-from .dataset_font import InfDataset
 import sys
 sys.path.append(os.path.dirname(__file__))
+from collections import defaultdict
+from dataset_font import InfDataset
+
 
 
 # 경고 off
@@ -20,7 +21,7 @@ class Typical_FC:
         self.device = torch.device("cuda" if self.use_cuda else "cpu")
         self.resize = (256,256)
         self.batch_size = 2
-        self.font_data_dir = '/opt/level3_productserving-level3-cv-11/data/fonts/typical'
+        self.font_data_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__)))), "data/fonts/typical")
         self.font_list = os.listdir(self.font_data_dir)
         self.model = torch.load(os.path.join(os.path.dirname(__file__),"weights",type,"weight.pth"), map_location = self.device)
         
@@ -52,7 +53,4 @@ class Typical_FC:
             
             sorted_dict = sorted(preds_dict.items(), key = lambda item: item[0], reverse = True)
             tmp[idx].append(self.font_list[sorted_dict[0][0]])
-        return tmp
-            
-            
-            
+        return tmp            
