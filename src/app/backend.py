@@ -24,7 +24,7 @@ class KoreanText(BaseModel):
     name: str
     text: str
 
-@app.post('/mt/{text}', description='mt모델을 돌립니다.')
+@app.post('/mt', description='mt모델을 돌립니다.')
 async def make_mt(text):
     mt_result = Typical_pipeline.papago(text)
     return mt_result

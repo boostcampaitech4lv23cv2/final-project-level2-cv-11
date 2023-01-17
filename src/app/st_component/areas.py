@@ -72,8 +72,8 @@ def anno_area(input_img, key):
                 obj['text'] = st.text_input('인식된 글자', key=f'{key}_anno{i}')
                 st.text(f"left:{int(obj['left']/canvas_width*w)}  top:{int(obj['top']*h/canvas_height)}  width:{int(obj['width']/canvas_width*w)}  height:{int(obj['height']*h/canvas_height)}  text:{obj['text']}")
                 # translation = get_translate(obj['text'])
-                files = [{'file': f"{obj['text']}"}]
-                translation = requests.post(f"http://localhost:30002/mt/{obj['text']}").json()
+                params = {'text': []}
+                translation = requests.post(f"http://localhost:30002/mt", params=params).json()
                 # 자동번역
                 st.text_input('번역된 글자', translation, key=f'{key}_translated{i}')
     else:
