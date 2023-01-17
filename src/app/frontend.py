@@ -47,12 +47,6 @@ with col2:
                                      args=('typical_ocr_flag',))
     # TODO: 나중에 ocr_results는 함수 바깥에서 받아와야함, ex anno_area(input_img, key, ocr_results)
     if typical_image:
-        uploaded_file = typical_image
-        image_bytes = typical_image.getvalue()
-        files = [
-                ('files', (uploaded_file.name, image_bytes,
-                            uploaded_file.type))
-                ]
         st_area.anno_area(typical_image, 'typical')
 
 with col3:
