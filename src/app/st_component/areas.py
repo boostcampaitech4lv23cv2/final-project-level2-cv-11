@@ -14,6 +14,7 @@ from pipeline import typical_pipeline
 # initial_drawing object 템플릿
 RECT = {'type': 'rect', 'version': '4.4.0', 'originX': 'left', 'originY': 'top', 'left': 0, 'top': 0, 'width': 0, 'height': 0, 'fill': 'rgba(255, 165, 0, 0.3)', 'stroke': '#eee', 'strokeWidth': 3, 'strokeDashArray': None, 'strokeLineCap': 'butt', 'strokeDashOffset': 0, 'strokeLineJoin': 'miter', 'strokeUniform': True, 'strokeMiterLimit': 4, 'scaleX': 1, 'scaleY': 1, 'angle': 0, 'flipX': False, 'flipY': False, 'opacity': 1, 'shadow': None, 'visible': True, 'backgroundColor': '', 'fillRule': 'nonzero', 'paintFirst': 'fill', 'globalCompositeOperation': 'source-over', 'skewX': 0, 'skewY': 0, 'rx': 0, 'ry': 0}
 
+st.session_state.font_list = []
 
 def anno_area(input_img, key):
     # 이미지 사이즈 변경
@@ -24,7 +25,6 @@ def anno_area(input_img, key):
 
     # 파이프라인 모델
     Typical_pipeline = typical_pipeline.Typical_Pipeline()
-    outer_font_list = None
     # OCR 한번만 실행
     if st.session_state[f'{key}_ocr_flag']:
         # OCR inference
@@ -36,9 +36,8 @@ def anno_area(input_img, key):
                 ]
         ocr_results = requests.post('http://localhost:30002/ocr', files=files).json()
         if ocr_results:
-            font_list = requests.post('http://localhost:30002/classification', json=ocr_results).json()
-            outer_font_list = font_list
-        print('font_list:', font_list)
+            st.session_state.font_list = requests.post('http://localhost:30002/classification', json=ocr_results).json()
+        print('font_list:', st.session_state.font_list)
         # initial_drawing 포맷으로 변환
         rects = []
         for i, result in enumerate(ocr_results):
@@ -87,8 +86,7 @@ def anno_area(input_img, key):
                 # 자동번역
                 st.text_input('번역된 글자', translation, key=f'{key}_translated{i}')
                 translated_list.append([int(obj['left']/canvas_width*w), int(obj['top']*h/canvas_height), translation])
-        print('outer: ', outer_font_list)
-        return (translated_list, outer_font_list)
+        return (translated_list, st.session_state.font_list)
 
 def imag_show(img_file):
     background_image_bytes = img_file.getvalue()
