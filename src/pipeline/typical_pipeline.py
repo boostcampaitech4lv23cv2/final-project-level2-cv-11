@@ -30,3 +30,4 @@ class Typical_Pipeline():
         merged_boxes_with_crop = self.re_OCR.ocr(merged_boxes, self.img)
         classified_font = self.Typical_Classification.classification(merged_boxes_with_crop)
         return classified_font
+    
