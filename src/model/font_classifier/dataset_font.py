@@ -109,7 +109,7 @@ class InfDataset(Dataset):
         ])
 
     def __getitem__(self, index):
-        image =  Image.fromarray(np.uint8(self.imgs[index])).convert('RGB')
+        image =  Image.fromarray(self.imgs[index]).convert('RGB')
         if self.transform:
             image = self.transform(image)
         return image

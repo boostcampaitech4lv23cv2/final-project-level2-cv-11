@@ -2,6 +2,9 @@ import io
 import streamlit as st
 from PIL import Image
 from streamlit_drawable_canvas import st_canvas
+from models.translation import get_translate
+from models.ocr import dummy_ocr
+import requests
 
 import sys
 from os import path
@@ -25,7 +28,13 @@ def anno_area(input_img, key):
     # OCR 한번만 실행
     if st.session_state[f'{key}_ocr_flag']:
         # OCR inference
-        ocr_results = Typical_pipeline.clova_ocr(input_img.getvalue())
+        uploaded_file = input_img
+        image_bytes = input_img.getvalue()
+        files = [
+                ('files', (uploaded_file.name, image_bytes,
+                            uploaded_file.type))
+                ]
+        ocr_results = requests.post('http://localhost:30002/ocr', files=files).json()
 
         # initial_drawing 포맷으로 변환
         rects = []
@@ -68,8 +77,10 @@ def anno_area(input_img, key):
             with st.expander(f'anntation {i}'):
                 obj['text'] = st.text_input('인식된 글자', key=f'{key}_anno{i}')
                 st.text(f"left:{int(obj['left']/canvas_width*w)}  top:{int(obj['top']*h/canvas_height)}  width:{int(obj['width']/canvas_width*w)}  height:{int(obj['height']*h/canvas_height)}  text:{obj['text']}")
+                # translation = get_translate(obj['text'])
+                params = {'text': f"{obj['text']}"}
+                translation = requests.post(f"http://localhost:30002/mt", params=params).json()
                 # 자동번역
-                translation = Typical_pipeline.papago(obj['text'])
                 st.text_input('번역된 글자', translation, key=f'{key}_translated{i}')
     else:
         pass
