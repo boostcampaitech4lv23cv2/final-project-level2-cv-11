@@ -14,11 +14,10 @@ def hello_world():
     return {'hello: world'}
 
 @app.post('/ocr', description='ocr모델을 돌립니다.')
-async def make_ocr(files: List[UploadFile] = File(...)):
-    for file in files:
-        image_bytes = await file.read()
-    ocr_results = Typical_pipeline.clova_ocr(image_bytes)
-    return ocr_results
+async def make_ocr(file: UploadFile = File(...)):
+    image_bytes = await file.read()
+    ocr_result = Typical_pipeline.clova_ocr(image_bytes)
+    return ocr_result
 
 class KoreanText(BaseModel):
     name: str

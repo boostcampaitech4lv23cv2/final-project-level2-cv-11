@@ -5,12 +5,6 @@ from streamlit_drawable_canvas import st_canvas
 import requests
 from typing import Literal
 
-import sys
-from os import path
-
-sys.path.append(path.dirname(path.dirname(path.dirname(path.abspath(__file__)))))
-from pipeline import typical_pipeline
-
 # initial_drawing object 템플릿
 # fmt: off
 RECT = {'type': 'rect', 'version': '4.4.0', 'originX': 'left', 'originY': 'top', 'left': 0, 'top': 0, 'width': 0, 'height': 0, 'fill': 'rgba(255, 165, 0, 0.3)', 'stroke': '#eee', 'strokeWidth': 3, 'strokeDashArray': None, 'strokeLineCap': 'butt', 'strokeDashOffset': 0, 'strokeLineJoin': 'miter', 'strokeUniform': True, 'strokeMiterLimit': 4, 'scaleX': 1, 'scaleY': 1, 'angle': 0, 'flipX': False, 'flipY': False, 'opacity': 1, 'shadow': None, 'visible': True, 'backgroundColor': '', 'fillRule': 'nonzero', 'paintFirst': 'fill', 'globalCompositeOperation': 'source-over', 'skewX': 0, 'skewY': 0, 'rx': 0, 'ry': 0}
@@ -23,16 +17,12 @@ def anno_area(input_img, key: Literal["typical", "untypical"]):
     canvas_width = 400
     canvas_height = h * (canvas_width / w)
 
-    # 파이프라인 모델
-    Typical_pipeline = typical_pipeline.Typical_Pipeline()
-
     # OCR 한번만 실행
     if st.session_state[f"{key}_ocr_flag"]:
         # OCR inference
-        uploaded_file = input_img
         image_bytes = input_img.getvalue()
-        files = [("files", (uploaded_file.name, image_bytes, uploaded_file.type))]
-        ocr_results = requests.post("http://localhost:30002/ocr", files=files).json()
+        files = {'file': image_bytes}
+        ocr_results = requests.post('http://localhost:30002/ocr', files=files).json()
 
         # initial_drawing 포맷으로 변환
         rects = []
