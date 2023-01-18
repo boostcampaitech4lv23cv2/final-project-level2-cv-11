@@ -30,3 +30,16 @@ class Typical_Pipeline():
         merged_boxes_with_crop = self.re_OCR.ocr(merged_boxes, self.img)
         classified_font = self.Typical_Classification.classification(merged_boxes_with_crop)
         return classified_font
+    
+# import pickle
+# a = Typical_Pipeline()
+# with open("/opt/level3_productserving-level3-cv-11/notebooks/image/Gobuk.pickle","rb") as fr:
+#     data = pickle.load(fr)
+# b = a.clova_ocr(data)
+# print("B")
+# print(b)
+# print("--------------------------")
+# c = a.typical_font_classification(b)
+# print("C")
+# print(c)
+    
