@@ -72,6 +72,7 @@ def anno_area(input_img, key):
     
     # annotation 값
     if canvas_result.json_data is not None:
+        translated_list = []
         new_objects = canvas_result.json_data['objects']
         for i, obj in enumerate(new_objects):
             with st.expander(f'anntation {i}'):
@@ -82,6 +83,8 @@ def anno_area(input_img, key):
                 translation = requests.post(f"http://localhost:30002/mt", params=params).json()
                 # 자동번역
                 st.text_input('번역된 글자', translation, key=f'{key}_translated{i}')
+                translated_list.append([int(obj['left']/canvas_width*w), int(obj['top']*h/canvas_height), translation])
+        return translated_list
     else:
         pass
 
@@ -89,3 +92,4 @@ def imag_show(img_file):
     background_image_bytes = img_file.getvalue()
     background_image = Image.open(io.BytesIO(background_image_bytes))
     st.image(background_image, caption='Uploaded Image')
+    return background_image
