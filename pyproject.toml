@@ -115,6 +115,8 @@ werkzeug = "2.2.2"
 widgetsnbextension = "4.0.4"
 zope-event = "4.5.0"
 zope-interface = "5.5.2"
+streamlit-extras = "^0.2.5"
+pytesseract = "^0.3.10"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.5"
