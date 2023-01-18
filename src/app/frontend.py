@@ -2,11 +2,10 @@ import streamlit as st
 from st_component import areas as st_area
 from st_component import buttons as st_buttons
 import requests
+from typing import Literal
 import sys
 from os import path
 sys.path.append(path.dirname( path.dirname( path.abspath(__file__) ) ))
-import model
-from pipeline import typical_pipeline
 
 # 각 모델 사용할 때
 # model.Clova_OCR
@@ -14,15 +13,12 @@ from pipeline import typical_pipeline
 # model.Tesseract_OCR
 # model.Typical_FC 로 사용하면 됨
 
-# 이미지가 업로드 될 때마다 호출되는 콜백함수
-# '(un)typical_ocr_flag' 를 True로 설정함
-
-def set_ocr_flag(key):
+def set_ocr_flag(key: Literal['typical', 'untypical']):
     """
     이미지가 업로드 될 때마다 호출되는 콜백함수
     '(un)typical_ocr_flag' 를 True로 설정함
     """
-    st.session_state[key] = True
+    st.session_state[f'{key}_ocr_flag'] = True
 
 st.set_page_config(layout="wide", initial_sidebar_state="collapsed")
 
@@ -44,8 +40,7 @@ with col2:
                                      type=['jpg', 'jpeg', 'png'],
                                      key='typical_uploader',
                                      on_change=set_ocr_flag,
-                                     args=('typical_ocr_flag',))
-    # TODO: 나중에 ocr_results는 함수 바깥에서 받아와야함, ex anno_area(input_img, key, ocr_results)
+                                     args=('typical',))
     if typical_image:
         st_area.anno_area(typical_image, 'typical')
 
@@ -55,7 +50,7 @@ with col3:
                                        type=['jpg', 'jpeg', 'png'],
                                        key='untypical_uploader',
                                        on_change=set_ocr_flag,
-                                       args=('untypical_ocr_flag',))
+                                       args=('untypical',))
     if untypical_image:
         st_area.anno_area(untypical_image, 'untypical')
 
