@@ -47,20 +47,21 @@ with col2:
                                      args=('typical_ocr_flag',))
     # TODO: 나중에 ocr_results는 함수 바깥에서 받아와야함, ex anno_area(input_img, key, ocr_results)
     if typical_image:
-        translated_list = st_area.anno_area(typical_image, 'typical')
+        translated_list, font_list = st_area.anno_area(typical_image, 'typical')
 
-with col3:
-    st.header("UnTypical Text")
-    untypical_image = st.file_uploader("Background image:",
-                                       type=['jpg', 'jpeg', 'png'],
-                                       key='untypical_uploader',
-                                       on_change=set_ocr_flag,
-                                       args=('untypical_ocr_flag',))
-    if untypical_image:
-        st_area.anno_area(untypical_image, 'untypical')
+# with col3:
+#     st.header("UnTypical Text")
+#     untypical_image = st.file_uploader("Background image:",
+#                                        type=['jpg', 'jpeg', 'png'],
+#                                        key='untypical_uploader',
+#                                        on_change=set_ocr_flag,
+#                                        args=('untypical_ocr_flag',))
+#     if untypical_image:
+#         # untypical_translated, un_typical_font_list = st_area.anno_area(untypical_image, 'untypical')
+#         pass
 
 
 st.markdown("----", unsafe_allow_html=True)
 
-if background_file and typical_image and untypical_image:
-    st_buttons.btn_generation(background_file, translated_list)
+if background_file and typical_image:
+    st_buttons.btn_generation(background_file, translated_list, ['NanumSquareRoundEB.ttf'])

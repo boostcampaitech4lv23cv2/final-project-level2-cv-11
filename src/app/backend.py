@@ -31,5 +31,6 @@ async def make_mt(text):
 
 @app.post('/classification', description='classification모델을 돌립니다.')
 async def make_classification(ocr_results: List):
+    print(ocr_results)
     classification_result = Typical_pipeline.typical_font_classification(ocr_results)
     return classification_result

@@ -24,7 +24,7 @@ def anno_area(input_img, key):
 
     # 파이프라인 모델
     Typical_pipeline = typical_pipeline.Typical_Pipeline()
-    
+    outer_font_list = None
     # OCR 한번만 실행
     if st.session_state[f'{key}_ocr_flag']:
         # OCR inference
@@ -35,7 +35,10 @@ def anno_area(input_img, key):
                             uploaded_file.type))
                 ]
         ocr_results = requests.post('http://localhost:30002/ocr', files=files).json()
-
+        if ocr_results:
+            font_list = requests.post('http://localhost:30002/classification', json=ocr_results).json()
+            outer_font_list = font_list
+        print('font_list:', font_list)
         # initial_drawing 포맷으로 변환
         rects = []
         for i, result in enumerate(ocr_results):
@@ -84,9 +87,8 @@ def anno_area(input_img, key):
                 # 자동번역
                 st.text_input('번역된 글자', translation, key=f'{key}_translated{i}')
                 translated_list.append([int(obj['left']/canvas_width*w), int(obj['top']*h/canvas_height), translation])
-        return translated_list
-    else:
-        pass
+        print('outer: ', outer_font_list)
+        return (translated_list, outer_font_list)
 
 def imag_show(img_file):
     background_image_bytes = img_file.getvalue()
