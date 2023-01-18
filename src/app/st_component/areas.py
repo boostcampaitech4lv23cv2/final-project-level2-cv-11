@@ -28,12 +28,8 @@ def anno_area(input_img, key):
     # OCR 한번만 실행
     if st.session_state[f'{key}_ocr_flag']:
         # OCR inference
-        uploaded_file = input_img
         image_bytes = input_img.getvalue()
-        files = [
-                ('files', (uploaded_file.name, image_bytes,
-                            uploaded_file.type))
-                ]
+        files = {'file': image_bytes}
         ocr_results = requests.post('http://localhost:30002/ocr', files=files).json()
 
         # initial_drawing 포맷으로 변환
