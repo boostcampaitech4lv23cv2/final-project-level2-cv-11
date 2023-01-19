@@ -42,7 +42,7 @@ def anno_area(input_img, key: Literal["typical", "untypical"]):
         st.session_state[f"{key}_initial_drawing"] = initial_drawing
         st.session_state[f"{key}_ocr_flag"] = False
 
-    flag = st.checkbox("편집", key=f'{key}_edit')
+    flag = st.checkbox("편집", key=f"{key}_edit")
     drawing_mode = "transform" if flag else "rect"
 
     # 캔버스
