@@ -9,21 +9,11 @@ app = FastAPI()
 Typical_pipeline = typical_pipeline.Typical_Pipeline()
 
 
-@app.get("/")
-def hello_world():
-    return {"hello: world"}
-
-
 @app.post("/ocr", description="ocr모델을 돌립니다.")
 async def make_ocr(file: UploadFile = File(...)):
     image_bytes = await file.read()
     ocr_result = Typical_pipeline.clova_ocr(image_bytes)
     return ocr_result
-
-
-class KoreanText(BaseModel):
-    name: str
-    text: str
 
 
 @app.post("/mt", description="mt모델을 돌립니다.")

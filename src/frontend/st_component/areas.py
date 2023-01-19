@@ -26,7 +26,6 @@ def anno_area(input_img, key: Literal["typical", "untypical"]):
         ocr_results = requests.post('http://localhost:30002/ocr', files=files).json()
         if ocr_results:
             st.session_state.font_list = requests.post('http://localhost:30002/classification', json=ocr_results).json()
-        print('font_list:', st.session_state.font_list)
         # initial_drawing 포맷으로 변환
         rects = []
         for i, result in enumerate(ocr_results):
