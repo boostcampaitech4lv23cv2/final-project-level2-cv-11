@@ -44,9 +44,12 @@ with col2:
         args=("typical",),
     )
     if typical_image:
-        translated_list, st.session_state.font_list = st_area.anno_area(
-            typical_image, "typical"
-        )
+        try:
+            translated_list, st.session_state.font_list = st_area.anno_area(
+                typical_image, "typical"
+            )
+        except:
+            pass
 
 with col3:
     st.header("UnTypical Text")
@@ -64,6 +67,9 @@ with col3:
 st.markdown("----", unsafe_allow_html=True)
 
 if background_file and typical_image:
-    st_buttons.btn_generation(
-        background_file, translated_list, st.session_state.font_list
-    )
+    try:
+        st_buttons.btn_generation(
+            background_file, translated_list, st.session_state.font_list
+        )
+    except:
+        pass
