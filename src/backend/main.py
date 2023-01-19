@@ -2,7 +2,7 @@ from typing import List, Union, Optional, Dict, Any
 from fastapi import FastAPI, UploadFile, File
 from fastapi.param_functions import Depends
 from pydantic import BaseModel, Field
-from pipeline import typical_pipeline
+from backend.pipeline import typical_pipeline
 
 app = FastAPI()
 
