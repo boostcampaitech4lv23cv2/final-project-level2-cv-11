@@ -2,7 +2,7 @@
 name = "app"
 version = "0.1.0"
 description = ""
-authors = ["ahnsv <ahnsv@bc.edu>"]
+authors = ["jerry-ryu", "ta1231", "jane79", "yera10", "ganghe74"]
 license = "UNLICENSED"
 
 [tool.poetry.dependencies]
