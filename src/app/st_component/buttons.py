@@ -11,7 +11,7 @@ import os
 font_path = '/opt/ml/Final_Project/level3_productserving-level3-cv-11/data/fonts/typical'
 
 
-def btn_generation():
+def btn_generation(background_file, translated_list, font_list):
     bcol1, bcol2, bcol3 , bcol4, bcol5= st.columns(5)
     with bcol1:
         pass

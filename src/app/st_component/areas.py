@@ -42,7 +42,7 @@ def anno_area(input_img, key: Literal["typical", "untypical"]):
         st.session_state[f"{key}_initial_drawing"] = initial_drawing
         st.session_state[f"{key}_ocr_flag"] = False
 
-    flag = st.checkbox("편집", key=f"{key}_edit")
+    flag = st.checkbox("편집", key=f'{key}_edit')
     drawing_mode = "transform" if flag else "rect"
 
     # 캔버스
@@ -64,6 +64,7 @@ def anno_area(input_img, key: Literal["typical", "untypical"]):
     # annotation 값
     if canvas_result.json_data is not None:
         new_objects = canvas_result.json_data['objects']
+        translated_list = []
         for i, obj in enumerate(new_objects):
             with st.expander(f"anntation {i}"):
                 obj["text"] = st.text_input("인식된 글자", key=f"{key}_anno{i}")
