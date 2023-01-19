@@ -1,45 +1,51 @@
 import numpy as np
 import platform
 from PIL import ImageFont, ImageDraw, Image
- 
+from dotenv import load_dotenv
+
 import uuid
 import json
 import time
 import cv2
 import requests
 import copy
+import os
 
 
 class Clova_OCR:
-    
-    
     def __init__(self):
-        self.api_url = 'https://ea51g6zzjj.apigw.ntruss.com/custom/v1/20085/9c5754d3f3e8185724e390a8fae2a1304ee07d4ece1257668613a6decdbe7b70/general'
-        self.secret_key = 'blZkcWh2cXNuQnBYdkZoeW1neGhncWxvVkNmRGl6aHk='
-        self.request_json = {'images': [{'format': 'jpg',
-                                'name': 'demo'
-                               }],
-                    'requestId': str(uuid.uuid4()),
-                    'version': 'V2',
-                    'timestamp': int(round(time.time() * 1000))
-                   }
-        self.payload = {'message': json.dumps(self.request_json).encode('UTF-8')}
-        self.headers = {  'X-OCR-SECRET': self.secret_key }
-    
+        load_dotenv()
+        self.api_url = os.getenv("CLOVA_URL")
+        self.secret_key = os.getenv("CLOVA_KEY")
+        # self.api_url = 'https://ea51g6zzjj.apigw.ntruss.com/custom/v1/20085/9c5754d3f3e8185724e390a8fae2a1304ee07d4ece1257668613a6decdbe7b70/general'
+        # self.secret_key = 'blZkcWh2cXNuQnBYdkZoeW1neGhncWxvVkNmRGl6aHk='
+        self.request_json = {
+            "images": [{"format": "jpg", "name": "demo"}],
+            "requestId": str(uuid.uuid4()),
+            "version": "V2",
+            "timestamp": int(round(time.time() * 1000)),
+        }
+        self.payload = {"message": json.dumps(self.request_json).encode("UTF-8")}
+        self.headers = {"X-OCR-SECRET": self.secret_key}
+
     def request(self, image):
-        #files =  [('file', open(image_path,'rb'))]
-        files = [('file',image)]
-        
-        response = requests.request("POST", self.api_url, headers=self.headers, data=self.payload, files=files)
+        # files =  [('file', open(image_path,'rb'))]
+        files = [("file", image)]
+
+        response = requests.request(
+            "POST", self.api_url, headers=self.headers, data=self.payload, files=files
+        )
         result = response.json()
         result_orga = {}
-        for idx, field in enumerate(result['images'][0]['fields']):
-            topLeft = [int(x) for x in field['boundingPoly']['vertices'][0].values()]
-            bottomRight = [int(x) for x in field['boundingPoly']['vertices'][2].values()]
-            inferText = field['inferText']
+        for idx, field in enumerate(result["images"][0]["fields"]):
+            topLeft = [int(x) for x in field["boundingPoly"]["vertices"][0].values()]
+            bottomRight = [
+                int(x) for x in field["boundingPoly"]["vertices"][2].values()
+            ]
+            inferText = field["inferText"]
             result_orga[idx] = [topLeft, bottomRight, inferText, set({idx})]
         return result, result_orga
-    
+
     # tuplify
     def tup(self, point):
         return (point[0], point[1])
@@ -51,9 +57,9 @@ class Clova_OCR:
         tl2, br2 = target
 
         # checks
-        if (tl1[0] >= br2[0] or tl2[0] >= br1[0]):
+        if tl1[0] >= br2[0] or tl2[0] >= br1[0]:
             return False
-        if (tl1[1] >= br2[1] or tl2[1] >= br1[1]):
+        if tl1[1] >= br2[1] or tl2[1] >= br1[1]:
             return False
         return True
 
@@ -67,18 +73,16 @@ class Clova_OCR:
                     ori_overlaps.update(boxes[a][3])
                     overlaps.append(a)
         return overlaps, ori_overlaps
-    
-    
-    
+
     def merge_box(self, result_orga):
         boxes = list(copy.deepcopy(result_orga).values())
         # go through the boxes and start merging
-        merge_margin = 15  
+        merge_margin = 15
         finished = False
         while not finished:
             # set end con
             finished = True
-            
+
             # draw boxes # comment this section out to run faster
             index = len(boxes) - 1
             while index >= 0:
@@ -94,7 +98,7 @@ class Clova_OCR:
                 id = curr[3]
                 # get matching boxes
                 overlaps, ori_overlaps = self.getAllOverlaps(boxes, [tl, br], index)
-                
+
                 # check if empty
                 if len(overlaps) > 0:
                     # combine boxes
@@ -109,36 +113,36 @@ class Clova_OCR:
                         con.append([br])
                         con_num.update(num)
                     con = np.array(con)
-                    
+
                     # get bounding rect
-                    x,y,w,h = cv2.boundingRect(con)
+                    x, y, w, h = cv2.boundingRect(con)
                     # stop growing
                     w -= 1
                     h -= 1
-                    merged = [[x,y], [x+w, y+h], '', con_num]
+                    merged = [[x, y], [x + w, y + h], "", con_num]
 
                     # remove boxes from lists
-                    overlaps = sorted(list(overlaps), reverse = True)
+                    overlaps = sorted(list(overlaps), reverse=True)
                     for ind in overlaps:
                         del boxes[ind]
                     boxes.append(merged)
-                    
+
                     # set flag
                     finished = False
                     break
                 # increment
                 index -= 1
-        
+
         for box in boxes:
             merged_list = sorted(box[3])
             infer_texts = []
             for idx in merged_list:
                 infer_texts.append(result_orga[idx][2])
             box[2] = " ".join(infer_texts)
-        
-        return [[x[0],x[1],x[2]]for x in boxes]
-    
+
+        return [[x[0], x[1], x[2]] for x in boxes]
+
     def ocr(self, image):
         result, result_orga = self.request(image)
-        merged_boxes =  self.merge_box(result_orga)
+        merged_boxes = self.merge_box(result_orga)
         return merged_boxes
