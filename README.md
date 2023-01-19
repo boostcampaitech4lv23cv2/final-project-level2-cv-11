@@ -17,6 +17,8 @@ wget -P /usr/share/tesseract-ocr/4.00/tessdata https://github.com/tesseract-ocr/
 # https://boostcampaitech.slack.com/files/U041L8WPYKW/F04K17EEXS7/weight.pth
 # src/model/font_classifier/weights/typical_font/weight.pth 로 옮겨야 함
 
+# .env 파일 설정
+
 # Backend (FastAPI) 실행
 cd src/
 python -m app
