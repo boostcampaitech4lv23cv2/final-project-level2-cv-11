@@ -23,9 +23,9 @@ def anno_area(input_img, key: Literal["typical", "untypical"]):
         # OCR inference
         image_bytes = input_img.getvalue()
         files = {'file': image_bytes}
-        ocr_results = requests.post('http://localhost:30002/ocr', files=files).json()
-        if ocr_results:
-            st.session_state.font_list = requests.post('http://localhost:30002/classification', json=ocr_results).json()
+        txt_res = requests.post('http://localhost:30002/txt_extraction', files=files).json()
+        ocr_results = txt_res["ocr_result"]
+        st.session_state.font_list = txt_res["font_result"]
         # initial_drawing 포맷으로 변환
         rects = []
         for i, result in enumerate(ocr_results):
