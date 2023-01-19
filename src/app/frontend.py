@@ -32,7 +32,7 @@ with col1:
         key="background",
     )
     if background_file:
-        st_area.imag_show(background_file)
+        background_image = st_area.imag_show(background_file)
 
 with col2:
     st.header("Typical Text")
@@ -44,7 +44,9 @@ with col2:
         args=("typical",),
     )
     if typical_image:
-        st_area.anno_area(typical_image, "typical")
+        translated_list, st.session_state.font_list = st_area.anno_area(
+            typical_image, "typical"
+        )
 
 with col3:
     st.header("UnTypical Text")
@@ -61,5 +63,7 @@ with col3:
 
 st.markdown("----", unsafe_allow_html=True)
 
-if background_file and typical_image and untypical_image:
-    st_buttons.btn_generation()
+if background_file and typical_image:
+    st_buttons.btn_generation(
+        background_file, translated_list, st.session_state.font_list
+    )
