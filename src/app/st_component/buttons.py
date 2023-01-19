@@ -43,13 +43,10 @@ def btn_generation(background_file, translated_list, font_list):
         draw = ImageDraw.Draw(back_img)
         for i, translated in enumerate(translated_list):
             font_type = ImageFont.truetype(os.path.join(font_path, font_list[i]), 20)
-            print("font type:", font_type)
             draw.text(
                 (translated[0], translated[1]),
                 translated[2],
                 "black",
                 font=font_type,
             )
-        print("draw: ", draw)
-        print("type: ", type(back_img))
         st.image(back_img)
