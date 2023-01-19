@@ -17,8 +17,6 @@ class Clova_OCR:
         load_dotenv()
         self.api_url = os.getenv("CLOVA_URL")
         self.secret_key = os.getenv("CLOVA_KEY")
-        # self.api_url = 'https://ea51g6zzjj.apigw.ntruss.com/custom/v1/20085/9c5754d3f3e8185724e390a8fae2a1304ee07d4ece1257668613a6decdbe7b70/general'
-        # self.secret_key = 'blZkcWh2cXNuQnBYdkZoeW1neGhncWxvVkNmRGl6aHk='
         self.request_json = {
             "images": [{"format": "jpg", "name": "demo"}],
             "requestId": str(uuid.uuid4()),
