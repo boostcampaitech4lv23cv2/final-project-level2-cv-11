@@ -3,12 +3,6 @@ from st_component import areas as st_area
 from st_component import buttons as st_buttons
 from typing import Literal
 
-# 각 모델 사용할 때
-# model.Clova_OCR
-# model.Papago_MT
-# model.Tesseract_OCR
-# model.Typical_FC 로 사용하면 됨
-
 
 def set_ocr_flag(key: Literal["typical", "untypical"]):
     """

@@ -21,9 +21,10 @@ wget -P /usr/share/tesseract-ocr/4.00/tessdata https://github.com/tesseract-ocr/
 
 # Backend (FastAPI) 실행
 cd src/
-python -m app
+python -m backend
 
 # Frontend (Streamlit) 실행
-python -m streamlit run src/app/frontend.py --server.port 30001
-#streamlit run frontend.py --server.port 30001 --server.fileWatcherType none
+cd /src/frontend
+streamlit run frontend.py --server.port 30001
+# --server.fileWatcherType none
 ```
