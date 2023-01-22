@@ -60,7 +60,6 @@ with col2:
             files = {'file': image_bytes}
             txt_res = requests.post('http://localhost:30002/txt_extraction', files=files).json()
             ocr_results = txt_res["ocr_result"]
-            print(txt_res)
             st.session_state.font_list = txt_res["font_result"]
             # initial_drawing 포맷으로 변환
             rects = []
@@ -71,7 +70,7 @@ with col2:
                 rect["width"] = (result[1][0] - result[0][0]) / w * canvas_width
                 rect["height"] = (result[1][1] - result[0][1]) / h * canvas_height
                 rects.append(rect)
-                st.session_state["typical_anno{i}"] = result[2]  # OCR 텍스트를 session_state에 저장
+                st.session_state[f"typical_anno{i}"] = result[2]  # OCR 텍스트를 session_state에 저장
 
             initial_drawing = {"objects": rects}
             st.session_state[f"typical_initial_drawing"] = initial_drawing
@@ -102,14 +101,18 @@ with col2:
             translated_list = []
             for i, obj in enumerate(new_objects):
                 with st.expander(f"anntation {i}"):
-                    obj["text"] = st.text_input("인식된 글자", key="typical_anno{i}")
+                    if f"typical_anno{i}" in st.session_state:
+                        obj["text"] = st.text_input("인식된 글자", st.session_state[f"typical_anno{i}"], key=f"typical_anno{i}")
+                    else:
+                        st.session_state[f"typical_anno{i}"] = ' '
+                        obj["text"] = st.text_input("인식된 글자", st.session_state[f"typical_anno{i}"], key=f"typical_anno{i}")
                     st.text(
-                        f"left:{int(obj['left']/canvas_width*w)}  top:{int(obj['top']*h/canvas_height)}  width:{int(obj['width']/canvas_width*w)}  height:{int(obj['height']*h/canvas_height)}  text:{obj['text']}"
+                        f"left:{int(obj['left']/canvas_width*w)}  top:{int(obj['top']*h/canvas_height)}  width:{int(obj['width']/canvas_width*w)}  height:{int(obj['height']*h/canvas_height)} \ntext:{obj['text']}"
                     )
                     params = {"text": f"{obj['text']}"}
                     r = requests.post(f"http://localhost:30002/mt", params=params)
                     translation = r.json() if r.status_code == 200 else ""
-                    st.text_input("번역된 글자", translation, key="typical_translated{i}")
+                    st.text_input("번역된 글자", translation, key=f"typical_translated{i}")
                     translated_list.append([int(obj['left']/canvas_width*w), int(obj['top']*h/canvas_height), translation])
 
 with col3:
@@ -128,7 +131,6 @@ with col3:
 st.markdown("----", unsafe_allow_html=True)
 
 if background_file and typical_image and type(translated_list) == list:
-    print('확인', st.session_state.font_list)
     st_buttons.btn_generation(
         background_file, translated_list, st.session_state.font_list
     )
