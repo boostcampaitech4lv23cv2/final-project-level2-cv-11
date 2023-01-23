@@ -7,12 +7,22 @@ from PIL import Image
 from streamlit_drawable_canvas import st_canvas
 import requests
 from typing import Literal
+import os
 
 translated_list = 0
 # initial_drawing object 템플릿
 # fmt: off
 RECT = {'type': 'rect', 'version': '4.4.0', 'originX': 'left', 'originY': 'top', 'left': 0, 'top': 0, 'width': 0, 'height': 0, 'fill': 'rgba(255, 165, 0, 0.3)', 'stroke': '#eee', 'strokeWidth': 3, 'strokeDashArray': None, 'strokeLineCap': 'butt', 'strokeDashOffset': 0, 'strokeLineJoin': 'miter', 'strokeUniform': True, 'strokeMiterLimit': 4, 'scaleX': 1, 'scaleY': 1, 'angle': 0, 'flipX': False, 'flipY': False, 'opacity': 1, 'shadow': None, 'visible': True, 'backgroundColor': '', 'fillRule': 'nonzero', 'paintFirst': 'fill', 'globalCompositeOperation': 'source-over', 'skewX': 0, 'skewY': 0, 'rx': 0, 'ry': 0}
 
+# selected font에 필요한 코드
+if "visibility" not in st.session_state:
+    st.session_state.visibility = "visible"
+    st.session_state.disabled = False
+
+# 폰트 리스트들 가져오는 코드
+path = "/opt/ml/final-project-level2-cv-11/data/fonts/typical"
+file_list = os.listdir(path)
+file_list_py = [file for file in file_list if file.endswith(".ttf")]
 
 def set_ocr_flag(key: Literal["typical", "untypical"]):
     """
@@ -71,6 +81,7 @@ with col2:
                 rect["height"] = (result[1][1] - result[0][1]) / h * canvas_height
                 rects.append(rect)
                 st.session_state[f"typical_anno{i}"] = result[2]  # OCR 텍스트를 session_state에 저장
+                print(result)
 
             initial_drawing = {"objects": rects}
             st.session_state[f"typical_initial_drawing"] = initial_drawing
@@ -103,9 +114,20 @@ with col2:
                 with st.expander(f"anntation {i}"):
                     if f"typical_anno{i}" in st.session_state:
                         obj["text"] = st.text_input("인식된 글자", st.session_state[f"typical_anno{i}"], key=f"typical_anno{i}")
+                        selected_font = st.selectbox(
+                            "selected font is",
+                            file_list_py,
+                            index = file_list_py.index(st.session_state.font_list[i] if st.session_state.font_list[i] else "NanumSquareRoundEB.ttf"),
+                            key=f"selected_font{i}"
+                            )
                     else:
                         st.session_state[f"typical_anno{i}"] = ' '
                         obj["text"] = st.text_input("인식된 글자", st.session_state[f"typical_anno{i}"], key=f"typical_anno{i}")
+                        selected_font_add = st.selectbox(
+                            "selected font is",
+                            file_list_py,
+                            key=f"selected_font{i}"
+                            )
                     st.text(
                         f"left:{int(obj['left']/canvas_width*w)}  top:{int(obj['top']*h/canvas_height)}  width:{int(obj['width']/canvas_width*w)}  height:{int(obj['height']*h/canvas_height)} \ntext:{obj['text']}"
                     )
