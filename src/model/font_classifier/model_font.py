@@ -4,28 +4,28 @@ import torch.nn.functional as F
 
 
 
-## efficientnet_b0
-# from torchvision.models import efficientnet_b0
-# class EfficientNet_B0(nn.Module):
-#     def __init__(self, num_classes):
-#         super().__init__()
-#         self.backbone = efficientnet_b0()
-#         self.backbone.classifier = nn.Sequential(
-#             nn.Linear(1280, 1024),
-#             nn.LeakyReLU(),
-#             nn.BatchNorm1d(1024),
-#             nn.Linear(1024, 512),
-#             nn.LeakyReLU(),
-#             nn.BatchNorm1d(512),
-#             nn.Linear(512, 128),
-#             nn.LeakyReLU(),
-#             nn.BatchNorm1d(128),
-#             nn.Linear(128, num_classes)
-#         )
+# efficientnet_b0
+from torchvision.models import efficientnet_b6
+class EfficientNet_B6(nn.Module):
+    def __init__(self, num_classes):
+        super().__init__()
+        self.backbone = efficientnet_b6()
+        self.backbone.classifier = nn.Sequential(
+            nn.Linear(2304, 1024),
+            nn.LeakyReLU(),
+            nn.BatchNorm1d(1024),
+            nn.Linear(1024, 512),
+            nn.LeakyReLU(),
+            nn.BatchNorm1d(512),
+            nn.Linear(512, 128),
+            nn.LeakyReLU(),
+            nn.BatchNorm1d(128),
+            nn.Linear(128, num_classes)
+        )
 
-#     def forward(self, x):
-#         output = self.backbone(x)
-#         return output
+    def forward(self, x):
+        output = self.backbone(x)
+        return output
     
     
     
