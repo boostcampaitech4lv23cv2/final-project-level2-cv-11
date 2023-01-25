@@ -1,0 +1,32 @@
+.item {
+  /* display: inline-block; */
+  width: 800px;
+  height: 800px;
+  border: 1px solid;
+  border-color: aqua;
+}
+
+.red {
+  display: flex;
+  justify-content: center;
+  border: 1px solid;
+  border-color: red;
+}
+
+.canvas-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+}
+
+@font-face {
+  font-family: 'SeoulHangangB.ttf';
+  src: url('fonts/SeoulHangangB.ttf');
+}
+
+@font-face {
+  font-family: 'NaumGothic';
+  src: url('fonts/NanumGothic.ttf')
+}
