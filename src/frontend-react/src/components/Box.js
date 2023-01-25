@@ -178,14 +178,23 @@ const Box = ({ i, rect, delBox, convertBox, renderAll }) => {
             style={{
               width: 180,
             }}
-            // defaultValue={'NanumGothic'}
+            showSearch
+            filterOption={(input, option) =>
+              (option?.children ?? "")
+                .toLowerCase()
+                .includes(input.toLowerCase())
+            }
             value={font}
             onSelect={(value) => {
               setFont(value);
             }}
           >
             {FontList.map(({ name, value }) => {
-              return <Option value={value}>{name}</Option>;
+              return (
+                <Option key={value} value={value}>
+                  {name}
+                </Option>
+              );
             })}
           </Select>
           <Select
@@ -198,7 +207,11 @@ const Box = ({ i, rect, delBox, convertBox, renderAll }) => {
             }}
           >
             {[32, 36, 40, 44, 48, 52].map((value) => {
-              return <Option value={value}>{value}</Option>;
+              return (
+                <Option key={value} value={value}>
+                  {value}
+                </Option>
+              );
             })}
           </Select>
         </div>
