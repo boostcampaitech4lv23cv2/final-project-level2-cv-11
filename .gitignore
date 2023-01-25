@@ -23,6 +23,7 @@ wandb/
 experiment/
 notebooks/
 src/model/font_classifier/weights/
+data/
 
 # 환경 변수 설정 파일
 .env

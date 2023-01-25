@@ -34,7 +34,7 @@ from torchvision.models import resnet50
 class ResNet50(nn.Module):
     def __init__(self, num_classes):
         super().__init__()
-        self.backbone = resnet50(weights=None)
+        self.backbone = resnet50(pretrained=False)
         self.backbone.fc = nn.Sequential(
             nn.Linear(2048, 1024),
             nn.LeakyReLU(),
