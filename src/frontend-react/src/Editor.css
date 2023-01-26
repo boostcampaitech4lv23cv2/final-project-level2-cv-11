@@ -30,3 +30,7 @@
   font-family: "NaumGothic";
   src: url("fonts/NanumGothic.ttf");
 }
+
+button {
+  margin: 0 2px;
+}
