@@ -1,5 +1,6 @@
 import sys
 from os import path
+from typing import List
 
 sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
 import model
@@ -14,19 +15,28 @@ class Typical_Pipeline:
         self.MT = model.Papago_MT()
         self.Typical_Classification = model.Typical_FC("typical_font")
 
-    def clova_ocr(self, image):
-        encoded_img = np.fromstring(image, dtype=np.uint8)
+    def clova_ocr(self, bytes: bytes) -> List[List]:
+        encoded_img = np.fromstring(bytes, dtype=np.uint8)
         self.img = cv2.imdecode(encoded_img, cv2.IMREAD_COLOR)
 
-        merged_boxes = self.OCR.ocr(image)
+        merged_boxes = self.OCR.ocr(bytes)
 
         return merged_boxes
 
-    def papago(self, text):
+    def papago(self, text: str) -> str:
         _, en = self.MT.request(text)
         return en
 
-    def typical_font_classification(self, merged_boxes):
+    def typical_font_classification(self, merged_boxes: List[List]) -> List[str]:
+        """
+        Args:
+            merged_boxes: 아래와 같은 형태의 리스트
+                ex)
+                [
+                    [[0, 0], [1, 1], "text"],
+                    ...
+                ]
+        """
         # tesseract + classification
         merged_boxes_with_crop = self.re_OCR.ocr(merged_boxes, self.img)
         classified_font = self.Typical_Classification.classification(
