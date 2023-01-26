@@ -21,16 +21,10 @@
   height: 100%;
 }
 
-@font-face {
-  font-family: "SeoulHangangB.ttf";
-  src: url("fonts/SeoulHangangB.ttf");
-}
-
-@font-face {
-  font-family: "NaumGothic";
-  src: url("fonts/NanumGothic.ttf");
-}
-
 button {
+  margin: 0 2px;
+}
+
+.ant-select {
   margin: 0 2px;
 }

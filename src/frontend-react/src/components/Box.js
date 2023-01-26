@@ -1,20 +1,10 @@
 import { useState, useEffect } from "react";
 import { Input, Select, Button, InputNumber, message } from "antd";
 import { RightOutlined } from "@ant-design/icons";
+import FontList from "../FontList";
 
 const { TextArea } = Input;
 const { Option } = Select;
-
-const FontList = [
-  {
-    name: "나눔고딕",
-    value: "NanumGothic",
-  },
-  {
-    name: "서울한강B",
-    value: "SeoulHangangB.ttf",
-  },
-];
 
 const Box = ({ i, rect, delBox, convertBox }) => {
   const [textKor, setTextKor] = useState(rect.textKor);
@@ -69,17 +59,6 @@ const Box = ({ i, rect, delBox, convertBox }) => {
         message.error("번역에 실패했습니다.");
         setTLoading(false);
       });
-  };
-
-  const PadInputNumber = (props) => {
-    return (
-      <InputNumber
-        style={{
-          padding: "0 2px",
-        }}
-        {...props}
-      />
-    );
   };
 
   return (
@@ -197,9 +176,9 @@ const Box = ({ i, rect, delBox, convertBox }) => {
               setFont(value);
             }}
           >
-            {FontList.map(({ name, value }) => {
+            {FontList.map(({ name }) => {
               return (
-                <Option key={value} value={value}>
+                <Option key={name} value={name}>
                   {name}
                 </Option>
               );

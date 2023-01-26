@@ -4,6 +4,7 @@ import { PlusOutlined } from "@ant-design/icons";
 import { fabric } from "fabric";
 import Box from "./components/Box";
 import "./Editor.css";
+import FontList from "./FontList";
 
 const Editor = ({ background, typical, typicalFile }) => {
   const canvasRef = useRef(null);
@@ -115,7 +116,14 @@ const Editor = ({ background, typical, typicalFile }) => {
 
   const [boxes, setBoxes] = useState([]);
   const idRef = useRef(0);
-  const addBox = (left, top, width, height, text, font = "NanumGothic") => {
+  const addBox = (
+    left,
+    top,
+    width,
+    height,
+    text,
+    font = FontList[0]["name"]
+  ) => {
     const box = new fabric.Rect({
       top,
       left,

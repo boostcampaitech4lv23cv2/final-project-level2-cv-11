@@ -3,7 +3,9 @@ import { UploadOutlined } from "@ant-design/icons";
 import { Button, message, Upload, Col, Divider, Row } from "antd";
 import { Typography } from "antd";
 import { fabric } from "fabric";
+import { Content } from "antd/es/layout/layout";
 import Editor from "./Editor";
+import FontList from "./FontList";
 const { Title } = Typography;
 
 const props = {
@@ -64,8 +66,20 @@ const App = () => {
   };
 
   useEffect(() => {
-    fetchAndSet("./background.png", setBack);
-    fetchAndSet("./typical.png", setTypical, setTypicalFile);
+    fetchAndSet("/background.png", setBack);
+    fetchAndSet("/typical.png", setTypical, setTypicalFile);
+    FontList.forEach(({ name, url }) => {
+      const font = new FontFace(name, `url(${encodeURI(url)})`);
+      font
+        .load()
+        .then((e) => {
+          document.fonts.add(font);
+          console.log("load", e);
+        })
+        .catch((e) => {
+          console.error("error", e);
+        });
+    });
   }, []);
 
   return (
