@@ -15,10 +15,24 @@ const MyFabric = ({ background, typical, typicalFile }) => {
       const f = (e) => {
         e.target.refresh(e.target);
       };
+      const fs = (e) => {
+        const { selected, deselected } = e;
+        if (selected)
+          selected.forEach((box) => {
+            box.setSelected(true);
+          });
+        if (deselected)
+          deselected.forEach((box) => {
+            box.setSelected(false);
+          });
+      };
       fabricRef.current.on({
         "object:modified": f,
         "object:moving": f,
         "object:scaling": f,
+        "selection:cleared": fs,
+        "selection:created": fs,
+        "selection:updated": fs,
       });
     };
     const disposeFabric = () => {
@@ -144,6 +158,7 @@ const MyFabric = ({ background, typical, typicalFile }) => {
     textbox.textEng = textEng;
     textbox.id = box.id;
     textbox.refresh = box.refresh;
+    textbox.setSelected = box.setSelected;
     fabricRef.current.add(textbox);
     fabricRef.current.remove(box);
     return textbox;

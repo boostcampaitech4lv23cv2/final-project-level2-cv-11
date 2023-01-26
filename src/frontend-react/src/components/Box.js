@@ -25,6 +25,11 @@ const Box = ({ i, rect, delBox, convertBox, renderAll }) => {
   const { x: x2, y: y2 } = rect.getPointByOrigin("right", "bottom");
 
   const [x, setX] = useState(0);
+  const [selected, setSelected] = useState(false);
+
+  rect.setSelected = (f) => {
+    setSelected(f);
+  };
   rect.refresh = ({ text }) => {
     setX((x) => x + 1);
     setTextEng(text);
@@ -82,7 +87,7 @@ const Box = ({ i, rect, delBox, convertBox, renderAll }) => {
       style={{
         margin: 10,
         padding: 5,
-        border: "1px solid black",
+        border: selected ? "1px solid black" : "1px solid #d9d9d9",
       }}
     >
       <div
