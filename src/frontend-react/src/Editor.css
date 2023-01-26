@@ -1,16 +1,12 @@
 .item {
-  /* display: inline-block; */
   width: 800px;
   height: 800px;
   border: 1px solid;
-  border-color: aqua;
 }
 
-.red {
+.item-container {
   display: flex;
   justify-content: center;
-  border: 1px solid;
-  border-color: red;
 }
 
 .canvas-container {

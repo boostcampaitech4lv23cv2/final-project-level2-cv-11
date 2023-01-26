@@ -228,16 +228,9 @@ const Editor = ({ background, typical, typicalFile }) => {
         </Button>
       </div>
 
-      <div className="red">
+      <div className="item-container">
         <div className="item">
-          <canvas
-            ref={canvasRef}
-            width={800}
-            height={800}
-            style={{
-              border: "1px solid black",
-            }}
-          />
+          <canvas ref={canvasRef} width={800} height={800} />
         </div>
         <div className="item">
           <Divider>대사 목록</Divider>
