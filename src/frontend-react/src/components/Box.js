@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
-import { Input, Select, Button, InputNumber, message } from "antd";
+import { Input, Select, Button, InputNumber, message, Typography } from "antd";
 import { RightOutlined } from "@ant-design/icons";
 import FontList from "../FontList";
 
 const { TextArea } = Input;
 const { Option } = Select;
+const { Text } = Typography;
 
 const Box = ({ i, rect, delBox, convertBox }) => {
   const [textKor, setTextKor] = useState(rect.textKor);
@@ -185,13 +186,23 @@ const Box = ({ i, rect, delBox, convertBox }) => {
             }}
             onFocus={select}
           >
-            {FontList.map(({ name }) => {
-              return (
-                <Option key={name} value={name}>
-                  {name}
-                </Option>
-              );
-            })}
+            <Select.OptGroup label="추천 폰트(미구현)">
+              <Option value="Noto Sans KR">
+                <Text type="success" strong>
+                  99%
+                </Text>{" "}
+                Noto Sans KR
+              </Option>
+            </Select.OptGroup>
+            <Select.OptGroup label="기본 폰트">
+              {FontList.map(({ name }) => {
+                return (
+                  <Option key={name} value={name}>
+                    {name}
+                  </Option>
+                );
+              })}
+            </Select.OptGroup>
           </Select>
           <Select
             style={{
