@@ -29,13 +29,12 @@ const Box = ({ i, rect, delBox, convertBox }) => {
     rect.text = rect.textEng = textEng;
     rect.fontFamily = font;
     rect.fontSize = fontSize;
-    rect.canvas.renderAll();
+    rect.canvas?.renderAll();
   }, [textKor, textEng, font, fontSize]);
 
   useEffect(() => {
     console.log("Box Created", i, rect.id);
     if (textKor !== "") onTranslate();
-    else select();
   }, []);
 
   const [tLoading, setTLoading] = useState(false);
@@ -64,8 +63,8 @@ const Box = ({ i, rect, delBox, convertBox }) => {
   };
 
   const select = () => {
-    rect.canvas.setActiveObject(rect);
-    rect.canvas.renderAll();
+    rect.canvas?.setActiveObject(rect);
+    rect.canvas?.renderAll();
   };
 
   return (

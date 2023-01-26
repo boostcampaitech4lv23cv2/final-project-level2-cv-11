@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState } from "react";
-import { message, Divider, Checkbox, Button } from "antd";
+import { message, Divider, Checkbox, Button, Popconfirm } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import { fabric } from "fabric";
 import Box from "./components/Box";
@@ -83,6 +83,7 @@ const Editor = ({ background, typical, typicalFile }) => {
 
   const [OCRLoading, setOCRLoading] = useState(false);
   const reqOCR = () => {
+    delAllBox();
     setOCRLoading(true);
 
     const formData = new FormData();
@@ -97,12 +98,15 @@ const Editor = ({ background, typical, typicalFile }) => {
       })
       .then((data) => {
         const { ocr_result, font_result } = data;
+        const boxes = [];
         for (let i = 0; i < ocr_result.length; i++) {
           const [p1, p2, text] = ocr_result[i];
           const [x1, y1] = p1;
           const [x2, y2] = p2;
-          addBox(x1, y1, x2 - x1, y2 - y1, text, font_result[i]);
+          const box = makeBox(x1, y1, x2 - x1, y2 - y1, text, font_result[i]);
+          boxes.push(box);
         }
+        setBoxes(boxes);
         message.success("OCR에 성공했습니다.");
       })
       .catch((error) => {
@@ -116,7 +120,7 @@ const Editor = ({ background, typical, typicalFile }) => {
 
   const [boxes, setBoxes] = useState([]);
   const idRef = useRef(0);
-  const addBox = (
+  const makeBox = (
     left,
     top,
     width,
@@ -138,9 +142,18 @@ const Editor = ({ background, typical, typicalFile }) => {
     box.fontFamily = font;
     box.fontSize = 40;
     box.id = idRef.current++;
-
     fabricRef.current.add(box);
-
+    return box;
+  };
+  const addBox = (
+    left,
+    top,
+    width,
+    height,
+    text,
+    font = FontList[0]["name"]
+  ) => {
+    const box = makeBox(left, top, width, height, text, font);
     setBoxes([...boxes, box]);
   };
   const delBox = (box) => {
@@ -207,9 +220,26 @@ const Editor = ({ background, typical, typicalFile }) => {
         <Checkbox onChange={onTypicalChanged} checked={typicalChecked}>
           대사 보이기
         </Checkbox>
-        <Button onClick={reqOCR} loading={OCRLoading}>
-          OCR 수행
-        </Button>
+        {boxes.length === 0 ? (
+          <Button onClick={reqOCR} loading={OCRLoading}>
+            OCR 수행
+          </Button>
+        ) : (
+          <Popconfirm
+            title={
+              "OCR을 수행하면 기존 대사가 모두 삭제됩니다. 계속하시겠습니까?"
+            }
+            onConfirm={() => {
+              reqOCR();
+            }}
+          >
+            <Button loading={OCRLoading}>OCR 수행</Button>
+          </Popconfirm>
+        )}
+        {/* <Popconfirm
+          title={'title'}
+        >
+        </Popconfirm> */}
         <Button onClick={onConvertAll}>대사 일괄 변환</Button>
         <Button
           onClick={() => {
