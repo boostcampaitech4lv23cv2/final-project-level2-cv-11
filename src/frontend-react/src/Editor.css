@@ -22,11 +22,11 @@
 }
 
 @font-face {
-  font-family: 'SeoulHangangB.ttf';
-  src: url('fonts/SeoulHangangB.ttf');
+  font-family: "SeoulHangangB.ttf";
+  src: url("fonts/SeoulHangangB.ttf");
 }
 
 @font-face {
-  font-family: 'NaumGothic';
-  src: url('fonts/NanumGothic.ttf')
+  font-family: "NaumGothic";
+  src: url("fonts/NanumGothic.ttf");
 }

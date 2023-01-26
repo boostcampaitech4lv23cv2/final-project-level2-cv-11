@@ -3,9 +3,9 @@ import { message, Divider, Checkbox, Button } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import { fabric } from "fabric";
 import Box from "./components/Box";
-import "./myFabric.css";
+import "./Editor.css";
 
-const MyFabric = ({ background, typical, typicalFile }) => {
+const Editor = ({ background, typical, typicalFile }) => {
   const canvasRef = useRef(null);
   const fabricRef = useRef(null);
 
@@ -173,6 +173,7 @@ const MyFabric = ({ background, typical, typicalFile }) => {
     console.log("onConvertAll");
     const textboxes = boxes.map((box) => convertBox(box));
     setBoxes(textboxes);
+    setTypicalChecked(false);
   };
 
   return (
@@ -250,4 +251,4 @@ const MyFabric = ({ background, typical, typicalFile }) => {
   );
 };
 
-export default MyFabric;
+export default Editor;
