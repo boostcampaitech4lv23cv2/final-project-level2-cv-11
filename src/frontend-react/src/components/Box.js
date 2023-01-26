@@ -162,13 +162,12 @@ const Box = ({ i, rect, delBox, convertBox }) => {
           />
         </div>
       </div>
-      <div
+      {/* <div
         style={{
           padding: 10,
         }}
       >
         위치
-        {/* TODO: 변경 가능하도록 수정 */}
         <div
           style={{
             display: "flex",
@@ -179,7 +178,7 @@ const Box = ({ i, rect, delBox, convertBox }) => {
           <PadInputNumber addonBefore={"W"} value={Math.round(x2 - x1)} />
           <PadInputNumber addonBefore={"H"} value={Math.round(y2 - y1)} />
         </div>
-      </div>
+      </div> */}
       <div>
         폰트
         <div>

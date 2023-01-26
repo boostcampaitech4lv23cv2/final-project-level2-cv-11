@@ -179,6 +179,13 @@ const Editor = ({ background, typical, typicalFile }) => {
     setTypicalChecked(false);
   };
 
+  const delAllBox = () => {
+    boxes.forEach((box) => {
+      fabricRef.current.remove(box);
+    });
+    setBoxes([]);
+  };
+
   return (
     <div>
       <div
@@ -207,6 +214,9 @@ const Editor = ({ background, typical, typicalFile }) => {
         >
           {" "}
           다운로드
+        </Button>
+        <Button onClick={delAllBox} danger>
+          대사 일괄 삭제
         </Button>
       </div>
 
