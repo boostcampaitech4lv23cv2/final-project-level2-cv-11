@@ -38,6 +38,7 @@ const Box = ({ i, rect, delBox, convertBox, renderAll }) => {
   }, [textKor, textEng, font, fontSize]);
 
   useEffect(() => {
+    console.log("Box Created", i, rect.id);
     if (textKor !== "") onTranslate();
   }, []);
 
@@ -160,6 +161,7 @@ const Box = ({ i, rect, delBox, convertBox, renderAll }) => {
         }}
       >
         위치
+        {/* TODO: 변경 가능하도록 수정 */}
         <div
           style={{
             display: "flex",

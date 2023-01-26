@@ -132,25 +132,32 @@ const MyFabric = ({ background, typical, typicalFile }) => {
 
   const convertBox = (box) => {
     console.log("onConvertBox", box);
-    const { textKor, textEng, font, top, left, width, height } = box;
+    const { textKor, textEng, top, left, width, height, fontFamily } = box;
     const textbox = new fabric.Textbox(textEng, {
       top,
       left,
       width,
       height,
+      fontFamily,
     });
     textbox.textKor = textKor;
     textbox.textEng = textEng;
-    textbox.font = font;
     textbox.id = box.id;
-    textbox.on({
-      "object:modified": (e) => {
-        e.target.refresh();
-      },
-    });
+    textbox.refresh = box.refresh;
     fabricRef.current.add(textbox);
     fabricRef.current.remove(box);
+    return textbox;
+  };
+
+  const onConvert = (box) => {
+    const textbox = convertBox(box);
     setBoxes(boxes.map((b) => (b.id === box.id ? textbox : b)));
+  };
+
+  const onConvertAll = () => {
+    console.log("onConvertAll");
+    const textboxes = boxes.map((box) => convertBox(box));
+    setBoxes(textboxes);
   };
 
   return (
@@ -169,7 +176,7 @@ const MyFabric = ({ background, typical, typicalFile }) => {
         <Button onClick={reqOCR} loading={OCRLoading}>
           OCR 수행
         </Button>
-        <Button>대사 일괄 변환(미구현)</Button>
+        <Button onClick={onConvertAll}>대사 일괄 변환</Button>
         <Button
           onClick={() => {
             const data = fabricRef.current.toDataURL({ format: "png" });
@@ -207,7 +214,7 @@ const MyFabric = ({ background, typical, typicalFile }) => {
                   delBox(box);
                 }}
                 convertBox={() => {
-                  convertBox(box);
+                  onConvert(box);
                 }}
                 renderAll={() => {
                   fabricRef.current?.renderAll();
