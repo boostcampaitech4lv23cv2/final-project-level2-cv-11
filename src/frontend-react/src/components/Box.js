@@ -35,11 +35,13 @@ const Box = ({ i, rect, delBox, convertBox }) => {
   useEffect(() => {
     console.log("Box Created", i, rect.id);
     if (textKor !== "") onTranslate();
+    else select();
   }, []);
 
   const [tLoading, setTLoading] = useState(false);
   const onTranslate = () => {
     setTLoading(true);
+    select();
     fetch(
       "http://49.50.160.104:30002/mt/?" +
         new URLSearchParams({
@@ -59,6 +61,11 @@ const Box = ({ i, rect, delBox, convertBox }) => {
         message.error("번역에 실패했습니다.");
         setTLoading(false);
       });
+  };
+
+  const select = () => {
+    rect.canvas.setActiveObject(rect);
+    rect.canvas.renderAll();
   };
 
   return (
@@ -114,6 +121,7 @@ const Box = ({ i, rect, delBox, convertBox }) => {
             }}
             value={textKor}
             autoSize
+            onFocus={select}
           />
         </div>
         <div
@@ -138,6 +146,7 @@ const Box = ({ i, rect, delBox, convertBox }) => {
             }}
             value={textEng}
             autoSize
+            onFocus={select}
           />
         </div>
       </div>
@@ -175,6 +184,7 @@ const Box = ({ i, rect, delBox, convertBox }) => {
             onSelect={(value) => {
               setFont(value);
             }}
+            onFocus={select}
           >
             {FontList.map(({ name }) => {
               return (
@@ -192,6 +202,7 @@ const Box = ({ i, rect, delBox, convertBox }) => {
             onSelect={(value) => {
               setFontSize(value);
             }}
+            onFocus={select}
           >
             {[32, 36, 40, 44, 48, 52].map((value) => {
               return (

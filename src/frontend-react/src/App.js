@@ -3,7 +3,6 @@ import { UploadOutlined } from "@ant-design/icons";
 import { Button, message, Upload, Col, Divider, Row } from "antd";
 import { Typography } from "antd";
 import { fabric } from "fabric";
-import { Content } from "antd/es/layout/layout";
 import Editor from "./Editor";
 import FontList from "./FontList";
 const { Title } = Typography;
