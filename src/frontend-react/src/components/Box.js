@@ -16,7 +16,7 @@ const FontList = [
   },
 ];
 
-const Box = ({ i, rect, delBox, convertBox, renderAll }) => {
+const Box = ({ i, rect, delBox, convertBox }) => {
   const [textKor, setTextKor] = useState(rect.textKor);
   const [textEng, setTextEng] = useState(rect.textEng);
   const [font, setFont] = useState(rect.fontFamily);
@@ -39,7 +39,7 @@ const Box = ({ i, rect, delBox, convertBox, renderAll }) => {
     rect.text = rect.textEng = textEng;
     rect.fontFamily = font;
     rect.fontSize = fontSize;
-    renderAll();
+    rect.canvas.renderAll();
   }, [textKor, textEng, font, fontSize]);
 
   useEffect(() => {
@@ -108,7 +108,9 @@ const Box = ({ i, rect, delBox, convertBox, renderAll }) => {
           <Button onClick={onTranslate} loading={tLoading}>
             번역
           </Button>
-          <Button onClick={convertBox}>변환</Button>
+          {rect.get("type") === "rect" && (
+            <Button onClick={convertBox}>변환</Button>
+          )}
           <Button onClick={delBox} danger>
             삭제
           </Button>

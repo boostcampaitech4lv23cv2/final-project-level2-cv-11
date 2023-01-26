@@ -142,6 +142,9 @@ const Editor = ({ background, typical, typicalFile }) => {
 
   useEffect(() => {
     console.log("boxes", boxes);
+    boxes.forEach((box) => {
+      console.log(box.get("type"));
+    });
   }, [boxes]);
 
   const convertBox = (box) => {
@@ -231,9 +234,6 @@ const Editor = ({ background, typical, typicalFile }) => {
                 }}
                 convertBox={() => {
                   onConvert(box);
-                }}
-                renderAll={() => {
-                  fabricRef.current?.renderAll();
                 }}
               />
             ))) || <div style={{ margin: 50 }}>대사가 없습니다</div>}
