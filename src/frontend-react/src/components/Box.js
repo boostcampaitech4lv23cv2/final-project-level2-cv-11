@@ -7,13 +7,71 @@ const { TextArea } = Input;
 const { Option } = Select;
 const { Text } = Typography;
 
+const FontSelect = ({ font, setFont, fontSize, setFontSize, onFocus }) => {
+  return (
+    <div>
+      폰트
+      <div>
+        <Select
+          style={{
+            width: 180,
+          }}
+          showSearch
+          filterOption={(input, option) =>
+            (option?.children ?? "").toLowerCase().includes(input.toLowerCase())
+          }
+          value={font}
+          onSelect={(value) => {
+            setFont(value);
+          }}
+          onFocus={onFocus}
+        >
+          <Select.OptGroup label="추천 폰트(미구현)">
+            <Option value="Noto Sans KR">
+              <Text type="success" strong>
+                99%
+              </Text>{" "}
+              Noto Sans KR
+            </Option>
+          </Select.OptGroup>
+          <Select.OptGroup label="기본 폰트">
+            {FontList.map(({ name }) => {
+              return (
+                <Option key={name} value={name}>
+                  {name}
+                </Option>
+              );
+            })}
+          </Select.OptGroup>
+        </Select>
+        <Select
+          style={{
+            width: 100,
+          }}
+          value={fontSize}
+          onSelect={(value) => {
+            setFontSize(value);
+          }}
+          onFocus={onFocus}
+        >
+          {[32, 36, 40, 44, 48, 52].map((value) => {
+            return (
+              <Option key={value} value={value}>
+                {value}
+              </Option>
+            );
+          })}
+        </Select>
+      </div>
+    </div>
+  );
+};
+
 const Box = ({ i, rect, delBox, convertBox }) => {
   const [textKor, setTextKor] = useState(rect.textKor);
   const [textEng, setTextEng] = useState(rect.textEng);
   const [font, setFont] = useState(rect.fontFamily);
   const [fontSize, setFontSize] = useState(rect.fontSize);
-  const { x: x1, y: y1 } = rect.getPointByOrigin("left", "top");
-  const { x: x2, y: y2 } = rect.getPointByOrigin("right", "bottom");
 
   const [x, setX] = useState(0);
   const [selected, setSelected] = useState(false);
@@ -150,80 +208,13 @@ const Box = ({ i, rect, delBox, convertBox }) => {
           />
         </div>
       </div>
-      {/* <div
-        style={{
-          padding: 10,
-        }}
-      >
-        위치
-        <div
-          style={{
-            display: "flex",
-          }}
-        >
-          <PadInputNumber addonBefore={"X"} value={Math.round(x1)} />
-          <PadInputNumber addonBefore={"Y"} value={Math.round(y1)} />
-          <PadInputNumber addonBefore={"W"} value={Math.round(x2 - x1)} />
-          <PadInputNumber addonBefore={"H"} value={Math.round(y2 - y1)} />
-        </div>
-      </div> */}
-      <div>
-        폰트
-        <div>
-          <Select
-            style={{
-              width: 180,
-            }}
-            showSearch
-            filterOption={(input, option) =>
-              (option?.children ?? "")
-                .toLowerCase()
-                .includes(input.toLowerCase())
-            }
-            value={font}
-            onSelect={(value) => {
-              setFont(value);
-            }}
-            onFocus={select}
-          >
-            <Select.OptGroup label="추천 폰트(미구현)">
-              <Option value="Noto Sans KR">
-                <Text type="success" strong>
-                  99%
-                </Text>{" "}
-                Noto Sans KR
-              </Option>
-            </Select.OptGroup>
-            <Select.OptGroup label="기본 폰트">
-              {FontList.map(({ name }) => {
-                return (
-                  <Option key={name} value={name}>
-                    {name}
-                  </Option>
-                );
-              })}
-            </Select.OptGroup>
-          </Select>
-          <Select
-            style={{
-              width: 100,
-            }}
-            value={fontSize}
-            onSelect={(value) => {
-              setFontSize(value);
-            }}
-            onFocus={select}
-          >
-            {[32, 36, 40, 44, 48, 52].map((value) => {
-              return (
-                <Option key={value} value={value}>
-                  {value}
-                </Option>
-              );
-            })}
-          </Select>
-        </div>
-      </div>
+      <FontSelect
+        font={font}
+        setFont={setFont}
+        fontSize={fontSize}
+        setFontSize={setFontSize}
+        onFocus={select}
+      />
     </div>
   );
 };
