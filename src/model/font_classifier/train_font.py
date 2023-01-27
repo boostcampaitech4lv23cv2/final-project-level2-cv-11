@@ -8,7 +8,6 @@ import re
 from importlib import import_module
 from pathlib import Path
 
-import matplotlib.pyplot as plt
 import numpy as np
 import torch
 import wandb
@@ -16,13 +15,9 @@ import wandb
 from scheduler import scheduler_module
 from torch.utils.data import DataLoader
 
-from PIL import Image
 from loss import create_criterion
 from torchmetrics import ConfusionMatrix, F1Score
 from torchmetrics.classification import MulticlassF1Score, MulticlassAccuracy
-import seaborn as sns
-import pandas as pd
-import matplotlib.pyplot as plt
 from tqdm import tqdm
 
 import torch.nn.functional as F
@@ -314,7 +309,7 @@ if __name__ == '__main__':
     parser.add_argument('--model', type=str, default='ResNet50', help='model type (default: ResNet50)')
     parser.add_argument('--optimizer', type=str, default='Adam', help='optimizer type (default: Adam)')
     parser.add_argument('--lr', type=float, default=1e-3, help='learning rate (default: 1e-3)')
-    parser.add_argument('--val_ratio', type=float, default=0.001, help='ratio for validaton (default: 0.2)')
+    parser.add_argument('--val_ratio', type=float, default=0.0005, help='ratio for validaton (default: 0.2)')
     parser.add_argument('--criterion', type=str, default='cross_entropy', help='criterion type (default: cross_entropy)')
     parser.add_argument('--log_interval', type=int, default=20, help='how many batches to wait before logging training status')
     parser.add_argument('--name', default='exp', help='model save at {SM_MODEL_DIR}/{name}')

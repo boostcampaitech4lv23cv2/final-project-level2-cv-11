@@ -1,0 +1,22 @@
+{ "props":
+  { "ascent": 96
+  , "descent": 32
+  , "em": 128
+  , "encoding": "UnicodeFull"
+  , "lang": "English (US)"
+  , "family": "Example"
+  , "style": "Regular"
+  , "familyname": "Example"
+  , "fontname": "Example-Regular"
+  , "fullname": "Example Regular"
+  }
+, "glyphs":
+  { "0x77": { "src": "W.svg", "width": 128 }
+  }
+, "sfnt_names":
+  [ ["English (US)", "Copyright", "Copyright (c) 2023 by Toon-ranslator"]
+  ]
+, "input": "."
+, "output": [ "example.ttf", "example.svg", "example.woff" ]
+, "# vim: set et sw=2 ts=2 sts=2:": false
+}

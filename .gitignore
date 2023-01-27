@@ -23,6 +23,11 @@ wandb/
 experiment/
 notebooks/
 src/model/font_classifier/weights/
+data/
+tmp/
 
 # 환경 변수 설정 파일
 .env
+
+# 가중치
+src/model/font_generator/mxfont/result/checkpoints/
