@@ -19,7 +19,7 @@ wget -P /usr/share/tesseract-ocr/4.00/tessdata https://github.com/tesseract-ocr/
 
 # .env 파일 설정
 
-# Backend (FastAPI) 실행
+# Backend (FastAPI) 실행 1019648 1096536
 cd src/
 python -m backend
 
