@@ -89,7 +89,7 @@ const Editor = ({ background, typical, typicalFile }) => {
     const formData = new FormData();
     formData.append("file", typicalFile);
 
-    fetch("http://49.50.160.104:30002/txt_extraction/", {
+    fetch("http://49.50.160.104:30002/txt_extraction/v2/", {
       method: "POST",
       body: formData,
     })
@@ -97,13 +97,12 @@ const Editor = ({ background, typical, typicalFile }) => {
         return response.json();
       })
       .then((data) => {
-        const { ocr_result, font_result } = data;
+        console.log("response.data", data);
         const boxes = [];
-        for (let i = 0; i < ocr_result.length; i++) {
-          const [p1, p2, text] = ocr_result[i];
-          const [x1, y1] = p1;
-          const [x2, y2] = p2;
-          const box = makeBox(x1, y1, x2 - x1, y2 - y1, text, font_result[i]);
+        for (let i = 0; i < data.length; i++) {
+          const { x1, y1, x2, y2, text, fonts } = data[i];
+          const box = makeBox(x1, y1, x2 - x1, y2 - y1, text, fonts[0].name);
+          box.recFonts = fonts;
           boxes.push(box);
         }
         setBoxes(boxes);
@@ -183,6 +182,7 @@ const Editor = ({ background, typical, typicalFile }) => {
     textbox.id = box.id;
     textbox.refresh = box.refresh;
     textbox.setSelected = box.setSelected;
+    textbox.recFonts = box.recFonts;
     fabricRef.current.add(textbox);
     fabricRef.current.remove(box);
     return textbox;

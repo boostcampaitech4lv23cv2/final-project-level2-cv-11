@@ -73,10 +73,9 @@ const App = () => {
         .load()
         .then((e) => {
           document.fonts.add(font);
-          console.log("load", e);
         })
         .catch((e) => {
-          console.error("error", e);
+          console.error("error", font.family, e);
         });
     });
   }, []);

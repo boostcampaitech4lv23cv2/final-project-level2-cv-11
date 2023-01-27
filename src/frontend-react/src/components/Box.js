@@ -7,41 +7,57 @@ const { TextArea } = Input;
 const { Option } = Select;
 const { Text } = Typography;
 
-const FontSelect = ({ font, setFont, fontSize, setFontSize, onFocus }) => {
+const FontSelect = ({
+  font,
+  setFont,
+  fontSize,
+  setFontSize,
+  onFocus,
+  recFonts,
+}) => {
+  const recFontNames = recFonts ? recFonts.map(({ name }) => name) : [];
   return (
     <div>
       폰트
       <div>
         <Select
           style={{
-            width: 180,
+            width: 240,
           }}
-          showSearch
-          filterOption={(input, option) =>
-            (option?.children ?? "").toLowerCase().includes(input.toLowerCase())
-          }
+          // showSearch
+          // filterOption={(input, option) => {
+          //   return (option?.children ?? "").toLowerCase().includes(input.toLowerCase())
+          // }}
           value={font}
           onSelect={(value) => {
             setFont(value);
           }}
           onFocus={onFocus}
         >
-          <Select.OptGroup label="추천 폰트(미구현)">
-            <Option value="Noto Sans KR">
-              <Text type="success" strong>
-                99%
-              </Text>{" "}
-              Noto Sans KR
-            </Option>
-          </Select.OptGroup>
+          {recFonts && (
+            <Select.OptGroup label="추천 폰트">
+              {recFonts.map(({ name, prob }) => {
+                return (
+                  <Option key={name} name={name} value={name}>
+                    <Text type="success" strong>{`${Math.round(
+                      prob * 100
+                    )}% `}</Text>
+                    {name}
+                  </Option>
+                );
+              })}
+            </Select.OptGroup>
+          )}
           <Select.OptGroup label="기본 폰트">
-            {FontList.map(({ name }) => {
-              return (
-                <Option key={name} value={name}>
-                  {name}
-                </Option>
-              );
-            })}
+            {FontList.filter(({ name }) => !recFontNames.includes(name)).map(
+              ({ name }) => {
+                return (
+                  <Option key={name} value={name}>
+                    {name}
+                  </Option>
+                );
+              }
+            )}
           </Select.OptGroup>
         </Select>
         <Select
@@ -142,7 +158,6 @@ const Box = ({ i, rect, delBox, convertBox }) => {
         대사 #{i}
         <div
           style={{
-            // position: 'relative',
             top: 0,
             right: 0,
             margin: "0 0 0 10",
@@ -214,6 +229,7 @@ const Box = ({ i, rect, delBox, convertBox }) => {
         fontSize={fontSize}
         setFontSize={setFontSize}
         onFocus={select}
+        recFonts={rect.recFonts}
       />
     </div>
   );
