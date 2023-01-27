@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from backend.routers import txt_extraction, machine_translation
+from backend.routers import txt_extraction, machine_translation, untypical_txt_extraction, untypical_machine_translation, untypical_generation
 
 app = FastAPI()
 
@@ -17,3 +17,6 @@ app.add_middleware(
 
 app.include_router(txt_extraction.router)
 app.include_router(machine_translation.router)
+app.include_router(untypical_txt_extraction.router)
+app.include_router(untypical_machine_translation.router)
+app.include_router(untypical_generation.router)
