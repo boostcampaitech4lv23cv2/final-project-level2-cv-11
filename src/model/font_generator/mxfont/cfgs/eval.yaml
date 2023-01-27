@@ -1,0 +1,5 @@
+dset:
+  test:
+    data_dir: /opt/final-project-level2-cv-11/src/model/font_generator/mxfont/data/images/test  # path to reference images
+    source_font: /opt/final-project-level2-cv-11/src/model/font_generator/mxfont/data/ttfs/val/SeoulHangangB.ttf    # path to .ttf file used as the source font during the generation
+    gen_chars_file:  /opt/final-project-level2-cv-11/src/model/font_generator/mxfont/data/kor_gen.json   # path to file of the characters to generate. Leave blank if you want to generate all the available characters in the source font.
