@@ -4,7 +4,7 @@ import { PlusOutlined } from "@ant-design/icons";
 import { fabric } from "fabric";
 import Box from "./components/Box";
 import "./Editor.css";
-import FontList from "./FontList";
+import FontList from "./FontList.json";
 
 const Editor = ({ background, typical, typicalFile }) => {
   const canvasRef = useRef(null);

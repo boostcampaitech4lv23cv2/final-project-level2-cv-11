@@ -4,7 +4,7 @@ import { Button, message, Upload, Col, Divider, Row } from "antd";
 import { Typography } from "antd";
 import { fabric } from "fabric";
 import Editor from "./Editor";
-import FontList from "./FontList";
+import FontList from "./FontList.json";
 const { Title } = Typography;
 
 const props = {

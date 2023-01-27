@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Input, Select, Button, InputNumber, message, Typography } from "antd";
 import { RightOutlined } from "@ant-design/icons";
-import FontList from "../FontList";
+import FontList from "../FontList.json";
 
 const { TextArea } = Input;
 const { Option } = Select;
