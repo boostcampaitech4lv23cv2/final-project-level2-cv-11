@@ -28,6 +28,7 @@ def softmax(X):
 
 class FC:
     def __init__(self, class_type):
+        self.font_num = {"typical":45, "untypical": 427}
         self.type = class_type
         self.use_cuda = torch.cuda.is_available()
         self.device = torch.device("cuda" if self.use_cuda else "cpu")
@@ -48,7 +49,7 @@ class FC:
             os.path.join(os.path.dirname(__file__), "weights", self.type, "weight.pth"),
             map_location=self.device,
         )
-        self.model = ResNet50(45)  # 폰트 개수에 따라 수정해야함
+        self.model = ResNet50(self.font_num[class_type])  # 폰트 개수에 따라 수정해야함
         self.model.load_state_dict(pkl.module.state_dict())
         self.model.to(self.device)
         self.model.eval()
