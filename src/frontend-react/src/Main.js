@@ -19,16 +19,25 @@ const Button = styled.button`
   }
 `;
 
-const Div = styled.div`
-  margin-bottom: 122px;
-`;
-
 const Main = () => {
   const navigate = useNavigate();
   return (
     <div style={{ margin: "0 100px 100px" }}>
       <div style={{ height: "20px" }} />
-      <Div>
+      <div className="mb-28">
+        <Title className="text-center">메인 페이지 작업중</Title>
+
+        <div className="flex justify-center">
+          <Button
+            onClick={() => {
+              navigate("/demo");
+            }}
+          >
+            시작하기
+          </Button>
+        </div>
+        <div className="mb-32" />
+
         <Title level={5}>
           웹툰 번역 자동화 프로젝트 Toonranslator의 홈페이지 입니다.
         </Title>
@@ -80,30 +89,22 @@ const Main = () => {
         </Text>
 
         <br />
-
-        <Button
-          onClick={() => {
-            navigate("/demo");
-          }}
-        >
-          시작하기
-        </Button>
-      </Div>
+      </div>
 
       <Divider />
 
-      <Div>
+      <div className="mb-28">
         <Title>아키텍처</Title>
         <Title level={5}>프로젝트 아키텍처를 설명합니다</Title>
         <img src="/arch.png" />
-      </Div>
+      </div>
 
       <Divider />
 
-      <Div>
+      <div className="mb-28">
         <Title>팀 소개</Title>
         <Title level={5}>저희 팀을 소개합니다</Title>
-      </Div>
+      </div>
     </div>
   );
 };

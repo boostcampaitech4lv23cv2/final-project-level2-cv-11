@@ -1,4 +1,4 @@
-import React, { createContext, useState } from "react";
+import React from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "./index.css";
@@ -8,15 +8,16 @@ import Main from "./Main";
 import Demo from "./Demo";
 import Result from "./Result";
 import Header from "./components/Header";
-import { FileContextProvider } from "./FileContext";
+import { GlobalContextProvider } from "./GlobalContext";
 import Editor from "./Editor";
 import Loading from "./Loading";
+import Dev from "./Dev";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <BrowserRouter>
-      <FileContextProvider>
+      <GlobalContextProvider>
         <Header />
         <Routes>
           <Route path="/" element={<Main />} />
@@ -24,8 +25,9 @@ root.render(
           <Route path="/demo" element={<Demo />} />
           <Route path="/result" element={<Result />} />
           <Route path="/loading" element={<Loading />} />
+          <Route path="/dev" element={<Dev />} />
         </Routes>
-      </FileContextProvider>
+      </GlobalContextProvider>
     </BrowserRouter>
   </React.StrictMode>
 );

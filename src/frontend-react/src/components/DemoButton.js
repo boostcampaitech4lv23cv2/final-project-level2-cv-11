@@ -1,13 +1,13 @@
 import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "antd";
-import { FileContext } from "../FileContext";
+import { GlobalContext } from "../GlobalContext";
 
 const DemoButton = () => {
   const navigate = useNavigate();
-  const { setResult } = useContext(FileContext);
+  const { setResult } = useContext(GlobalContext);
   return (
-    <div style={{ textAlign: "center" }}>
+    <div>
       <Button
         onClick={() => {
           setResult({ data: null, boxes: null });

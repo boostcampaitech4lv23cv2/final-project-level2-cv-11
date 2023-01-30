@@ -1,13 +1,12 @@
-// TODO: 파일 이름 GlobalContext 등으로 변경
 import { createContext, useEffect, useState, useRef } from "react";
 import FontList from "./FontList.json";
 
-export const FileContext = createContext({
+export const GlobalContext = createContext({
   files: null,
   setFile: null,
 });
 
-export const FileContextProvider = ({ children }) => {
+export const GlobalContextProvider = ({ children }) => {
   const [files, setFiles] = useState({});
   const [result, setResult] = useState({ data: null, boxes: null });
   const [step, setStep] = useState(0);
@@ -17,12 +16,17 @@ export const FileContextProvider = ({ children }) => {
   // 2: OCR 완료
   // 3: OCR 영역 => Textbox 변환 완료
   const idRef = useRef(0);
+  const [width, setWidth] = useState(0);
+  const [height, setHeight] = useState(0);
+  const [backendHost, setBackendHost] = useState("http://49.50.160.104:30002/");
 
   useEffect(() => {
     const fetchData = async () => {
       const names = ["background", "typical", "untypical"];
       const blobs = await Promise.all(
-        names.map((name) => fetch(`/${name}.png`).then((res) => res.blob()))
+        names.map((name) =>
+          fetch(`/sample1/${name}.png`).then((res) => res.blob())
+        )
       );
       const files = {
         background: blobs[0],
@@ -46,8 +50,19 @@ export const FileContextProvider = ({ children }) => {
     });
   }, []);
 
+  useEffect(() => {
+    if (!files.background) return;
+    const url = URL.createObjectURL(files.background);
+    const img = new Image();
+    img.src = url;
+    img.onload = () => {
+      setWidth(img.width);
+      setHeight(img.height);
+    };
+  }, [files]);
+
   return (
-    <FileContext.Provider
+    <GlobalContext.Provider
       value={{
         files,
         setFiles,
@@ -56,11 +71,15 @@ export const FileContextProvider = ({ children }) => {
         step,
         setStep,
         idRef,
+        width,
+        height,
+        backendHost,
+        setBackendHost,
       }}
     >
       {children}
-    </FileContext.Provider>
+    </GlobalContext.Provider>
   );
 };
 
-export const FileContextConsumer = FileContext.Consumer;
+export const GlobalContextConsumer = GlobalContext.Consumer;

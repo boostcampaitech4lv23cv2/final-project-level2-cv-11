@@ -1,7 +1,8 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { Input, Select, Button, message, Typography, Checkbox } from "antd";
 import { RightOutlined } from "@ant-design/icons";
 import FontList from "../FontList.json";
+import { GlobalContext } from "../GlobalContext";
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -22,9 +23,7 @@ const FontSelect = ({
       폰트
       <div>
         <Select
-          style={{
-            width: 240,
-          }}
+          className="w-60"
           // showSearch
           // filterOption={(input, option) => {
           //   return (option?.children ?? "").toLowerCase().includes(input.toLowerCase())
@@ -62,9 +61,7 @@ const FontSelect = ({
           </Select.OptGroup>
         </Select>
         <Select
-          style={{
-            width: 100,
-          }}
+          className="w-24"
           value={fontSize}
           onSelect={(value) => {
             setFontSize(value);
@@ -116,6 +113,7 @@ const FontSelect = ({
 };
 
 const Box = ({ i, box, delBox, convertBox }) => {
+  const { backendHost } = useContext(GlobalContext);
   const [textKor, setTextKor] = useState(box.textKor);
   const [textEng, setTextEng] = useState(box.textEng);
   const [font, setFont] = useState(box.fontFamily);
@@ -148,7 +146,7 @@ const Box = ({ i, box, delBox, convertBox }) => {
     setTLoading(true);
     select();
     fetch(
-      "http://49.50.160.104:30002/mt/?" +
+      `${backendHost}mt/?` +
         new URLSearchParams({
           text: textKor,
         }),
@@ -175,25 +173,12 @@ const Box = ({ i, box, delBox, convertBox }) => {
 
   return (
     <div
-      style={{
-        margin: 10,
-        padding: 5,
-        border: selected ? "1px solid black" : "1px solid #d9d9d9",
-      }}
+      className="m-2.5 p-1.25 text-center"
+      style={{ border: selected ? "1px solid black" : "1px solid #d9d9d9" }}
     >
-      <div
-        style={{
-          textAlign: "center",
-        }}
-      >
+      <div>
         대사 #{i}
-        <div
-          style={{
-            top: 0,
-            right: 0,
-            margin: "0 0 0 10",
-          }}
-        >
+        <div>
           <Button disabled>인식(미구현)</Button>
           <Button onClick={onTranslate} loading={tLoading}>
             번역
@@ -206,18 +191,8 @@ const Box = ({ i, box, delBox, convertBox }) => {
           </Button>
         </div>
       </div>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-        }}
-      >
-        <div
-          style={{
-            padding: 5,
-            width: "100%",
-          }}
-        >
+      <div className="flex justify-center">
+        <div className="p-1.25 w-full">
           한국어 대사
           <TextArea
             onChange={(event) => {
@@ -228,21 +203,10 @@ const Box = ({ i, box, delBox, convertBox }) => {
             onFocus={select}
           />
         </div>
-        <div
-          style={{
-            marginTop: 21,
-            display: "flex",
-            alignItems: "center",
-          }}
-        >
+        <div className="flex items-center mt-4">
           <RightOutlined />
         </div>
-        <div
-          style={{
-            padding: 5,
-            width: "100%",
-          }}
-        >
+        <div className="p-1.25 w-full">
           영어 대사
           <TextArea
             onChange={(event) => {

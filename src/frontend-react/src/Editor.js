@@ -14,7 +14,7 @@ import { fabric } from "fabric";
 import Box from "./components/Box";
 import "./Editor.css";
 import FontList from "./FontList.json";
-import { FileContext } from "./FileContext";
+import { GlobalContext } from "./GlobalContext";
 
 const newRect = (props) => {
   const box = new fabric.Rect({
@@ -56,18 +56,25 @@ const rect2textbox = (rect) => {
 };
 
 const OCRButton = ({ file, setBoxes, canvas, idRef }) => {
-  const { step, setStep } = useContext(FileContext);
+  const { files, step, setStep, backendHost } = useContext(GlobalContext);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (file && step == 1) onClick();
-  }, [step, file]);
+    if (files.typical && files.untypical && step == 1) onClick();
+  }, [step, files]);
 
-  const onClick = () => {
+  const onClick = async () => {
+    if (!files.typical || !files.untypical) {
+      message.error("파일을 먼저 업로드해주세요.");
+      return;
+    }
+
     setLoading(true);
+    const boxes = [];
+
     const formData = new FormData();
-    formData.append("file", file);
-    fetch("http://49.50.160.104:30002/txt_extraction/v2", {
+    formData.append("file", files.typical);
+    const p1 = fetch(`${backendHost}txt_extraction/v2`, {
       method: "POST",
       body: formData,
     })
@@ -75,7 +82,6 @@ const OCRButton = ({ file, setBoxes, canvas, idRef }) => {
         return response.json();
       })
       .then((data) => {
-        const boxes = [];
         for (let i = 0; i < data.length; i++) {
           const { x1, y1, x2, y2, text, fonts } = data[i];
           const box = newRect({
@@ -90,14 +96,49 @@ const OCRButton = ({ file, setBoxes, canvas, idRef }) => {
           });
           box.recFonts = fonts;
           boxes.push(box);
-          canvas.add(box);
         }
-        setBoxes(boxes);
+      });
+
+    const untypicalFormData = new FormData();
+    untypicalFormData.append("file", files.untypical);
+    const p2 = fetch(`${backendHost}txt_extraction/v2`, {
+      method: "POST",
+      body: untypicalFormData,
+    })
+      .then((response) => {
+        return response.json();
+      })
+      .then((data) => {
+        for (let i = 0; i < data.length; i++) {
+          const { x1, y1, x2, y2, text, fonts } = data[i];
+          const box = newRect({
+            left: x1,
+            top: y1,
+            width: x2 - x1,
+            hegiht: y2 - y1,
+            textKor: text,
+            recFonts: fonts,
+            fontFamily: fonts[0]["name"],
+            id: idRef.current++,
+          });
+          box.recFonts = fonts;
+          boxes.push(box);
+        }
+      });
+
+    await Promise.all([p1, p2])
+      .then(() => {
+        console.log("then", boxes);
         message.success("OCR에 성공했습니다.");
+        boxes.sort((a, b) => a.top - b.top);
+        boxes.forEach((box) => {
+          canvas.add(box);
+        });
+        setBoxes(boxes);
         if (step == 1) setStep(2);
       })
-      .catch((error) => {
-        console.error(error);
+      .catch((e) => {
+        console.error(e);
         message.error("OCR에 실패했습니다.");
       })
       .finally(() => {
@@ -119,8 +160,17 @@ const Editor = () => {
 
   const [boxes, setBoxes] = useState([]);
 
-  const { files, setFiles, result, setResult, step, setStep, idRef } =
-    useContext(FileContext);
+  const {
+    files,
+    setFiles,
+    result,
+    setResult,
+    step,
+    setStep,
+    idRef,
+    width,
+    height,
+  } = useContext(GlobalContext);
 
   const removeBox = (id) => {
     const box = boxes.find((b) => b.id === id);
@@ -225,7 +275,6 @@ const Editor = () => {
   };
 
   useEffect(() => {
-    console.log("Effect boxes", boxes);
     setResult({ ...result, boxes });
   }, [boxes]);
 
@@ -243,12 +292,8 @@ const Editor = () => {
   }, [step, boxes]);
 
   return (
-    <div style={{ textAlign: "center" }}>
-      <div
-        style={{
-          padding: 10,
-        }}
-      >
+    <div className="text-center">
+      <div className="p-2.5">
         <Segmented
           options={["배경", "대사", "효과음"]}
           value={layer}
@@ -281,7 +326,7 @@ const Editor = () => {
             navigate("/result");
           }}
         >
-          저장
+          완성!
         </Button>
         <Button
           type="primary"
@@ -295,11 +340,23 @@ const Editor = () => {
         </Button>
       </div>
 
-      <div className="item-container">
-        <div className="item">
-          <canvas ref={canvasRef} width={800} height={800} />
+      <div className="flex justify-center">
+        <div
+          className="border m-0 p-0"
+          style={{
+            width: width,
+            height: height,
+          }}
+        >
+          {/* <canvas ref={canvasRef} width={800} height={800} /> */}
+          <canvas
+            className="border"
+            ref={canvasRef}
+            width={width}
+            height={height}
+          />
         </div>
-        <div className="item">
+        <div className="border" style={{ width: width, height: height }}>
           <Divider>대사 목록</Divider>
           {(boxes.length > 0 &&
             boxes.map((box, i) => (
@@ -318,7 +375,7 @@ const Editor = () => {
                   setBoxes(boxes.map((b) => (b === box ? textbox : b)));
                 }}
               />
-            ))) || <div style={{ margin: 50 }}>대사가 없습니다</div>}
+            ))) || <div className="m-12">대사가 없습니다</div>}
 
           <Button
             onClick={() => {

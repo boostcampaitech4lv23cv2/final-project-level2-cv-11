@@ -1,21 +1,13 @@
 import { useContext, useEffect, useState } from "react";
 import { Typography, Upload, Button, Row, Col } from "antd";
 import { useNavigate } from "react-router-dom";
-import { UploadOutlined } from "@ant-design/icons";
-import styled from "styled-components";
-import { FileContext } from "./FileContext";
+import { GlobalContext } from "./GlobalContext";
 
 const { Title, Text } = Typography;
 
-const Div = styled.div`
-  display: flex;
-  justify-content: space-around;
-  text-align: center;
-`;
-
 const Result = () => {
   const navigate = useNavigate();
-  const { files, result } = useContext(FileContext);
+  const { files, result, width, height } = useContext(GlobalContext);
   const [before, setBefore] = useState(null);
 
   useEffect(() => {
@@ -26,44 +18,33 @@ const Result = () => {
   }, [files]);
 
   return (
-    <div style={{ margin: "0 100px" }}>
-      <Title>결과물 확인</Title>
+    <div className="my-0 mx-24">
+      <Title className="text-center">결과</Title>
 
-      <Div>
-        <div>
+      <div className="flex justify-center text-center">
+        <div className="m-2.5">
           <Title level={3}>원본</Title>
           <br />
-          <img
-            src={before}
-            alt="background"
-            width="300px"
-            style={{
-              border: "1px solid black",
-            }}
-          />
+          <img src={before} alt="background" width={width} className="border" />
         </div>
-        <div>
+        <div className="m-2.5">
           <Title level={3}>번역본</Title>
           <br />
           <img
-            src={result.data}
-            alt="background"
-            width="300px"
-            style={{
-              border: "1px solid black",
-            }}
+            src={
+              result.data
+                ? result.data
+                : `https://via.placeholder.com/${width}x${height}`
+            }
+            alt="번역 결과"
+            width={width}
+            className="border"
           />
         </div>
-      </Div>
+      </div>
 
-      <div style={{ height: "200px" }} />
-      <div style={{ padding: "0 auto", margin: "0 auto" }}>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-          }}
-        >
+      <div className="p-0 my-0 mx-auto">
+        <div className="flex justify-center">
           <Button
             onClick={() => {
               navigate("/edit");
