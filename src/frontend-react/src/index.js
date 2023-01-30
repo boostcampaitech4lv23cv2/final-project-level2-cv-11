@@ -1,13 +1,32 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import React, { createContext, useState } from "react";
+import ReactDOM from "react-dom/client";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import "./index.css";
+import reportWebVitals from "./reportWebVitals";
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
+import Main from "./Main";
+import Demo from "./Demo";
+import Result from "./Result";
+import Header from "./components/Header";
+import { FileContextProvider } from "./FileContext";
+import Editor from "./Editor";
+import Loading from "./Loading";
+
+const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    <App />
+    <BrowserRouter>
+      <FileContextProvider>
+        <Header />
+        <Routes>
+          <Route path="/" element={<Main />} />
+          <Route path="/edit" element={<Editor />} />
+          <Route path="/demo" element={<Demo />} />
+          <Route path="/result" element={<Result />} />
+          <Route path="/loading" element={<Loading />} />
+        </Routes>
+      </FileContextProvider>
+    </BrowserRouter>
   </React.StrictMode>
 );
 

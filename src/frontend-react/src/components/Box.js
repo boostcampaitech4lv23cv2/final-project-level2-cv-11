@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Input, Select, Button, InputNumber, message, Typography } from "antd";
+import { Input, Select, Button, message, Typography, Checkbox } from "antd";
 import { RightOutlined } from "@ant-design/icons";
 import FontList from "../FontList.json";
 
@@ -14,6 +14,7 @@ const FontSelect = ({
   setFontSize,
   onFocus,
   recFonts,
+  rect,
 }) => {
   const recFontNames = recFonts ? recFonts.map(({ name }) => name) : [];
   return (
@@ -79,36 +80,66 @@ const FontSelect = ({
           })}
         </Select>
       </div>
+      <Checkbox
+        onClick={(e) => {
+          const bold = e.target.checked ? "bold" : "normal";
+          rect.fontWeight = bold;
+          rect.canvas.renderAll();
+        }}
+      >
+        굵게(임시)
+      </Checkbox>
+      <Checkbox
+        onClick={(e) => {
+          if (e.target.checked) {
+            rect.stroke = "red";
+            rect.strokeWidth = 1;
+          } else {
+            rect.stroke = null;
+            rect.strokeWidth = 0;
+          }
+          rect.canvas.renderAll();
+        }}
+      >
+        외곽선(임시)
+      </Checkbox>
+      <input
+        type="color"
+        onChange={(e) => {
+          console.log("onchange", e);
+          rect.fill = e.target.value;
+          rect.canvas.renderAll();
+        }}
+      />
     </div>
   );
 };
 
-const Box = ({ i, rect, delBox, convertBox }) => {
-  const [textKor, setTextKor] = useState(rect.textKor);
-  const [textEng, setTextEng] = useState(rect.textEng);
-  const [font, setFont] = useState(rect.fontFamily);
-  const [fontSize, setFontSize] = useState(rect.fontSize);
+const Box = ({ i, box, delBox, convertBox }) => {
+  const [textKor, setTextKor] = useState(box.textKor);
+  const [textEng, setTextEng] = useState(box.textEng);
+  const [font, setFont] = useState(box.fontFamily);
+  const [fontSize, setFontSize] = useState(box.fontSize);
 
   const [x, setX] = useState(0);
   const [selected, setSelected] = useState(false);
 
-  rect.setSelected = (f) => {
+  box.setSelected = (f) => {
     setSelected(f);
   };
-  rect.refresh = ({ text }) => {
+  box.refresh = ({ text }) => {
     setX((x) => x + 1);
     setTextEng(text);
   };
   useEffect(() => {
-    rect.textKor = textKor;
-    rect.text = rect.textEng = textEng;
-    rect.fontFamily = font;
-    rect.fontSize = fontSize;
-    rect.canvas?.renderAll();
+    box.textKor = textKor;
+    box.text = box.textEng = textEng;
+    box.fontFamily = font;
+    box.fontSize = fontSize;
+    box.canvas?.renderAll();
   }, [textKor, textEng, font, fontSize]);
 
   useEffect(() => {
-    console.log("Box Created", i, rect.id);
     if (textKor !== "") onTranslate();
   }, []);
 
@@ -138,8 +169,8 @@ const Box = ({ i, rect, delBox, convertBox }) => {
   };
 
   const select = () => {
-    rect.canvas?.setActiveObject(rect);
-    rect.canvas?.renderAll();
+    box.canvas?.setActiveObject(box);
+    box.canvas?.renderAll();
   };
 
   return (
@@ -163,11 +194,11 @@ const Box = ({ i, rect, delBox, convertBox }) => {
             margin: "0 0 0 10",
           }}
         >
-          <Button>인식(미구현)</Button>
+          <Button disabled>인식(미구현)</Button>
           <Button onClick={onTranslate} loading={tLoading}>
             번역
           </Button>
-          {rect.get("type") === "rect" && (
+          {box.get("type") === "rect" && (
             <Button onClick={convertBox}>변환</Button>
           )}
           <Button onClick={delBox} danger>
@@ -229,7 +260,8 @@ const Box = ({ i, rect, delBox, convertBox }) => {
         fontSize={fontSize}
         setFontSize={setFontSize}
         onFocus={select}
-        recFonts={rect.recFonts}
+        recFonts={box.recFonts}
+        rect={box}
       />
     </div>
   );

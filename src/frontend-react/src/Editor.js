@@ -1,18 +1,152 @@
-import React, { useRef, useEffect, useState } from "react";
-import { message, Divider, Checkbox, Button, Popconfirm } from "antd";
+import React, { useRef, useEffect, useState, useContext } from "react";
+import {
+  message,
+  Divider,
+  Checkbox,
+  Button,
+  Popconfirm,
+  Upload,
+  Segmented,
+} from "antd";
+import { useNavigate } from "react-router-dom";
 import { PlusOutlined } from "@ant-design/icons";
 import { fabric } from "fabric";
 import Box from "./components/Box";
 import "./Editor.css";
 import FontList from "./FontList.json";
+import { FileContext } from "./FileContext";
 
-const Editor = ({ background, typical, typicalFile }) => {
+const newRect = (props) => {
+  const box = new fabric.Rect({
+    top: 0,
+    left: 0,
+    height: 100,
+    width: 100,
+    fill: "rgba(0, 0, 0, 0.1)",
+    stroke: "red",
+    strokeWidth: 1,
+  });
+  box.textKor = "";
+  box.textEng = "";
+  box.fontFamily = FontList[0]["name"];
+  box.fontSize = 40;
+  for (const key in props) {
+    box[key] = props[key];
+  }
+  return box;
+};
+
+const rect2textbox = (rect) => {
+  const textbox = new fabric.Textbox(rect.textEng, {});
+  for (const key of [
+    "id",
+    "top",
+    "left",
+    "width",
+    "height",
+    "fontFamily",
+    "fontSize",
+    "textKor",
+    "textEng",
+    "recFonts",
+  ]) {
+    textbox[key] = rect[key];
+  }
+  return textbox;
+};
+
+const OCRButton = ({ file, setBoxes, canvas, idRef }) => {
+  const { step, setStep } = useContext(FileContext);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (file && step == 1) onClick();
+  }, [step, file]);
+
+  const onClick = () => {
+    setLoading(true);
+    const formData = new FormData();
+    formData.append("file", file);
+    fetch("http://49.50.160.104:30002/txt_extraction/v2", {
+      method: "POST",
+      body: formData,
+    })
+      .then((response) => {
+        return response.json();
+      })
+      .then((data) => {
+        const boxes = [];
+        for (let i = 0; i < data.length; i++) {
+          const { x1, y1, x2, y2, text, fonts } = data[i];
+          const box = newRect({
+            left: x1,
+            top: y1,
+            width: x2 - x1,
+            hegiht: y2 - y1,
+            textKor: text,
+            recFonts: fonts,
+            fontFamily: fonts[0]["name"],
+            id: idRef.current++,
+          });
+          box.recFonts = fonts;
+          boxes.push(box);
+          canvas.add(box);
+        }
+        setBoxes(boxes);
+        message.success("OCR에 성공했습니다.");
+        if (step == 1) setStep(2);
+      })
+      .catch((error) => {
+        console.error(error);
+        message.error("OCR에 실패했습니다.");
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
+
+  return (
+    <Button id="ocr-button" loading={loading} onClick={onClick}>
+      OCR 수행
+    </Button>
+  );
+};
+
+const Editor = () => {
+  const navigate = useNavigate();
   const canvasRef = useRef(null);
   const fabricRef = useRef(null);
+
+  const [boxes, setBoxes] = useState([]);
+
+  const { files, setFiles, result, setResult, step, setStep, idRef } =
+    useContext(FileContext);
+
+  const removeBox = (id) => {
+    const box = boxes.find((b) => b.id === id);
+    if (!box) return;
+    fabricRef.current?.remove(box);
+    setBoxes(boxes.filter((b) => b !== box));
+  };
+
+  const [backgroundObj, setBackgroundObj] = useState(null);
+  const [typicalObj, setTypicalObj] = useState(null);
+  const [untypicalObj, setUntypicalObj] = useState(null);
+
+  const [layer, setLayer] = useState("배경");
 
   useEffect(() => {
     const initFabric = () => {
       fabricRef.current = new fabric.Canvas(canvasRef.current);
+
+      if (result.boxes) {
+        result.boxes.forEach((box) => {
+          fabricRef.current.add(box);
+        });
+        setBoxes(result.boxes);
+      }
+
+      // 이벤트 리스너 등록
       const f = (e) => {
         e.target.refresh(e.target);
       };
@@ -47,214 +181,117 @@ const Editor = ({ background, typical, typicalFile }) => {
     };
   }, []);
 
-  const [prevTypical, setPrevTypical] = useState(null);
-  const [backChecked, setBackChecked] = useState(true);
-  const [typicalChecked, setTypicalChecked] = useState(true);
-  const onBackChanged = (e) => {
-    setBackChecked(e.target.checked);
-  };
+  // 파일 로드
   useEffect(() => {
-    if (prevTypical !== null) fabricRef.current?.remove(prevTypical);
-    setPrevTypical(typical);
-  }, [typical]);
-  useEffect(() => {
-    const back = backChecked ? background : null;
-    fabricRef.current?.setBackgroundImage(back, () => {
-      fabricRef.current?.renderAll();
-    });
-  }, [backChecked, background]);
-
-  const onTypicalChanged = (e) => {
-    setTypicalChecked(e.target.checked);
-  };
-  useEffect(() => {
-    if (typical !== null) {
-      typical.selectable = false;
-      typical.evented = false;
-      fabricRef.current?.add(typical);
-    }
-  }, [typical]);
-  useEffect(() => {
-    if (typical !== null) {
-      typical.visible = typicalChecked;
-      fabricRef.current?.renderAll();
-    }
-  }, [typicalChecked]);
-
-  const [OCRLoading, setOCRLoading] = useState(false);
-  const reqOCR = () => {
-    delAllBox();
-    setOCRLoading(true);
-
-    const formData = new FormData();
-    formData.append("file", typicalFile);
-
-    fetch("http://49.50.160.104:30002/txt_extraction/v2/", {
-      method: "POST",
-      body: formData,
-    })
-      .then((response) => {
-        return response.json();
-      })
-      .then((data) => {
-        console.log("response.data", data);
-        const boxes = [];
-        for (let i = 0; i < data.length; i++) {
-          const { x1, y1, x2, y2, text, fonts } = data[i];
-          const box = makeBox(x1, y1, x2 - x1, y2 - y1, text, fonts[0].name);
-          box.recFonts = fonts;
-          boxes.push(box);
+    for (const key in files) {
+      const file = files[key];
+      const url = URL.createObjectURL(file);
+      fabric.Image.fromURL(url, (obj) => {
+        switch (key) {
+          case "background":
+            setBackgroundObj(obj);
+            break;
+          case "typical":
+            setTypicalObj(obj);
+            break;
+          case "untypical":
+            setUntypicalObj(obj);
+            break;
         }
-        setBoxes(boxes);
-        message.success("OCR에 성공했습니다.");
-      })
-      .catch((error) => {
-        console.error(error);
-        message.error("OCR에 실패했습니다.");
-      })
-      .finally(() => {
-        setOCRLoading(false);
       });
-  };
+    }
+  }, [files]);
 
-  const [boxes, setBoxes] = useState([]);
-  const idRef = useRef(0);
-  const makeBox = (
-    left,
-    top,
-    width,
-    height,
-    text,
-    font = FontList[0]["name"]
-  ) => {
-    const box = new fabric.Rect({
-      top,
-      left,
-      width,
-      height,
-      fill: "rgba(0, 0, 0, 0.1)",
-      stroke: "red",
-      strokeWidth: 1,
+  // 배경 업데이트
+  useEffect(() => {
+    const obj =
+      layer === "배경"
+        ? backgroundObj
+        : layer === "대사"
+        ? typicalObj
+        : untypicalObj;
+    fabricRef.current?.setBackgroundImage(obj, () => {
+      fabricRef.current.renderAll();
     });
-    box.textKor = text;
-    box.textEng = "";
-    box.fontFamily = font;
-    box.fontSize = 40;
-    box.id = idRef.current++;
-    fabricRef.current.add(box);
-    return box;
-  };
-  const addBox = (
-    left,
-    top,
-    width,
-    height,
-    text,
-    font = FontList[0]["name"]
-  ) => {
-    const box = makeBox(left, top, width, height, text, font);
-    setBoxes([...boxes, box]);
-  };
-  const delBox = (box) => {
-    setBoxes(boxes.filter((b) => b.id !== box.id));
-    fabricRef.current.remove(box);
+  }, [backgroundObj, typicalObj, layer]);
+
+  const convertAll = () => {
+    const canvas = fabricRef.current;
+    const textboxes = boxes.map(rect2textbox);
+    canvas.remove(...boxes);
+    canvas.add(...textboxes);
+    setBoxes(textboxes);
+    setLayer("배경");
   };
 
   useEffect(() => {
-    console.log("boxes", boxes);
-    boxes.forEach((box) => {
-      console.log(box.get("type"));
-    });
+    console.log("Effect boxes", boxes);
+    setResult({ ...result, boxes });
   }, [boxes]);
 
-  const convertBox = (box) => {
-    console.log("onConvertBox", box);
-    const { textKor, textEng, top, left, width, height, fontFamily } = box;
-    const textbox = new fabric.Textbox(textEng, {
-      top,
-      left,
-      width,
-      height,
-      fontFamily,
-    });
-    textbox.textKor = textKor;
-    textbox.textEng = textEng;
-    textbox.id = box.id;
-    textbox.refresh = box.refresh;
-    textbox.setSelected = box.setSelected;
-    textbox.recFonts = box.recFonts;
-    fabricRef.current.add(textbox);
-    fabricRef.current.remove(box);
-    return textbox;
-  };
-
-  const onConvert = (box) => {
-    const textbox = convertBox(box);
-    setBoxes(boxes.map((b) => (b.id === box.id ? textbox : b)));
-  };
-
-  const onConvertAll = () => {
-    console.log("onConvertAll");
-    const textboxes = boxes.map((box) => convertBox(box));
-    setBoxes(textboxes);
-    setTypicalChecked(false);
-  };
-
-  const delAllBox = () => {
-    boxes.forEach((box) => {
-      fabricRef.current.remove(box);
-    });
-    setBoxes([]);
-  };
+  useEffect(() => {
+    if (step == 2) {
+      if (boxes[0].get("type") === "rect") convertAll();
+      else if (boxes[0].get("type") === "textbox") {
+        setTimeout(() => {
+          const data = fabricRef.current.toDataURL({ format: "png" });
+          setResult({ data, boxes });
+          setStep(3);
+        }, 1000);
+      }
+    }
+  }, [step, boxes]);
 
   return (
-    <div>
+    <div style={{ textAlign: "center" }}>
       <div
         style={{
           padding: 10,
         }}
       >
-        <Checkbox onChange={onBackChanged} checked={backChecked}>
-          배경 보이기
-        </Checkbox>
-        <Checkbox onChange={onTypicalChanged} checked={typicalChecked}>
-          대사 보이기
-        </Checkbox>
-        {boxes.length === 0 ? (
-          <Button onClick={reqOCR} loading={OCRLoading}>
-            OCR 수행
-          </Button>
-        ) : (
-          <Popconfirm
-            title={
-              "OCR을 수행하면 기존 대사가 모두 삭제됩니다. 계속하시겠습니까?"
-            }
-            onConfirm={() => {
-              reqOCR();
-            }}
-          >
-            <Button loading={OCRLoading}>OCR 수행</Button>
-          </Popconfirm>
-        )}
-        {/* <Popconfirm
-          title={'title'}
-        >
-        </Popconfirm> */}
-        <Button onClick={onConvertAll}>대사 일괄 변환</Button>
+        <Segmented
+          options={["배경", "대사", "효과음"]}
+          value={layer}
+          onChange={(e) => {
+            setLayer(e);
+          }}
+        />
+        <OCRButton
+          canvas={fabricRef.current}
+          file={files["typical"]}
+          setBoxes={setBoxes}
+          idRef={idRef}
+        />
+        <Button onClick={convertAll}>대사 일괄 변환</Button>
         <Button
           onClick={() => {
+            const canvas = fabricRef.current;
+            canvas.remove(...canvas.getObjects());
+            setBoxes([]);
+          }}
+          danger
+        >
+          대사 일괄 삭제
+        </Button>
+        <Button
+          type="primary"
+          onClick={() => {
             const data = fabricRef.current.toDataURL({ format: "png" });
-            const a = document.createElement("a");
-            a.href = data;
-            a.download = "result.png";
-            a.click();
+            setResult({ data, boxes });
+            navigate("/result");
           }}
         >
-          {" "}
-          다운로드
+          저장
         </Button>
-        <Button onClick={delAllBox} danger>
-          대사 일괄 삭제
+        <Button
+          type="primary"
+          onClick={() => {
+            fabricRef.current?.renderAll();
+            console.log("boxes", boxes);
+            console.log("files", files);
+          }}
+        >
+          디버그
         </Button>
       </div>
 
@@ -269,18 +306,31 @@ const Editor = ({ background, typical, typicalFile }) => {
               <Box
                 key={box.id}
                 i={i}
-                rect={box}
+                box={box}
                 delBox={() => {
-                  delBox(box);
+                  removeBox(box.id);
                 }}
                 convertBox={() => {
-                  onConvert(box);
+                  const canvas = fabricRef.current;
+                  const textbox = rect2textbox(box);
+                  canvas.remove(box);
+                  canvas.add(textbox);
+                  setBoxes(boxes.map((b) => (b === box ? textbox : b)));
                 }}
               />
             ))) || <div style={{ margin: 50 }}>대사가 없습니다</div>}
+
           <Button
             onClick={() => {
-              addBox(0, 0, 100, 100, "");
+              const box = newRect({
+                top: 100,
+                left: 100,
+                width: 100,
+                height: 100,
+                id: idRef.current++,
+              });
+              fabricRef.current?.add(box);
+              setBoxes([...boxes, box]);
             }}
             icon={<PlusOutlined />}
           >
