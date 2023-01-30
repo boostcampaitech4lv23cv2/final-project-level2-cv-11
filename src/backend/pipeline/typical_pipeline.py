@@ -49,26 +49,28 @@ class Typical_Pipeline:
 
 
 ### example
-# import pickle
-# with open("/opt/Gobuk.pickle", 'rb') as f:
-#     data = pickle.load(f)
+if __name__ == "__main__":
+    import pickle
 
-# a = Typical_Pipeline()
-# merged_boxes = a.clova_ocr(data)
-# print("################")
-# print(merged_boxes)
-# print("################")
+    with open("/opt/Gobuk.pickle", "rb") as f:
+        data = pickle.load(f)
 
-# en_list = []
-# for i in merged_boxes:
-#     en_list.append(a.papago(i[2]))
+    a = Typical_Pipeline()
+    merged_boxes = a.clova_ocr(data)
+    print("######## merged_boxes ########")
+    print(merged_boxes)
+    print("##############################")
 
-# print("################")
-# print(en_list)
-# print("################")
+    en_list = []
+    for i in merged_boxes:
+        en_list.append(a.papago(i[2]))
 
-# classification_font = a.typical_font_classification(merged_boxes)
+    print("########## en_list ###########")
+    print(en_list)
+    print("##############################")
 
-# print("################")
-# print(classification_font)
-# print("################")
+    classification_font = a.typical_font_classification(merged_boxes)
+
+    print("#### classification_font #####")
+    print(classification_font)
+    print("##############################")

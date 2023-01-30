@@ -7,6 +7,7 @@ from backend.routers import (
     untypical_txt_extraction,
     untypical_machine_translation,
     untypical_generation,
+    test,
 )
 
 app = FastAPI()
@@ -27,6 +28,7 @@ app.include_router(machine_translation.router)
 app.include_router(untypical_txt_extraction.router)
 app.include_router(untypical_machine_translation.router)
 app.include_router(untypical_generation.router)
+app.include_router(test.router)
 
 
 @app.exception_handler(Exception)
