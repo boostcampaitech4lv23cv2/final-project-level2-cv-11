@@ -56,7 +56,16 @@ class FC:
 
     def classification(self, merged_boxes):
         tmp = []
-        for idx, boxes in enumerate(merged_boxes):
+        for boxes in merged_boxes:
+            if len(boxes[3]) == 0:
+                if self.type == "typical":
+                    tmp.append([(None,None),(None,None),(None,None)])
+                    continue
+            
+                else:
+                    tmp.append(None)
+                    continue
+                    
             imgs = boxes[3]
             # dataset = getattr(import_module("dataset_font"), "InfDataset")(imgs, self.resize)
             dataset = InfDataset(imgs, self.resize)
