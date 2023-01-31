@@ -28,7 +28,7 @@ def softmax(X):
 
 class FC:
     def __init__(self, class_type):
-        self.font_num = {"typical":45, "untypical": 427}
+        self.font_num = {"typical": 45, "untypical": 427}
         self.type = class_type
         self.use_cuda = torch.cuda.is_available()
         self.device = torch.device("cuda" if self.use_cuda else "cpu")
@@ -59,13 +59,13 @@ class FC:
         for boxes in merged_boxes:
             if len(boxes[3]) == 0:
                 if self.type == "typical":
-                    tmp.append([(None,None),(None,None),(None,None)])
+                    tmp.append([("분류 실패", 1.0)])
                     continue
-            
+
                 else:
-                    tmp.append(None)
+                    tmp.append("분류 실패")
                     continue
-                    
+
             imgs = boxes[3]
             # dataset = getattr(import_module("dataset_font"), "InfDataset")(imgs, self.resize)
             dataset = InfDataset(imgs, self.resize)
