@@ -22,8 +22,7 @@ const Demo = () => {
       <DemoButton />
       <div className="m-8 border-b" />
 
-      <Title level={5}>사진이 없다면 데모 이미지로 체험해보세요.</Title>
-      <Text>데모 이미지 선택 버튼 추가 예정</Text>
+      <Title level={5}>사진이 없다면 샘플 이미지로 체험해보세요.</Title>
       <div className="flex justify-center">
         <Sample title="샘플 1" name="sample1" />
         <Sample title="샘플 2" name="sample2" />

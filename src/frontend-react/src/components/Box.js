@@ -138,7 +138,7 @@ const Box = ({ i, box, delBox, convertBox }) => {
   }, [textKor, textEng, font, fontSize]);
 
   useEffect(() => {
-    if (textKor !== "") onTranslate();
+    if (textKor !== "" && textEng === "") onTranslate();
   }, []);
 
   const [tLoading, setTLoading] = useState(false);
@@ -227,6 +227,19 @@ const Box = ({ i, box, delBox, convertBox }) => {
         recFonts={box.recFonts}
         rect={box}
       />
+      <div>x: {box.left};</div>
+      <div>y: {box.top};</div>
+      <div>w: {box.width * box.scaleX};</div>
+      <div>h: {box.height * box.scaleY};</div>
+      <Button
+        onClick={() => {
+          box.height = 100;
+          box.width = 200;
+          box.canvas.renderAll();
+        }}
+      >
+        테스트
+      </Button>
     </div>
   );
 };

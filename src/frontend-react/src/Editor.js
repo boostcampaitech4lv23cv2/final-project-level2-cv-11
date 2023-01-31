@@ -16,6 +16,28 @@ import "./Editor.css";
 import FontList from "./FontList.json";
 import { GlobalContext } from "./GlobalContext";
 
+function calculateFontSize(text, width, height) {
+  let fontSize = 1;
+  let textbox = new fabric.Textbox(text, {
+    width: width,
+    fontSize: fontSize,
+    fontFamily: "arial",
+    textAlign: "center",
+  });
+
+  while (textbox.height < height && textbox.width < width * 1.3) {
+    fontSize += 1;
+    textbox = new fabric.Textbox(text, {
+      width: width,
+      fontSize: fontSize,
+      fontFamily: "arial",
+      textAlign: "center",
+    });
+  }
+
+  return fontSize - 1;
+}
+
 const newRect = (props) => {
   const box = new fabric.Rect({
     top: 0,
@@ -37,15 +59,25 @@ const newRect = (props) => {
 };
 
 const rect2textbox = (rect) => {
-  const textbox = new fabric.Textbox(rect.textEng, {});
+  const fontsz = calculateFontSize(
+    rect.textEng,
+    rect.width * rect.scaleX,
+    rect.height * rect.scaleY
+  );
+  const textbox = new fabric.Textbox(rect.textEng, {
+    width: rect.width * rect.scaleX,
+    fontFamily: "Arial",
+    fontSize: fontsz,
+    textAlign: "center",
+  });
   for (const key of [
     "id",
     "top",
     "left",
-    "width",
-    "height",
-    "fontFamily",
-    "fontSize",
+    // "width",
+    // "height",
+    // "fontFamily",
+    // "fontSize",
     "textKor",
     "textEng",
     "recFonts",
@@ -83,12 +115,12 @@ const OCRButton = ({ file, setBoxes, canvas, idRef }) => {
       })
       .then((data) => {
         for (let i = 0; i < data.length; i++) {
-          const { x1, y1, x2, y2, text, fonts } = data[i];
+          const { x1, y1, w, h, text, fonts } = data[i];
           const box = newRect({
             left: x1,
             top: y1,
-            width: x2 - x1,
-            hegiht: y2 - y1,
+            width: w,
+            height: h,
             textKor: text,
             recFonts: fonts,
             fontFamily: fonts[0]["name"],
@@ -110,12 +142,12 @@ const OCRButton = ({ file, setBoxes, canvas, idRef }) => {
       })
       .then((data) => {
         for (let i = 0; i < data.length; i++) {
-          const { x1, y1, x2, y2, text, fonts } = data[i];
+          const { x1, y1, w, h, text, fonts } = data[i];
           const box = newRect({
             left: x1,
             top: y1,
-            width: x2 - x1,
-            hegiht: y2 - y1,
+            width: w,
+            height: h,
             textKor: text,
             recFonts: fonts,
             fontFamily: fonts[0]["name"],
@@ -319,7 +351,6 @@ const Editor = () => {
           대사 일괄 삭제
         </Button>
         <Button
-          type="primary"
           onClick={() => {
             const data = fabricRef.current.toDataURL({ format: "png" });
             setResult({ data, boxes });
@@ -329,11 +360,8 @@ const Editor = () => {
           완성!
         </Button>
         <Button
-          type="primary"
           onClick={() => {
-            fabricRef.current?.renderAll();
             console.log("boxes", boxes);
-            console.log("files", files);
           }}
         >
           디버그
