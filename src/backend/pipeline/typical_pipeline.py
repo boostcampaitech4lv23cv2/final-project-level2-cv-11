@@ -14,7 +14,7 @@ import cv2
 class Typical_Pipeline:
     def __init__(self):
         self.OCR = model.Clova_OCR()
-        self.re_OCR = model.Tesseract_OCR()
+        self.re_OCR = model.Tesseract_OCR("typical")
         self.MT = model.Papago_MT()
         self.Typical_Classification = model.FC("typical")
 
@@ -50,10 +50,9 @@ class Typical_Pipeline:
 
 ### example
 if __name__ == "__main__":
-    import pickle
 
-    with open("/opt/Gobuk.pickle", "rb") as f:
-        data = pickle.load(f)
+    with open("/opt/final-project-level2-cv-11/대학원탈출_전형_v2.png", "rb") as f:
+        data = f.read()
 
     a = Typical_Pipeline()
     merged_boxes = a.clova_ocr(data)

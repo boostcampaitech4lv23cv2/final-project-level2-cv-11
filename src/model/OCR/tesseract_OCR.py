@@ -11,6 +11,9 @@ def createDirectory(directory):
         print("Error: Failed to create the directory.")
 
 class Tesseract_OCR:
+    
+    def __init__(self, class_type):
+        self.type = class_type
 
     
     def untypical_ocr(self, merged_boxes, img):
@@ -76,19 +79,26 @@ class Tesseract_OCR:
     
     def n_divide(self, merged_boxes, img):
                 
-        for m in merged_boxes:
-            x1 = m[0][0]
-            x2 = m[1][0]
-            y1 = m[0][1]
-            y2 = m[1][1]
-            txt = m[2]
-            char_width = (x2-x1)//len(txt)
-            
-            img_crop_letters = [img[y1 : y2+1, x1+i*char_width : x1+(i+1)*char_width] for i in range(len(txt))]
-            
-            m.append(img_crop_letters)
-        
-        
+        for idx, m in enumerate(merged_boxes):
+            tmp_num = 0
+            for little_box in m[3]:
+                x1 = little_box[0][0]
+                x2 = little_box[1][0]
+                y1 = little_box[0][1]
+                y2 = little_box[1][1]
+                txt = little_box[2]
+                char_width = (x2-x1)//len(txt)
+                
+                img_crop_letters = []
+                for i in range(len(txt)):
+                    img_crop_letter = img[y1 : y2+1, x1+i*char_width : x1+(i+1)*char_width]
+                    img_crop_letters.append(img_crop_letter)
+                    if self.type == "untypical":
+                        createDirectory(os.path.join(os.getenv('HOME'),f'tmp/img{idx}/referenced'))
+                        cv2.imwrite(os.path.join(os.getenv('HOME'),f'tmp/img{idx}/referenced/{tmp_num}.png'),cv2.cvtColor(img_crop_letter, cv2.COLOR_BGR2GRAY))
+                        tmp_num += 1
+                little_box.append(img_crop_letters)
+                
         return merged_boxes
         
         
