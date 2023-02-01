@@ -21,7 +21,7 @@ class Untypical_Pipeline:
     def __init__(self, git_path):
         os.environ['HOME'] = git_path
         self.OCR = model.Clova_OCR()
-        self.re_OCR = model.Tesseract_OCR()
+        self.re_OCR = model.Tesseract_OCR("untypical")
         self.MT = model.Papago_MT()
         self.Typical_Classification = model.FC("untypical")
         self.Font_Generator_mx_font = model.eval
@@ -40,7 +40,7 @@ class Untypical_Pipeline:
 
     def untypical_font_classification(self, merged_boxes):
         # tesseract + classification
-        merged_boxes_with_crop = self.re_OCR.untypical_ocr(merged_boxes, self.img)
+        merged_boxes_with_crop = self.re_OCR.n_divide(merged_boxes, self.img)
         classified_font = self.Typical_Classification.classification(
             merged_boxes_with_crop
         )
@@ -91,32 +91,31 @@ class Untypical_Pipeline:
         return ttf_list
             
 
-### example
-# import pickle
-# with open("/opt/Gobuk.pickle", 'rb') as f:
-#     data = pickle.load(f)
+## example
+import pickle
+with open("/opt/final-project-level2-cv-11/대학원탈출_전형_v2.png", 'rb') as f:
+    data = f.read()
+a = Untypical_Pipeline("/opt/final-project-level2-cv-11")
+merged_boxes = a.clova_ocr(data)
+print("################")
+print(merged_boxes)
+print("################")
 
-# a = Untypical_Pipeline("/opt/final-project-level2-cv-11")
-# merged_boxes = a.clova_ocr(data)
-# print("################")
-# print(merged_boxes)
-# print("################")
+en_list = []
+for i in merged_boxes:
+    en_list.append(a.papago(i[2]))
 
-# en_list = []
-# for i in merged_boxes:
-#     en_list.append(a.papago(i[2]))
+print("################")
+print(en_list)
+print("################")
 
-# print("################")
-# print(en_list)
-# print("################")
+classification_font = a.untypical_font_classification(merged_boxes)
 
-# classification_font = a.untypical_font_classification(merged_boxes)
+print("################")
+print(classification_font)
+print("################")
 
-# print("################")
-# print(classification_font)
-# print("################")
-
-# a.font_generate_mx_font(classification_font, en_list)
-# a.png2svg()
-# print(a.svg2ttf())
+a.font_generate_mx_font(classification_font, en_list)
+a.png2svg()
+print(a.svg2ttf())
 
