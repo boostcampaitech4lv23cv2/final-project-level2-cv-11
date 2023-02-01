@@ -46,30 +46,3 @@ class Typical_Pipeline:
             merged_boxes_with_crop
         )
         return classified_font
-
-
-### example
-if __name__ == "__main__":
-
-    with open("/opt/final-project-level2-cv-11/대학원탈출_전형_v2.png", "rb") as f:
-        data = f.read()
-
-    a = Typical_Pipeline()
-    merged_boxes = a.clova_ocr(data)
-    print("######## merged_boxes ########")
-    print(merged_boxes)
-    print("##############################")
-
-    en_list = []
-    for i in merged_boxes:
-        en_list.append(a.papago(i[2]))
-
-    print("########## en_list ###########")
-    print(en_list)
-    print("##############################")
-
-    classification_font = a.typical_font_classification(merged_boxes)
-
-    print("#### classification_font #####")
-    print(classification_font)
-    print("##############################")

@@ -97,34 +97,3 @@ class Untypical_Pipeline:
             os.system(f"fontforge -lang=py -script {svgs2ttf_path} {json_path}")
 
         return ttf_list
-
-
-## example
-if __name__ == "__main__":
-    import pickle
-
-    with open("/opt/final-project-level2-cv-11/대학원탈출_전형_v2.png", "rb") as f:
-        data = f.read()
-    a = Untypical_Pipeline("/opt/final-project-level2-cv-11")
-    merged_boxes = a.clova_ocr(data)
-    print("################")
-    print(merged_boxes)
-    print("################")
-
-    en_list = []
-    for i in merged_boxes:
-        en_list.append(a.papago(i[2]))
-
-    print("################")
-    print(en_list)
-    print("################")
-
-    classification_font = a.untypical_font_classification(merged_boxes)
-
-    print("################")
-    print(classification_font)
-    print("################")
-
-    a.font_generate_mx_font(classification_font, en_list)
-    a.png2svg()
-    print(a.svg2ttf())
