@@ -2,6 +2,7 @@ import pytesseract
 import cv2 
 from PIL import Image
 import os
+import numpy as np
 
 def createDirectory(directory):
     try:
@@ -86,17 +87,40 @@ class Tesseract_OCR:
                 x2 = little_box[1][0]
                 y1 = little_box[0][1]
                 y2 = little_box[1][1]
-                txt = little_box[2]
-                char_width = (x2-x1)//len(txt)
+                txt = list(little_box[2])
+                
+                char_width = np.array([0.])
+                char_true = []
+                for order, tx in enumerate(txt):
+                    flag = 0
+                    if order == len(txt) -1 or order == 0:
+                        flag = 2
+                        
+                    if tx.isalpha():
+                        char_width = np.append(char_width,10 + flag)
+                        char_true.append(True)
+                    elif tx in "?~^":
+                        char_width = np.append(char_width,6 + flag)
+                        char_true.append(False)
+                    elif tx in "!., ":
+                        char_width = np.append(char_width,2)
+                        char_true.append(False)
+                        
+                char_width *= (x2-x1) / np.sum(char_width)
+                char_width = np.round(char_width, 0)
+                char_width = np.cumsum(char_width)
+                char_width = char_width.tolist()
+                
                 
                 img_crop_letters = []
-                for i in range(len(txt)):
-                    img_crop_letter = img[y1 : y2+1, x1+i*char_width : x1+(i+1)*char_width]
-                    img_crop_letters.append(img_crop_letter)
-                    if self.type == "untypical":
-                        createDirectory(os.path.join(os.getenv('HOME'),f'tmp/img{idx}/referenced'))
-                        cv2.imwrite(os.path.join(os.getenv('HOME'),f'tmp/img{idx}/referenced/{tmp_num}.png'),cv2.cvtColor(img_crop_letter, cv2.COLOR_BGR2GRAY))
-                        tmp_num += 1
+                for i in range(len(char_width)-1):
+                    if char_true[i]:
+                        img_crop_letter = img[y1 : y2+1, x1 + int(char_width[i]) : x1 + int(char_width[i+1])]
+                        img_crop_letters.append(img_crop_letter)
+                        if self.type == "untypical":
+                            createDirectory(os.path.join(os.getenv('HOME'),f'tmp/img{idx}/referenced'))
+                            cv2.imwrite(os.path.join(os.getenv('HOME'),f'tmp/img{idx}/referenced/{tmp_num}.png'),cv2.cvtColor(img_crop_letter, cv2.COLOR_BGR2GRAY))
+                            tmp_num += 1
                 little_box.append(img_crop_letters)
                 
         return merged_boxes
