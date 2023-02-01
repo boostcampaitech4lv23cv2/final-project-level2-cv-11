@@ -28,7 +28,7 @@ def softmax(X):
 
 class FC:
     def __init__(self, class_type):
-        self.font_num = {"typical":45, "untypical": 427}
+        self.font_num = {"typical": 45, "untypical": 427}
         self.type = class_type
         self.use_cuda = torch.cuda.is_available()
         self.device = torch.device("cuda" if self.use_cuda else "cpu")

@@ -40,16 +40,30 @@ class Box(BaseModel):
     y1: int
     x2: int
     y2: int
+    w: int
+    h: int
     text: str
     fonts: List[RecFont]
 
 
+cache = {}
+
+from hashlib import sha256
+
+
 @router.post("/v2", description="OCR + 폰트 분류", response_model=List[Box])
 async def v2(file: UploadFile = File(...)):
+    image_bytes = await file.read()
+
+    m = sha256()
+    m.update(image_bytes)
+    h = m.digest()
+    if h in cache:
+        return cache[h]
+
     Typical_pipeline = typical_pipeline.Typical_Pipeline()
 
     # OCR
-    image_bytes = await file.read()
     ocr_result = Typical_pipeline.clova_ocr(image_bytes)
 
     # Font Classification
@@ -63,6 +77,19 @@ async def v2(file: UploadFile = File(...)):
         x1, y1 = p1
         x2, y2 = p2
         recfonts = [RecFont(name=name, prob=prob) for name, prob in fonts]
-        res.append(Box(x1=x1, y1=y1, x2=x2, y2=y2, text=text, fonts=recfonts))
+        res.append(
+            Box(
+                x1=x1,
+                y1=y1,
+                x2=x2,
+                y2=y2,
+                w=x2 - x1,
+                h=y2 - y1,
+                text=text,
+                fonts=recfonts,
+            )
+        )
+
+    cache[h] = res
 
     return res

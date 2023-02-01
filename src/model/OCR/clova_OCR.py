@@ -146,4 +146,4 @@ class Clova_OCR:
     def ocr(self, image):
         result, result_orga = self.request(image)
         merged_boxes = self.merge_box(result_orga)
-        return merged_boxes
+        return [r[:3] for r in result_orga.values()]

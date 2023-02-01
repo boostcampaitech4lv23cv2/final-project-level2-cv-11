@@ -78,7 +78,7 @@ class Tesseract_OCR:
         return merged_boxes
     
     def n_divide(self, merged_boxes, img):
-                
+  
         for idx, m in enumerate(merged_boxes):
             tmp_num = 0
             for little_box in m[3]:

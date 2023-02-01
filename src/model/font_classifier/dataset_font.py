@@ -78,7 +78,80 @@ class FontDataset(Dataset):
         else:
             return len(self.image_paths_val)
     
+
+class FontDataset_for_mixed(Dataset):
     
+    image_paths_train = []
+    image_labels_train = []
+    
+    image_paths_val = []
+    image_labels_val = []
+    
+    def __init__(self, data_dir, val_ratio=0.2, is_train = True):
+        self.data_dir = data_dir
+        self.transform = None
+        self.is_train = is_train
+        if is_train:
+            self.val_ratio = val_ratio
+            self.setup()
+            
+    
+    def setup(self):
+        profiles = os.listdir(self.data_dir)
+        ####
+        labels = os.listdir("/opt/final-project-level2-cv-11/data/fonts/typical")
+        ####
+        for profile in profiles:
+            paths = os.listdir(os.path.join(self.data_dir, profile))
+            label = labels.index(profile.split("_")[-3]+".ttf")
+            image_path = []
+            image_label = []
+            for path in paths:
+                image_path.append(os.path.join(self.data_dir,profile,path))
+                image_label.append(label)
+            tmp_all = set(range(len(image_path)))
+            tmp_val = set(random.sample(list(range(len(image_path))), int(len(image_path) * self.val_ratio)))
+            tmp_train = tmp_all - tmp_val
+        
+            self.image_paths_train.extend([image_path[x] for x in tmp_train])
+            self.image_labels_train.extend([image_label[x] for x in tmp_train])
+            self.image_paths_val.extend([image_path[x] for x in tmp_val])
+            self.image_labels_val.extend([image_label[x] for x in tmp_val])
+    
+    def set_transform(self, transform):
+        self.transform = transform
+    
+    def __getitem__(self, index):
+        assert self.transform is not None, ".set_tranform 메소드를 이용하여 transform 을 주입해주세요"
+        
+        image = self.read_image(index)
+        w,h = image.size
+        ratio = h/256
+        w = w/ratio
+        resize = (w,h)
+        image_transform = self.transform(resize,image)
+        
+        if self.is_train:
+            label = self.image_labels_train[index]
+        else:
+            label = self.image_labels_val[index]
+            
+        return image_transform.float(), label
+    
+    def read_image(self, index):
+        if self.is_train:
+            image_path = self.image_paths_train[index]
+        else:
+            image_path = self.image_paths_val[index]
+        return Image.open(image_path).convert('RGB')
+    
+    def __len__(self):
+        if self.is_train:
+            return len(self.image_paths_train)
+        else:
+            return len(self.image_paths_val)
+
+  
     
 class TestDataset(Dataset):
     def __init__(self, img_paths, resize, mean=(0.548, 0.504, 0.479), std=(0.237, 0.247, 0.246)):
@@ -126,6 +199,34 @@ class BaseAugmentation:
             transforms.Resize(resize, Image.BILINEAR),
             transforms.ToTensor(),
             #transforms.Normalize(mean=mean, std=std),
+        ])
+
+    def __call__(self, image):
+        return self.transform(image)
+    
+class onesideAugmentation:
+    
+    def __init__(self, resize, mean, std, **args):
+        pass
+    def __call__(self, resize, image):
+        self.transform = transforms.Compose([
+            transforms.Resize(resize, Image.BILINEAR),
+            transforms.ToTensor(),
+            #transforms.Normalize(mean=mean, std=std),
+        ])
+        return self.transform(image)
+    
+class randomcropAugmentation:
+    def __init__(self, resize, mean, std, **args):
+        self.transform = transforms.Compose([
+            transforms.RandomChoice([
+                transforms.RandomCrop((60,60)),
+                transforms.RandomCrop((120,120)),
+                transforms.RandomCrop((200,200)),
+                transforms.RandomCrop((256,256)),
+            ]),
+            transforms.Resize(resize, Image.BILINEAR),
+            transforms.ToTensor(),
         ])
 
     def __call__(self, image):
