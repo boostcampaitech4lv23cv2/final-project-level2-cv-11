@@ -73,6 +73,23 @@ class Tesseract_OCR:
         
         
         return merged_boxes
+    
+    def n_divide(self, merged_boxes, img):
+                
+        for m in merged_boxes:
+            x1 = m[0][0]
+            x2 = m[1][0]
+            y1 = m[0][1]
+            y2 = m[1][1]
+            txt = m[2]
+            char_width = (x2-x1)//len(txt)
+            
+            img_crop_letters = [img[y1 : y2+1, x1+i*char_width : x1+(i+1)*char_width] for i in range(len(txt))]
+            
+            m.append(img_crop_letters)
+        
+        
+        return merged_boxes
         
         
         

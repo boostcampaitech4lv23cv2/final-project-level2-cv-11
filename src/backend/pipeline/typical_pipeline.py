@@ -41,7 +41,7 @@ class Typical_Pipeline:
                 ]
         """
         # tesseract + classification
-        merged_boxes_with_crop = self.re_OCR.typical_ocr(merged_boxes, self.img)
+        merged_boxes_with_crop = self.re_OCR.n_divide(merged_boxes, self.img)
         classified_font = self.Typical_Classification.classification(
             merged_boxes_with_crop
         )
