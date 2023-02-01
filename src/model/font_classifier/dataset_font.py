@@ -99,11 +99,21 @@ class FontDataset_for_mixed(Dataset):
     def setup(self):
         profiles = os.listdir(self.data_dir)
         ####
-        labels = os.listdir("/opt/final-project-level2-cv-11/data/fonts/typical")
+        labels = sorted(os.listdir("/opt/final-project-level2-cv-11/data/fonts/typical"))
         ####
         for profile in profiles:
             paths = os.listdir(os.path.join(self.data_dir, profile))
-            label = labels.index(profile.split("_")[-3]+".ttf")
+            
+            pro = ""
+            
+            for k in profile.split("_"):
+                if k == profile.split("_")[-2]:
+                    pro  = pro[:-1]
+                    pro +=".ttf"
+                    break
+                pro += k + "_"
+            
+            label = labels.index(pro)
             image_path = []
             image_label = []
             for path in paths:
@@ -127,8 +137,8 @@ class FontDataset_for_mixed(Dataset):
         image = self.read_image(index)
         w,h = image.size
         ratio = h/256
-        w = w/ratio
-        resize = (w,h)
+        w = int(w/ratio)
+        resize = (w,256)
         image_transform = self.transform(resize,image)
         
         if self.is_train:

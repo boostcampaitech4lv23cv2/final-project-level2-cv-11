@@ -109,7 +109,8 @@ def train(data_dir, model_dir, args):
         is_train = True
     )
     
-    num_classes = len(os.listdir(args.data_dir)) # font의 개수
+    #num_classes = len(os.listdir(args.data_dir)) # font의 개수
+    num_classes = 42
     
     # -- augmentation
     transform_module = getattr(import_module("dataset_font"), args.train_augmentation)  # default: BaseAugmentation
