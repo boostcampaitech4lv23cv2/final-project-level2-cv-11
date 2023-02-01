@@ -94,7 +94,7 @@ class Tesseract_OCR:
                 for order, tx in enumerate(txt):
                     flag = 0
                     if order == len(txt) -1 or order == 0:
-                        flag = 2
+                        flag = 1.5
                         
                     if tx.isalpha():
                         char_width = np.append(char_width,10 + flag)
@@ -103,7 +103,7 @@ class Tesseract_OCR:
                         char_width = np.append(char_width,6 + flag)
                         char_true.append(False)
                     elif tx in "!., ":
-                        char_width = np.append(char_width,2)
+                        char_width = np.append(char_width,3.3 + flag)
                         char_true.append(False)
                         
                 char_width *= (x2-x1) / np.sum(char_width)
