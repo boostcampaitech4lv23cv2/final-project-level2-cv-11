@@ -13,9 +13,8 @@ poetry install
 apt install -y tesseract-ocr
 wget -P /usr/share/tesseract-ocr/4.00/tessdata https://github.com/tesseract-ocr/tessdata/raw/main/kor.traineddata
 
-# Font Classifier 가중치 다운로드후
-# https://boostcampaitech.slack.com/files/U041L8WPYKW/F04K17EEXS7/weight.pth
-# src/model/font_classifier/weights/typical_font/weight.pth 로 옮겨야 함
+# Font Classifier 가중치 다운로드
+wget --load-cookies ~/cookies.txt "https://docs.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies ~/cookies.txt --keep-session-cookies --no-check-certificate 'https://docs.google.com/uc?export=download&id=1a28eDYyOUrJEhvLHsfI1iFBHhA7LlWl7' -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')&id=1a28eDYyOUrJEhvLHsfI1iFBHhA7LlWl7" -O /opt/ml/final-project-level2-cv-11/src/model/font_classifier/weights/typical/weight.pth && rm -rf ~/cookies.txt
 
 # .env 파일 설정
 
