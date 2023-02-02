@@ -6,7 +6,7 @@ const Header = () => {
   const navigate = useNavigate();
   return (
     <header>
-      <div className="mx-24 mt-5 mb-4 border-b">
+      <div className="mx-24 mt-5 mb-2 border-b">
         <Title className="inline-block">
           <span
             className="cursor-pointer"
@@ -14,7 +14,7 @@ const Header = () => {
               navigate("/");
             }}
           >
-            Toonranslator
+            Toonslator
           </span>
         </Title>
         <div className="inline-block ml-4">

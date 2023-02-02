@@ -116,6 +116,69 @@ const HostTest = () => {
   );
 };
 
+const FontTest = () => {
+  const [fontList, setFontList] = useState([]);
+  const { idRef } = useContext(GlobalContext);
+  return (
+    <div className="border">
+      <h2 className="text-2xl">폰트 테스트</h2>
+      <Button
+        onClick={() => {
+          const fontlist = Array.from(document.fonts).map(
+            (fontface) => fontface.family
+          );
+          setFontList(fontlist);
+        }}
+      >
+        폰트 목록 갱신
+      </Button>
+      <Button
+        onClick={() => {
+          fetch("http://49.50.160.104:30002/test/ttf", {
+            method: "GET",
+          })
+            .then((res) => {
+              console.log("res", res);
+              return res.text();
+            })
+            .then((uri) => fetch(uri.replace(/^"/, "").replace(/"$/, "")))
+            .then((res) => res.blob())
+            .then((blob) => blob.arrayBuffer())
+            .then((ab) => {
+              const font = new FontFace(`exp-font-${idRef.current++}`, ab);
+              console.log("added", `exp-font-${idRef.current - 1}`);
+              font
+                .load()
+                .then((e) => {
+                  document.fonts.add(font);
+                })
+                .catch((e) => {
+                  console.error("error", font.family, e);
+                });
+            });
+        }}
+      >
+        폰트 FETCH
+      </Button>
+      <p style={{ fontFamily: `exp-font-${idRef.current - 1}` }}>
+        A quick brown fox jumps over the lazy dog.
+      </p>
+      <div className="border">
+        <p>폰트 {fontList.length} 개</p>
+        <ul>
+          {fontList.map((font, i) => {
+            return (
+              <li className={font} style={{ fontFamily: font }}>
+                {font}
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+    </div>
+  );
+};
+
 const Dev = () => {
   return (
     <div className="mt-4 mx-24 text-center">
@@ -123,6 +186,7 @@ const Dev = () => {
       각종 테스트 기능 추가 예정
       <br />
       <div className="h-4" />
+      <FontTest />
       <HostTest />
       <OCRTest />
     </div>

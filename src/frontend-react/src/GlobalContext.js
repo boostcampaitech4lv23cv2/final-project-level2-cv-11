@@ -14,7 +14,10 @@ export const GlobalContextProvider = ({ children }) => {
   // 0: 초기 상태
   // 1: 시작
   // 2: OCR 완료
-  // 3: OCR 영역 => Textbox 변환 완료
+  // 3: 변환 중
+  // 4: 저장 중
+  // 5: 결과 페이지로 이동
+  // -1: OCR 실패
   const idRef = useRef(0);
   const [width, setWidth] = useState(0);
   const [height, setHeight] = useState(0);
@@ -37,11 +40,15 @@ export const GlobalContextProvider = ({ children }) => {
     };
     fetchData();
 
+    const loaded = Array.from(document.fonts).map((font) => font.family);
+
     FontList.forEach(({ name, url }) => {
+      if (loaded.includes(name)) return;
       const font = new FontFace(name, `url(${encodeURI(url)})`);
       font
         .load()
         .then((e) => {
+          loaded.push(name);
           document.fonts.add(font);
         })
         .catch((e) => {

@@ -18,12 +18,16 @@ const FontSelect = ({
   rect,
 }) => {
   const recFontNames = recFonts ? recFonts.map(({ name }) => name) : [];
+  const [f, setF] = useState(font);
   return (
     <div>
       폰트
       <div>
+        <style>
+          {`.box-${rect.id} .ant-select-selection-item { font-family: ${f}; }`}
+        </style>
         <Select
-          className="w-60"
+          className={`w-60 box-${rect.id}`}
           // showSearch
           // filterOption={(input, option) => {
           //   return (option?.children ?? "").toLowerCase().includes(input.toLowerCase())
@@ -31,17 +35,20 @@ const FontSelect = ({
           value={font}
           onSelect={(value) => {
             setFont(value);
+            setF(value);
           }}
           onFocus={onFocus}
         >
           {recFonts && (
             <Select.OptGroup label="추천 폰트">
               {recFonts.map(({ name, prob }) => {
+                const p =
+                  typeof prob === "number"
+                    ? `${Math.round(prob * 100)}%`
+                    : prob;
                 return (
                   <Option key={name} name={name} value={name}>
-                    <Text type="success" strong>{`${Math.round(
-                      prob * 100
-                    )}% `}</Text>
+                    <Text type="success" strong>{`${p} `}</Text>
                     {name}
                   </Option>
                 );
@@ -52,7 +59,7 @@ const FontSelect = ({
             {FontList.filter(({ name }) => !recFontNames.includes(name)).map(
               ({ name }) => {
                 return (
-                  <Option key={name} value={name}>
+                  <Option key={name} value={name} style={{ fontFamily: name }}>
                     {name}
                   </Option>
                 );
@@ -122,6 +129,7 @@ const Box = ({ i, box, delBox, convertBox }) => {
   const [x, setX] = useState(0);
   const [selected, setSelected] = useState(false);
 
+  box.setFontSize = setFontSize;
   box.setSelected = (f) => {
     setSelected(f);
   };
@@ -227,10 +235,12 @@ const Box = ({ i, box, delBox, convertBox }) => {
         recFonts={box.recFonts}
         rect={box}
       />
-      <div>x: {box.left};</div>
-      <div>y: {box.top};</div>
-      <div>w: {box.width * box.scaleX};</div>
-      <div>h: {box.height * box.scaleY};</div>
+      {/* <div>
+        x: {box.left};
+        y: {box.top};
+        w: {box.width * box.scaleX};
+        h: {box.height * box.scaleY};
+      </div>
       <Button
         onClick={() => {
           box.height = 100;
@@ -239,7 +249,7 @@ const Box = ({ i, box, delBox, convertBox }) => {
         }}
       >
         테스트
-      </Button>
+      </Button> */}
     </div>
   );
 };

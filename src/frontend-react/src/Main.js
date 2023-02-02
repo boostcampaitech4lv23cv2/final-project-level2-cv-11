@@ -39,7 +39,7 @@ const Main = () => {
         <div className="mb-32" />
 
         <Title level={5}>
-          웹툰 번역 자동화 프로젝트 Toonranslator의 홈페이지 입니다.
+          웹툰 번역 자동화 프로젝트 Toonslator의 홈페이지 입니다.
         </Title>
 
         <Text>프로젝트 소개, 관련 사진 등 추가 예정</Text>
