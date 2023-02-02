@@ -20,20 +20,20 @@ wget -P /usr/share/tesseract-ocr/4.00/tessdata https://github.com/tesseract-ocr/
 
 # Font Classifier 가중치
 # 링크1 : https://drive.google.com/file/d/1a28eDYyOUrJEhvLHsfI1iFBHhA7LlWl7/view?usp=sharing
-wget --load-cookies ~/cookies.txt "https://docs.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies ~/cookies.txt --keep-session-cookies --no-check-certificate 'https://docs.google.com/uc?export=download&id=1a28eDYyOUrJEhvLHsfI1iFBHhA7LlWl7' -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')&id=1a28eDYyOUrJEhvLHsfI1iFBHhA7LlWl7" -O /opt/ml/env-test/src/model/font_classifier/weights/typical/weight.pth && rm -rf ~/cookies.txt
+wget --load-cookies ~/cookies.txt "https://docs.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies ~/cookies.txt --keep-session-cookies --no-check-certificate 'https://docs.google.com/uc?export=download&id=1a28eDYyOUrJEhvLHsfI1iFBHhA7LlWl7' -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')&id=1a28eDYyOUrJEhvLHsfI1iFBHhA7LlWl7" -O /opt/ml/final-project-level2-cv-11/src/model/font_classifier/weights/typical/weight.pth && rm -rf ~/cookies.txt
 # 링크2 : https://drive.google.com/file/d/107iA6ir5Fbii-5JimkGaL-HBomTDeKR1/view?usp=sharing
-wget --load-cookies ~/cookies.txt "https://docs.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies ~/cookies.txt --keep-session-cookies --no-check-certificate 'https://docs.google.com/uc?export=download&id=107iA6ir5Fbii-5JimkGaL-HBomTDeKR1' -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')&id=107iA6ir5Fbii-5JimkGaL-HBomTDeKR1" -O /opt/ml/env-test/src/model/font_classifier/weights/untypical/weight.pth && rm -rf ~/cookies.txt
+wget --load-cookies ~/cookies.txt "https://docs.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies ~/cookies.txt --keep-session-cookies --no-check-certificate 'https://docs.google.com/uc?export=download&id=107iA6ir5Fbii-5JimkGaL-HBomTDeKR1' -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')&id=107iA6ir5Fbii-5JimkGaL-HBomTDeKR1" -O /opt/ml/final-project-level2-cv-11/src/model/font_classifier/weights/untypical/weight.pth && rm -rf ~/cookies.txt
 
 # Script Font 다운로드
 # 링크 : https://drive.google.com/file/d/1p7Rwc08Xbk9bHGIE_7UoWl5OQksfVHrm/view?usp=sharing
 mkdir -p data/font/typical
-wget --load-cookies ~/cookies.txt "https://docs.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies ~/cookies.txt --keep-session-cookies --no-check-certificate 'https://docs.google.com/uc?export=download&id=1p7Rwc08Xbk9bHGIE_7UoWl5OQksfVHrm' -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')&id=1p7Rwc08Xbk9bHGIE_7UoWl5OQksfVHrm" -O /opt/ml/env-test/data/font/typical.zip && rm -rf ~/cookies.txt
+wget --load-cookies ~/cookies.txt "https://docs.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies ~/cookies.txt --keep-session-cookies --no-check-certificate 'https://docs.google.com/uc?export=download&id=1p7Rwc08Xbk9bHGIE_7UoWl5OQksfVHrm' -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')&id=1p7Rwc08Xbk9bHGIE_7UoWl5OQksfVHrm" -O /opt/ml/final-project-level2-cv-11/data/font/typical.zip && rm -rf ~/cookies.txt
 unzip data/font/typical.zip -d data/font
 
 # Effect Font 다운로드
 # 링크 : https://drive.google.com/file/d/14rTAp7WJpr4Cl4qLrh5H7qgeiy4SfHw9/view?usp=sharing
 mkdir -p data/font/untypical
-wget --load-cookies ~/cookies.txt "https://docs.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies ~/cookies.txt --keep-session-cookies --no-check-certificate 'https://docs.google.com/uc?export=download&id=14rTAp7WJpr4Cl4qLrh5H7qgeiy4SfHw9' -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')&id=14rTAp7WJpr4Cl4qLrh5H7qgeiy4SfHw9" -O /opt/ml/env-test/data/font/untypical.zip && rm -rf ~/cookies.txt
+wget --load-cookies ~/cookies.txt "https://docs.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies ~/cookies.txt --keep-session-cookies --no-check-certificate 'https://docs.google.com/uc?export=download&id=14rTAp7WJpr4Cl4qLrh5H7qgeiy4SfHw9' -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')&id=14rTAp7WJpr4Cl4qLrh5H7qgeiy4SfHw9" -O /opt/ml/final-project-level2-cv-11/data/font/untypical.zip && rm -rf ~/cookies.txt
 unzip data/font/untypical.zip -d data/font
 
 # .env 파일 설정
