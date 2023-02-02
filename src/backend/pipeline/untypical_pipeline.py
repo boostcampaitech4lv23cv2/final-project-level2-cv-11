@@ -89,7 +89,7 @@ class Untypical_Pipeline:
             ):
                 split_path, split_name = os.path.split(svg_path)
                 split_name = os.path.splitext(split_name)[0]
-                tmp[split_name] = {"src": svg_path, "width": 128}
+                tmp[split_name] = {"src": svg_path, "width": 84}
 
             font_json["glyphs"] = tmp
 
