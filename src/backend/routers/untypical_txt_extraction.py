@@ -22,11 +22,11 @@ async def make_ocr_font(file: UploadFile = File(...)):
     ocr_result = Untypical_pipeline.clova_ocr(image_bytes)
 
     # Font Classification
-    font_cls_result = Untypical_pipeline.untypical_font_classification(
+    font_cls_result, font_color = Untypical_pipeline.untypical_font_classification(
         copy.deepcopy(ocr_result)
     )
 
-    res = Results(ocr_result=ocr_result, font_result=font_cls_result)
+    res = Results(ocr_result=ocr_result, font_result=font_cls_result, font_color = font_color)
     return res
 
 

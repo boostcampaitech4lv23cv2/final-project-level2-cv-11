@@ -27,7 +27,8 @@ class Untypical_Pipeline:
         self.MT = model.Papago_MT()
         self.Typical_Classification = model.FC("untypical")
         self.Font_Generator_mx_font = model.eval
-
+        self.Font_Color = model.Font_Color()
+        
     def clova_ocr(self, image):
         encoded_img = np.fromstring(image, dtype=np.uint8)
         self.img = cv2.imdecode(encoded_img, cv2.IMREAD_COLOR)
@@ -46,7 +47,9 @@ class Untypical_Pipeline:
         classified_font = self.Typical_Classification.classification(
             merged_boxes_with_crop
         )
-        return classified_font
+        font_color = self.Font_Color.find_color(merged_boxes_with_crop)
+        
+        return classified_font, font_color
 
     def font_generate_mx_font(self, classified_font, en_list):
         self.Font_Generator_mx_font(classified_font, en_list)

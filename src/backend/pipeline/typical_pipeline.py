@@ -17,6 +17,7 @@ class Typical_Pipeline:
         self.re_OCR = model.Tesseract_OCR("typical")
         self.MT = model.Papago_MT()
         self.Typical_Classification = model.FC("typical")
+        self.Font_Color = model.Font_Color()
 
     def clova_ocr(self, bytes: bytes) -> List[List]:
         encoded_img = np.fromstring(bytes, dtype=np.uint8)
@@ -45,4 +46,5 @@ class Typical_Pipeline:
         classified_font = self.Typical_Classification.classification(
             merged_boxes_with_crop
         )
-        return classified_font
+        font_color = self.Font_Color.find_color(merged_boxes_with_crop)
+        return classified_font, font_color
