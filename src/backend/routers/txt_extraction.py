@@ -44,6 +44,7 @@ class Box(BaseModel):
     h: int
     text: str
     fonts: List[RecFont]
+    color: str
 
 
 cache = {}
@@ -70,13 +71,16 @@ async def v2(file: UploadFile = File(...)):
     font_cls_result = Typical_pipeline.typical_font_classification(
         copy.deepcopy(ocr_result)
     )
+    recs, colors = font_cls_result
 
     res = []
-    for ocr, fonts in zip(ocr_result, font_cls_result):
-        p1, p2, text = ocr
+    for ocr, fonts, color in zip(ocr_result, recs, colors):
+        p1, p2, text, _ = ocr
         x1, y1 = p1
         x2, y2 = p2
-        recfonts = [RecFont(name=name, prob=prob) for name, prob in fonts]
+        recfonts = [
+            RecFont(name=name.rstrip(".ttf"), prob=prob) for name, prob in fonts
+        ]
         res.append(
             Box(
                 x1=x1,
@@ -87,6 +91,7 @@ async def v2(file: UploadFile = File(...)):
                 h=y2 - y1,
                 text=text,
                 fonts=recfonts,
+                color=color,
             )
         )
 
