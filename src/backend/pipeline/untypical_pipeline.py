@@ -44,12 +44,12 @@ class Untypical_Pipeline:
     def untypical_font_classification(self, merged_boxes):
         # tesseract + classification
         merged_boxes_with_crop = self.re_OCR.n_divide(merged_boxes, self.img)
-        classified_font = self.Typical_Classification.classification(
+        classified_font, classified_font_all = self.Typical_Classification.classification(
             merged_boxes_with_crop
         )
         font_color = self.Font_Color.find_color(merged_boxes_with_crop)
         
-        return classified_font, font_color
+        return classified_font, classified_font_all, font_color
 
     def font_generate_mx_font(self, classified_font, en_list):
         self.Font_Generator_mx_font(classified_font, en_list)

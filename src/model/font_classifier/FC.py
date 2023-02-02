@@ -86,20 +86,23 @@ class FC:
                 preds_dict.items(), key=lambda item: item[1], reverse=True
             )
 
-            if self.type == "typical":
-                top1_pred = sorted_dict[0][1] / len(dataset)
-                top2_pred = sorted_dict[1][1] / len(dataset)
-                top3_pred = sorted_dict[2][1] / len(dataset)
+            top1_pred = sorted_dict[0][1] / len(dataset)
+            top2_pred = sorted_dict[1][1] / len(dataset)
+            top3_pred = sorted_dict[2][1] / len(dataset)
 
-                percentage = softmax(np.array([top1_pred, top2_pred, top3_pred]))
+            percentage = softmax(np.array([top1_pred, top2_pred, top3_pred]))
 
-                font_name = []
-                font_name.append(self.font_list[sorted_dict[0][0]])
-                font_name.append(self.font_list[sorted_dict[1][0]])
-                font_name.append(self.font_list[sorted_dict[2][0]])
-                tmp.append(list(zip(font_name, percentage)))
-
-            else:
-                tmp.append(self.font_list[sorted_dict[0][0]])
-
-        return tmp
+            font_name = []
+            font_name.append(self.font_list[sorted_dict[0][0]])
+            font_name.append(self.font_list[sorted_dict[1][0]])
+            font_name.append(self.font_list[sorted_dict[2][0]])
+            tmp.append(list(zip(font_name, percentage)))
+                
+            
+        if self.type == "typical":
+            return tmp
+        else:
+            tmp2 = [x[0][0] for x in tmp]
+            return tmp2, tmp
+                
+        
