@@ -59,8 +59,9 @@ class Untypical_Pipeline:
         blur = 1
         t = 0.4
         
+        base_str = ""
         for folder_path in glob.glob(os.path.join(os.getenv("HOME"), "tmp/*")):
-            base_str = ""
+            
             createDirectory(os.path.join(folder_path, "generated_mxfont_svg"))
             for png_path in glob.glob(os.path.join(folder_path, "generated_mxfont/*")):
                 split_path, split_name = os.path.split(png_path)
@@ -68,7 +69,7 @@ class Untypical_Pipeline:
                 base_str += f'convert {png_path} -flatten pgm:| mkbitmap -f {f} --blur {blur} -t {t} - -o -| \
                           potrace --svg -o {os.path.join(folder_path,"generated_mxfont_svg", f"{split_name}.svg")}'
                 base_str += " & "
-            os.system(base_str)
+        os.system(base_str)
 
     def svg2ttf(self):
         ttf_list = []
@@ -76,10 +77,9 @@ class Untypical_Pipeline:
         example_json_path = os.path.join(
             os.getenv("HOME"), "src/model/svg2ttf/example.json"
         )
-
+        base_str = ""
         for folder_path in glob.glob(os.path.join(os.getenv("HOME"), "tmp/*")):
             folder_name = os.path.basename(folder_path)
-            base_str = ""
             with open(example_json_path, "r") as f:
                 font_json = json.load(f)
             font_json["props"]["family"] = folder_name
