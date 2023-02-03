@@ -55,15 +55,21 @@ class Untypical_Pipeline:
         self.Font_Generator_mx_font(classified_font, en_list)
 
     def png2svg(self):
+        f = 1200
+        blur = 1
+        t = 0.4
+        
+        base_str = ""
+        
         for folder_path in glob.glob(os.path.join(os.getenv("HOME"), "tmp/*")):
+            createDirectory(os.path.join(folder_path, "generated_mxfont_svg"))
             for png_path in glob.glob(os.path.join(folder_path, "generated_mxfont/*")):
                 split_path, split_name = os.path.split(png_path)
                 split_name = os.path.splitext(split_name)[0]
-                createDirectory(os.path.join(folder_path, "generated_mxfont_svg"))
-                os.system(
-                    f'convert {png_path} -flatten pgm:| mkbitmap -f 1200 --blur 1 -t 0.4 - -o -| \
+                base_str += f'convert {png_path} -flatten pgm:| mkbitmap -f 100 --blur 1 -t 0.4 - -o -| \
                           potrace --svg -o {os.path.join(folder_path,"generated_mxfont_svg", f"{split_name}.svg")}'
-                )
+                base_str += " & "
+            os.system(base_str)
 
     def svg2ttf(self):
         ttf_list = []
@@ -100,3 +106,36 @@ class Untypical_Pipeline:
             os.system(f"fontforge -lang=py -script {svgs2ttf_path} {json_path}")
 
         return ttf_list
+    
+ ## example
+import time
+
+start_time = time.time()
+
+with open("/opt/final-project-level2-cv-11/대학원탈출_전형_v2.png", 'rb') as f:
+    data = f.read()
+a = Untypical_Pipeline("/opt/final-project-level2-cv-11")
+merged_boxes = a.clova_ocr(data)
+print("################")
+print(merged_boxes)
+print("################")
+
+en_list = []
+for i in merged_boxes:
+    en_list.append(a.papago(i[2]))
+
+print("################")
+print(en_list)
+print("################")
+
+classification_font, classification_font_all, font_color = a.untypical_font_classification(merged_boxes)
+
+print("################")
+print(classification_font, classification_font_all, font_color)
+print("################")
+
+a.font_generate_mx_font(classification_font, en_list)
+a.png2svg()
+print(a.svg2ttf())
+
+print(time.time() - start_time)
