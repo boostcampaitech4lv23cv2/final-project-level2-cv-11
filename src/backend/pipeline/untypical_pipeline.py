@@ -61,7 +61,7 @@ class Untypical_Pipeline:
                 split_name = os.path.splitext(split_name)[0]
                 createDirectory(os.path.join(folder_path, "generated_mxfont_svg"))
                 os.system(
-                    f'convert {png_path} -flatten pgm:| mkbitmap -f 64 -t 0.4 - -o -| \
+                    f'convert {png_path} -flatten pgm:| mkbitmap -f 1200 --blur 1 -t 0.4 - -o -| \
                           potrace --svg -o {os.path.join(folder_path,"generated_mxfont_svg", f"{split_name}.svg")}'
                 )
 
