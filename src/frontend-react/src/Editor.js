@@ -52,6 +52,7 @@ const newRect = (props) => {
   box.textEng = "";
   box.fontFamily = FontList[0]["name"];
   box.fontSize = 40;
+  box.color = "black";
   for (const key in props) {
     box[key] = props[key];
   }
@@ -59,6 +60,7 @@ const newRect = (props) => {
 };
 
 const rect2textbox = (rect) => {
+  if (rect.get("type") === "textbox") return rect;
   const fontsz = calculateFontSize(
     rect.textEng,
     rect.width * rect.scaleX,
@@ -84,18 +86,19 @@ const rect2textbox = (rect) => {
     "textEng",
     "recFonts",
     "layer",
+    "color",
   ]) {
     textbox[key] = rect[key];
   }
   return textbox;
 };
 
-const OCRButton = ({ file, setBoxes, canvas, idRef }) => {
+const OCRButton = ({ boxes, setBoxes, canvas, idRef }) => {
   const { files, step, setStep, backendHost } = useContext(GlobalContext);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (files.typical && files.untypical && step == 1) onClick();
+    if (files.typical && files.untypical && step == 10) onClick();
   }, [step, files]);
 
   const onClick = async () => {
@@ -118,7 +121,7 @@ const OCRButton = ({ file, setBoxes, canvas, idRef }) => {
       })
       .then((data) => {
         for (let i = 0; i < data.length; i++) {
-          const { x1, y1, w, h, text, fonts } = data[i];
+          const { x1, y1, w, h, text, fonts, color } = data[i];
           const box = newRect({
             left: x1,
             top: y1,
@@ -129,8 +132,8 @@ const OCRButton = ({ file, setBoxes, canvas, idRef }) => {
             fontFamily: fonts[0]["name"],
             id: idRef.current++,
             layer: "대사",
+            color,
           });
-          box.recFonts = fonts;
           boxes.push(box);
         }
       });
@@ -138,103 +141,90 @@ const OCRButton = ({ file, setBoxes, canvas, idRef }) => {
     const boxes_untypical = [];
     const untypicalFormData = new FormData();
     untypicalFormData.append("file", files.untypical);
-    const p2 = fetch(`${backendHost}untypical/txt_extraction/`, {
+    const p2 = fetch(`${backendHost}untypical/txt_extraction/v2`, {
       method: "POST",
       body: untypicalFormData,
     })
-      .then((response) => {
-        console.log(`${backendHost}untypical/txt_extraction/`);
-        return response.json();
-      })
+      .then((response) => response.json())
       .then((data) => {
-        const { ocr_result, font_result } = data;
-        for (let i = 0; i < ocr_result.length; i++) {
-          const [p1, p2, text] = ocr_result[i];
-          const font = font_result[i];
-          const [x1, y1] = p1;
-          const [x2, y2] = p2;
-          const w = x2 - x1;
-          const h = y2 - y1;
+        for (let i = 0; i < data.length; i++) {
+          const { x1, y1, w, h, text, fonts, color } = data[i];
           const box = newRect({
             left: x1,
             top: y1,
             width: w,
             height: h,
             textKor: text,
-            recFonts: [{ name: font, prob: 0.0 }],
-            fontFamily: font,
+            recFonts: fonts,
+            fontFamily: fonts[0]["name"],
             id: idRef.current++,
             layer: "효과음",
+            color,
           });
-          // box.recFonts = fonts;
-          console.log("box", box);
           boxes_untypical.push(box);
         }
 
+        const ref_fonts = boxes_untypical.map((box) => box.fontFamily + ".ttf");
+
         const body = JSON.stringify({
-          classified_font: font_result,
-          en_list: Array(font_result.length).fill(
+          classified_font: ref_fonts,
+          en_list: Array(ref_fonts.length).fill(
             "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
           ),
         });
-        console.log("body", body);
 
+        if (step == 10) setStep(11);
         return fetch(`${backendHost}untypical/generation/`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
           body,
-        })
-          .then((res) => {
-            console.log("res", res);
-            return res.json();
-          })
-          .then((uris) => {
-            if (uris.length != boxes_untypical.length) {
-              console.error(
-                `폰트 개수 (${boxes_untypical.length})와 uri 개수 (${uris.length})가 일치하지 않습니다.))`
-              );
-            }
-            const fs = [];
-            for (
-              let i = 0;
-              i < Math.min(uris.length, boxes_untypical.length);
-              i++
-            ) {
-              console.log("uri before", uris[i]);
-              const uri = uris[i].replace(/^"/, "").replace(/"$/, "");
-              console.log("uri", uri);
-              const f = fetch(uri)
-                .then((res) => res.blob())
-                .then((blob) => blob.arrayBuffer())
-                .then((ab) => {
-                  const name = `exp-font-${idRef.current++}`;
-                  const font = new FontFace(name, ab);
-                  console.log("added", name);
-                  font
-                    .load()
-                    .then((e) => {
-                      document.fonts.add(font);
-                    })
-                    .catch((e) => {
-                      console.error("error", font.family, e);
-                    });
-                  console.log("set", i, boxes_untypical);
-                  boxes_untypical[i].fontFamily = name;
-                  boxes_untypical[i].recFonts = [{ name, prob: "생성" }];
+        });
+      })
+      .then((res) => res.json())
+      .then((uris) => {
+        if (uris.length != boxes_untypical.length) {
+          console.error(
+            `폰트 개수 (${boxes_untypical.length})와 uri 개수 (${uris.length})가 일치하지 않습니다.))`
+          );
+        }
+        const fs = [];
+        for (
+          let i = 0;
+          i < Math.min(uris.length, boxes_untypical.length);
+          i++
+        ) {
+          const uri = uris[i].replace(/^"/, "").replace(/"$/, "");
+          const f = fetch(uri)
+            .then((res) => res.blob())
+            .then((blob) => blob.arrayBuffer())
+            .then((ab) => {
+              const name = `exp-font-${idRef.current++}`;
+              const font = new FontFace(name, ab);
+              console.log("font added", name);
+              font
+                .load()
+                .then((e) => {
+                  document.fonts.add(font);
                 })
                 .catch((e) => {
-                  console.error("error", e);
+                  console.error("error", font.family, e);
                 });
-              fs.push(f);
-            }
-            return Promise.all(fs);
-          })
-          .then(() => {
-            console.log("boxes_untypical", boxes_untypical);
-            boxes.push(...boxes_untypical);
-          });
+              console.log("set", i, boxes_untypical);
+              boxes_untypical[i].fontFamily = name;
+              boxes_untypical[i].recFonts.push({ name, prob: "생성" });
+            })
+            .catch((e) => {
+              console.error("error", e);
+            });
+          fs.push(f);
+        }
+        return Promise.all(fs);
+      })
+      .then(() => {
+        console.log("boxes_untypical", boxes_untypical);
+        boxes.push(...boxes_untypical);
       });
 
     await Promise.all([p1, p2])
@@ -246,15 +236,15 @@ const OCRButton = ({ file, setBoxes, canvas, idRef }) => {
           canvas.add(box);
         });
         setBoxes(boxes);
-        if (step == 1)
+        if (Math.floor(step / 10) == 1)
           setTimeout(() => {
-            setStep(2);
+            setStep(20);
           }, 1000);
       })
       .catch((e) => {
         console.error(e);
         message.error("OCR에 실패했습니다.");
-        if (step == 1) setStep(-1);
+        if (step != 0) setStep(-1);
       })
       .finally(() => {
         setLoading(false);
@@ -262,13 +252,15 @@ const OCRButton = ({ file, setBoxes, canvas, idRef }) => {
   };
 
   return (
-    <Button id="ocr-button" loading={loading} onClick={onClick}>
-      1. OCR 수행
-    </Button>
+    <>
+      <Button id="ocr-button" loading={loading} onClick={onClick}>
+        1. OCR 수행
+      </Button>
+    </>
   );
 };
 
-const Editor = () => {
+const Editor = ({ auto }) => {
   const navigate = useNavigate();
   const canvasRef = useRef(null);
   const fabricRef = useRef(null);
@@ -343,6 +335,7 @@ const Editor = () => {
 
     return () => {
       disposeFabric();
+      setStep(0);
     };
   }, []);
 
@@ -396,10 +389,7 @@ const Editor = () => {
     setBoxes(textboxes);
     setLayer("배경");
     canvas.renderAll();
-    if (step == 2)
-      setTimeout(() => {
-        setStep(3);
-      }, 1000);
+    if (Math.floor(step / 10) == 2) setStep(21);
   };
 
   useEffect(() => {
@@ -407,7 +397,15 @@ const Editor = () => {
   }, [boxes]);
 
   useEffect(() => {
-    if (step == 2) {
+    if (step == 21) {
+      const rects = boxes.filter((box) => box.get("type") === "rect");
+      if (rects.length > 0) setStep(22);
+      else setStep(3);
+    } else if (step == 22) {
+      setTimeout(() => {
+        setStep(21);
+      }, 1000);
+    } else if (step == 20) {
       convertAll();
     } else if (step == 3) {
       if (layer !== "배경") {
@@ -438,16 +436,18 @@ const Editor = () => {
         <div className="mt-5">
           <OCRButton
             canvas={fabricRef.current}
-            file={files["typical"]}
+            boxes={boxes}
             setBoxes={setBoxes}
             idRef={idRef}
           />
           <Button onClick={convertAll}>2. 대사 일괄 변환</Button>
           <Button
             onClick={() => {
-              const data = fabricRef.current.toDataURL({ format: "png" });
-              setResult({ data, boxes });
-              navigate("/result");
+              setLayer("배경");
+              setStep(3);
+              // const data = fabricRef.current.toDataURL({ format: "png" });
+              // setResult({ data, boxes });
+              // navigate("/result");
             }}
           >
             3. 완성!
@@ -489,7 +489,13 @@ const Editor = () => {
             height={height}
           />
         </div>
-        <div className="border" style={{ width: width, height: height }}>
+        <div
+          className="border overflow-x-hidden"
+          style={{
+            height: height,
+            width: auto ? 0 : 520,
+          }}
+        >
           <Divider>대사 목록</Divider>
           {(boxes.length > 0 &&
             boxes

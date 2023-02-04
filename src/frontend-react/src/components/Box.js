@@ -1,5 +1,13 @@
 import { useState, useEffect, useContext } from "react";
-import { Input, Select, Button, message, Typography, Checkbox } from "antd";
+import {
+  Input,
+  Select,
+  Button,
+  message,
+  Typography,
+  Checkbox,
+  InputNumber,
+} from "antd";
 import { RightOutlined } from "@ant-design/icons";
 import FontList from "../FontList.json";
 import { GlobalContext } from "../GlobalContext";
@@ -16,6 +24,8 @@ const FontSelect = ({
   onFocus,
   recFonts,
   rect,
+  color,
+  setColor,
 }) => {
   const recFontNames = recFonts ? recFonts.map(({ name }) => name) : [];
   const [f, setF] = useState(font);
@@ -67,24 +77,25 @@ const FontSelect = ({
             )}
           </Select.OptGroup>
         </Select>
-        <Select
-          className="w-24"
-          value={fontSize}
-          onSelect={(value) => {
-            setFontSize(value);
+        <InputNumber
+          className="w-24 h-8 translate-y-[-4px]"
+          value={rect.get("type") === "textbox" ? fontSize : 0}
+          onChange={(value) => {
+            if (rect.get("type") === "textbox") setFontSize(value);
           }}
           onFocus={onFocus}
-        >
-          {[32, 36, 40, 44, 48, 52].map((value) => {
-            return (
-              <Option key={value} value={value}>
-                {value}
-              </Option>
-            );
-          })}
-        </Select>
+        />
+        <input
+          className="w-8 h-8 translate-y-[6px]"
+          type="color"
+          onChange={(e) => {
+            console.log("onchange", e);
+            setColor(e.target.value);
+          }}
+          value={color}
+        />
       </div>
-      <Checkbox
+      {/* <Checkbox
         onClick={(e) => {
           const bold = e.target.checked ? "bold" : "normal";
           rect.fontWeight = bold;
@@ -106,15 +117,7 @@ const FontSelect = ({
         }}
       >
         외곽선(임시)
-      </Checkbox>
-      <input
-        type="color"
-        onChange={(e) => {
-          console.log("onchange", e);
-          rect.fill = e.target.value;
-          rect.canvas.renderAll();
-        }}
-      />
+      </Checkbox> */}
     </div>
   );
 };
@@ -125,6 +128,7 @@ const Box = ({ i, box, delBox, convertBox }) => {
   const [textEng, setTextEng] = useState(box.textEng);
   const [font, setFont] = useState(box.fontFamily);
   const [fontSize, setFontSize] = useState(box.fontSize);
+  const [color, setColor] = useState(box.color);
 
   const [x, setX] = useState(0);
   const [selected, setSelected] = useState(false);
@@ -139,11 +143,13 @@ const Box = ({ i, box, delBox, convertBox }) => {
   };
   useEffect(() => {
     box.textKor = textKor;
-    box.text = box.textEng = textEng;
-    box.fontFamily = font;
-    box.fontSize = fontSize;
+    box.textEng = textEng;
+    box.set("fontFamily", font);
+    box.set("fontSize", fontSize);
+    box.set("text", textEng);
+    if (box.get("type") == "textbox") box.set("fill", color);
     box.canvas?.renderAll();
-  }, [textKor, textEng, font, fontSize]);
+  }, [textKor, textEng, font, fontSize, color]);
 
   useEffect(() => {
     if (textKor !== "" && textEng === "") onTranslate();
@@ -187,7 +193,7 @@ const Box = ({ i, box, delBox, convertBox }) => {
       <div>
         대사 #{i}
         <div>
-          <Button disabled>인식(미구현)</Button>
+          {/* <Button disabled>인식(미구현)</Button> */}
           <Button onClick={onTranslate} loading={tLoading}>
             번역
           </Button>
@@ -200,7 +206,7 @@ const Box = ({ i, box, delBox, convertBox }) => {
         </div>
       </div>
       <div className="flex justify-center">
-        <div className="p-1.25 w-full">
+        <div className="p-1.25 w-full ml-2">
           한국어 대사
           <TextArea
             onChange={(event) => {
@@ -211,10 +217,10 @@ const Box = ({ i, box, delBox, convertBox }) => {
             onFocus={select}
           />
         </div>
-        <div className="flex items-center mt-4">
+        <div className="flex items-center mt-5">
           <RightOutlined />
         </div>
-        <div className="p-1.25 w-full">
+        <div className="p-1.25 w-full mr-2">
           영어 대사
           <TextArea
             onChange={(event) => {
@@ -234,6 +240,8 @@ const Box = ({ i, box, delBox, convertBox }) => {
         onFocus={select}
         recFonts={box.recFonts}
         rect={box}
+        color={color}
+        setColor={setColor}
       />
       {/* <div>
         x: {box.left};

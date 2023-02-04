@@ -163,8 +163,8 @@ const FontTest = () => {
       <p style={{ fontFamily: `exp-font-${idRef.current - 1}` }}>
         A quick brown fox jumps over the lazy dog.
       </p>
-      <div className="border">
-        <p>폰트 {fontList.length} 개</p>
+      <p>폰트 {fontList.length} 개</p>
+      <div className="border h-60 overflow-y-scroll">
         <ul>
           {fontList.map((font, i) => {
             return (
