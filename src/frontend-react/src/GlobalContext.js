@@ -1,6 +1,5 @@
 import { createContext, useEffect, useState, useRef } from "react";
 import { message } from "antd";
-import FontList from "./FontList.json";
 import { useNavigate } from "react-router-dom";
 
 export const GlobalContext = createContext({
@@ -45,22 +44,6 @@ export const GlobalContextProvider = ({ children }) => {
       setFiles(files);
     };
     fetchData();
-
-    const loaded = Array.from(document.fonts).map((font) => font.family);
-
-    FontList.forEach(({ name, url }) => {
-      if (loaded.includes(name)) return;
-      const font = new FontFace(name, `url(${encodeURI(url)})`);
-      font
-        .load()
-        .then((e) => {
-          loaded.push(name);
-          document.fonts.add(font);
-        })
-        .catch((e) => {
-          console.error("error", font.family, e);
-        });
-    });
   }, []);
 
   useEffect(() => {
