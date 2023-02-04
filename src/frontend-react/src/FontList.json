@@ -24,7 +24,7 @@
     "url": "/fonts/Ansungtangmyun-ESG.ttf"
   },
   {
-    "name": "BMDOHYEON_",
+    "name": "BMDOHYEON_ttf",
     "url": "/fonts/BMDOHYEON_ttf.ttf"
   },
   {
@@ -32,7 +32,7 @@
     "url": "/fonts/BMEULJIROTTF.ttf"
   },
   {
-    "name": "BMHANNAAir_",
+    "name": "BMHANNAAir_ttf",
     "url": "/fonts/BMHANNAAir_ttf.ttf"
   },
   {
@@ -40,11 +40,11 @@
     "url": "/fonts/BMHANNAPro.ttf"
   },
   {
-    "name": "BMHANNA_11yrs_",
+    "name": "BMHANNA_11yrs_ttf",
     "url": "/fonts/BMHANNA_11yrs_ttf.ttf"
   },
   {
-    "name": "BMJUA_",
+    "name": "BMJUA_ttf",
     "url": "/fonts/BMJUA_ttf.ttf"
   },
   {
@@ -52,7 +52,7 @@
     "url": "/fonts/BMKIRANGHAERANG-TTF.ttf"
   },
   {
-    "name": "BMYEONSUNG_",
+    "name": "BMYEONSUNG_ttf",
     "url": "/fonts/BMYEONSUNG_ttf.ttf"
   },
   {
@@ -108,7 +108,7 @@
     "url": "/fonts/Chilgok_lws.ttf"
   },
   {
-    "name": "ChosunCentennial_",
+    "name": "ChosunCentennial_ttf",
     "url": "/fonts/ChosunCentennial_ttf.ttf"
   },
   {
@@ -372,7 +372,7 @@
     "url": "/fonts/KoPub Batang Bold.ttf"
   },
   {
-    "name": "KoPub Batang Ligh",
+    "name": "KoPub Batang Light",
     "url": "/fonts/KoPub Batang Light.ttf"
   },
   {
@@ -384,7 +384,7 @@
     "url": "/fonts/KoPub Dotum Bold.ttf"
   },
   {
-    "name": "KoPub Dotum Ligh",
+    "name": "KoPub Dotum Light",
     "url": "/fonts/KoPub Dotum Light.ttf"
   },
   {
@@ -396,7 +396,7 @@
     "url": "/fonts/KoPubWorld Batang Bold.ttf"
   },
   {
-    "name": "KoPubWorld Batang Ligh",
+    "name": "KoPubWorld Batang Light",
     "url": "/fonts/KoPubWorld Batang Light.ttf"
   },
   {
@@ -408,7 +408,7 @@
     "url": "/fonts/KoPubWorld Dotum Bold.ttf"
   },
   {
-    "name": "KoPubWorld Dotum Ligh",
+    "name": "KoPubWorld Dotum Light",
     "url": "/fonts/KoPubWorld Dotum Light.ttf"
   },
   {
@@ -420,7 +420,7 @@
     "url": "/fonts/KoPub_Batang_Bold.ttf"
   },
   {
-    "name": "KoPub_Batang_Ligh",
+    "name": "KoPub_Batang_Light",
     "url": "/fonts/KoPub_Batang_Light.ttf"
   },
   {
@@ -432,7 +432,7 @@
     "url": "/fonts/KoPub_Dotum_Bold.ttf"
   },
   {
-    "name": "KoPub_Dotum_Ligh",
+    "name": "KoPub_Dotum_Light",
     "url": "/fonts/KoPub_Dotum_Light.ttf"
   },
   {
@@ -520,11 +520,11 @@
     "url": "/fonts/NanumBarunGothicBold.ttf"
   },
   {
-    "name": "NanumBarunGothicLigh",
+    "name": "NanumBarunGothicLight",
     "url": "/fonts/NanumBarunGothicLight.ttf"
   },
   {
-    "name": "NanumBarunGothicUltraLigh",
+    "name": "NanumBarunGothicUltraLight",
     "url": "/fonts/NanumBarunGothicUltraLight.ttf"
   },
   {
@@ -556,7 +556,7 @@
     "url": "/fonts/NanumGothicExtraBold.ttf"
   },
   {
-    "name": "NanumGothicLigh",
+    "name": "NanumGothicLight",
     "url": "/fonts/NanumGothicLight.ttf"
   },
   {
@@ -588,7 +588,7 @@
     "url": "/fonts/NanumPen.ttf"
   },
   {
-    "name": "NanumSquareNeo-aL",
+    "name": "NanumSquareNeo-aLt",
     "url": "/fonts/NanumSquareNeo-aLt.ttf"
   },
   {
@@ -640,7 +640,7 @@
     "url": "/fonts/ONE Mobile Bold.ttf"
   },
   {
-    "name": "ONE Mobile Ligh",
+    "name": "ONE Mobile Light",
     "url": "/fonts/ONE Mobile Light.ttf"
   },
   {
@@ -688,11 +688,11 @@
     "url": "/fonts/Pretendard-ExtraBold.ttf"
   },
   {
-    "name": "Pretendard-ExtraLigh",
+    "name": "Pretendard-ExtraLight",
     "url": "/fonts/Pretendard-ExtraLight.ttf"
   },
   {
-    "name": "Pretendard-Ligh",
+    "name": "Pretendard-Light",
     "url": "/fonts/Pretendard-Light.ttf"
   },
   {
@@ -720,7 +720,7 @@
     "url": "/fonts/PureBatang-Bold.ttf"
   },
   {
-    "name": "PureBatang-Ligh",
+    "name": "PureBatang-Light",
     "url": "/fonts/PureBatang-Light.ttf"
   },
   {
@@ -752,7 +752,7 @@
     "url": "/fonts/PyeongChangPeace-Bold.ttf"
   },
   {
-    "name": "PyeongChangPeace-Ligh",
+    "name": "PyeongChangPeace-Light",
     "url": "/fonts/PyeongChangPeace-Light.ttf"
   },
   {
@@ -836,7 +836,7 @@
     "url": "/fonts/SeoulNamsanM.ttf"
   },
   {
-    "name": "SeoulNamsanver",
+    "name": "SeoulNamsanvert",
     "url": "/fonts/SeoulNamsanvert.ttf"
   },
   {
@@ -1028,7 +1028,7 @@
     "url": "/fonts/tvN 즐거운이야기 Bold.ttf"
   },
   {
-    "name": "tvN 즐거운이야기 Ligh",
+    "name": "tvN 즐거운이야기 Light",
     "url": "/fonts/tvN 즐거운이야기 Light.ttf"
   },
   {
@@ -1052,7 +1052,7 @@
     "url": "/fonts/강원교육모두 Bold.ttf"
   },
   {
-    "name": "강원교육모두 Ligh",
+    "name": "강원교육모두 Light",
     "url": "/fonts/강원교육모두 Light.ttf"
   },
   {
@@ -1084,7 +1084,7 @@
     "url": "/fonts/경기천년제목_Bold.ttf"
   },
   {
-    "name": "경기천년제목_Ligh",
+    "name": "경기천년제목_Light",
     "url": "/fonts/경기천년제목_Light.ttf"
   },
   {
@@ -1264,7 +1264,7 @@
     "url": "/fonts/땅스부대찌개 Bold.ttf"
   },
   {
-    "name": "땅스부대찌개 Ligh",
+    "name": "땅스부대찌개 Light",
     "url": "/fonts/땅스부대찌개 Light.ttf"
   },
   {
@@ -1288,7 +1288,7 @@
     "url": "/fonts/빛고을광주_Bold.ttf"
   },
   {
-    "name": "빛고을광주_Ligh",
+    "name": "빛고을광주_Light",
     "url": "/fonts/빛고을광주_Light.ttf"
   },
   {
@@ -1356,7 +1356,7 @@
     "url": "/fonts/서울한강 장체M.ttf"
   },
   {
-    "name": "솔뫼 김대건 Ligh",
+    "name": "솔뫼 김대건 Light",
     "url": "/fonts/솔뫼 김대건 Light.ttf"
   },
   {
@@ -1704,7 +1704,7 @@
     "url": "/fonts/전주완판본 순R.ttf"
   },
   {
-    "name": "중나좋체 Ligh",
+    "name": "중나좋체 Light",
     "url": "/fonts/중나좋체 Light.ttf"
   },
   {
@@ -1732,7 +1732,7 @@
     "url": "/fonts/펀플로 생존자.ttf"
   },
   {
-    "name": "한국기계연구원_Ligh",
+    "name": "한국기계연구원_Light",
     "url": "/fonts/한국기계연구원_Light.ttf"
   },
   {

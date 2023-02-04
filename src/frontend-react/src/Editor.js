@@ -13,252 +13,9 @@ import { PlusOutlined } from "@ant-design/icons";
 import { fabric } from "fabric";
 import Box from "./components/Box";
 import "./Editor.css";
-import FontList from "./FontList.json";
 import { GlobalContext } from "./GlobalContext";
-
-function calculateFontSize(text, width, height, fontFamily = "arial") {
-  let fontSize = 1;
-  let textbox = new fabric.Textbox(text, {
-    width: width,
-    fontSize: fontSize,
-    fontFamily,
-    textAlign: "center",
-  });
-
-  while (textbox.height < height && textbox.width < width * 1.3) {
-    fontSize += 1;
-    textbox = new fabric.Textbox(text, {
-      width: width,
-      fontSize: fontSize,
-      fontFamily,
-      textAlign: "center",
-    });
-  }
-
-  return fontSize - 1;
-}
-
-const newRect = (props) => {
-  const box = new fabric.Rect({
-    top: 0,
-    left: 0,
-    height: 100,
-    width: 100,
-    fill: "rgba(0, 0, 0, 0.1)",
-    stroke: "red",
-    strokeWidth: 1,
-  });
-  box.textKor = "";
-  box.textEng = "";
-  box.fontFamily = FontList[0]["name"];
-  box.fontSize = 40;
-  box.color = "black";
-  for (const key in props) {
-    box[key] = props[key];
-  }
-  return box;
-};
-
-const rect2textbox = (rect) => {
-  if (rect.get("type") === "textbox") return rect;
-  const fontsz = calculateFontSize(
-    rect.textEng,
-    rect.width * rect.scaleX,
-    rect.height * rect.scaleY,
-    rect.fontFamily
-  );
-  rect.setFontSize(fontsz);
-  const textbox = new fabric.Textbox(rect.textEng, {
-    width: rect.width * rect.scaleX,
-    fontFamily: rect.fontFamily,
-    fontSize: fontsz,
-    textAlign: "center",
-  });
-  for (const key of [
-    "id",
-    "top",
-    "left",
-    // "width",
-    // "height",
-    // "fontFamily",
-    // "fontSize",
-    "textKor",
-    "textEng",
-    "recFonts",
-    "layer",
-    "color",
-  ]) {
-    textbox[key] = rect[key];
-  }
-  return textbox;
-};
-
-const OCRButton = ({ boxes, setBoxes, canvas, idRef }) => {
-  const { files, step, setStep, backendHost } = useContext(GlobalContext);
-  const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    if (files.typical && files.untypical && step == 10) onClick();
-  }, [step, files]);
-
-  const onClick = async () => {
-    if (!files.typical || !files.untypical) {
-      message.error("파일을 먼저 업로드해주세요.");
-      return;
-    }
-
-    setLoading(true);
-    const boxes = [];
-
-    const formData = new FormData();
-    formData.append("file", files.typical);
-    const p1 = fetch(`${backendHost}txt_extraction/v2`, {
-      method: "POST",
-      body: formData,
-    })
-      .then((response) => {
-        return response.json();
-      })
-      .then((data) => {
-        for (let i = 0; i < data.length; i++) {
-          const { x1, y1, w, h, text, fonts, color } = data[i];
-          const box = newRect({
-            left: x1,
-            top: y1,
-            width: w,
-            height: h,
-            textKor: text,
-            recFonts: fonts,
-            fontFamily: fonts[0]["name"],
-            id: idRef.current++,
-            layer: "대사",
-            color,
-          });
-          boxes.push(box);
-        }
-      });
-
-    const boxes_untypical = [];
-    const untypicalFormData = new FormData();
-    untypicalFormData.append("file", files.untypical);
-    const p2 = fetch(`${backendHost}untypical/txt_extraction/v2`, {
-      method: "POST",
-      body: untypicalFormData,
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        for (let i = 0; i < data.length; i++) {
-          const { x1, y1, w, h, text, fonts, color } = data[i];
-          const box = newRect({
-            left: x1,
-            top: y1,
-            width: w,
-            height: h,
-            textKor: text,
-            recFonts: fonts,
-            fontFamily: fonts[0]["name"],
-            id: idRef.current++,
-            layer: "효과음",
-            color,
-          });
-          boxes_untypical.push(box);
-        }
-
-        const ref_fonts = boxes_untypical.map((box) => box.fontFamily + ".ttf");
-
-        const body = JSON.stringify({
-          classified_font: ref_fonts,
-          en_list: Array(ref_fonts.length).fill(
-            "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-          ),
-        });
-
-        if (step == 10) setStep(11);
-        return fetch(`${backendHost}untypical/generation/`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body,
-        });
-      })
-      .then((res) => res.json())
-      .then((uris) => {
-        if (uris.length != boxes_untypical.length) {
-          console.error(
-            `폰트 개수 (${boxes_untypical.length})와 uri 개수 (${uris.length})가 일치하지 않습니다.))`
-          );
-        }
-        const fs = [];
-        for (
-          let i = 0;
-          i < Math.min(uris.length, boxes_untypical.length);
-          i++
-        ) {
-          const uri = uris[i].replace(/^"/, "").replace(/"$/, "");
-          const f = fetch(uri)
-            .then((res) => res.blob())
-            .then((blob) => blob.arrayBuffer())
-            .then((ab) => {
-              const name = `exp-font-${idRef.current++}`;
-              const font = new FontFace(name, ab);
-              console.log("font added", name);
-              font
-                .load()
-                .then((e) => {
-                  document.fonts.add(font);
-                })
-                .catch((e) => {
-                  console.error("error", font.family, e);
-                });
-              console.log("set", i, boxes_untypical);
-              boxes_untypical[i].fontFamily = name;
-              boxes_untypical[i].recFonts.push({ name, prob: "생성" });
-            })
-            .catch((e) => {
-              console.error("error", e);
-            });
-          fs.push(f);
-        }
-        return Promise.all(fs);
-      })
-      .then(() => {
-        console.log("boxes_untypical", boxes_untypical);
-        boxes.push(...boxes_untypical);
-      });
-
-    await Promise.all([p1, p2])
-      .then(() => {
-        console.log("then", boxes);
-        message.success("OCR에 성공했습니다.");
-        boxes.sort((a, b) => a.top - b.top);
-        boxes.forEach((box) => {
-          canvas.add(box);
-        });
-        setBoxes(boxes);
-        if (Math.floor(step / 10) == 1)
-          setTimeout(() => {
-            setStep(20);
-          }, 1000);
-      })
-      .catch((e) => {
-        console.error(e);
-        message.error("OCR에 실패했습니다.");
-        if (step != 0) setStep(-1);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  };
-
-  return (
-    <>
-      <Button id="ocr-button" loading={loading} onClick={onClick}>
-        1. OCR 수행
-      </Button>
-    </>
-  );
-};
+import OCRButton from "./components/OCRButton";
+import { newRect, rect2textbox } from "./utils";
 
 const Editor = ({ auto }) => {
   const navigate = useNavigate();
@@ -277,6 +34,7 @@ const Editor = ({ auto }) => {
     idRef,
     width,
     height,
+    urls,
   } = useContext(GlobalContext);
 
   const removeBox = (id) => {
@@ -284,6 +42,24 @@ const Editor = ({ auto }) => {
     if (!box) return;
     fabricRef.current?.remove(box);
     setBoxes(boxes.filter((b) => b !== box));
+  };
+  const removeBoxes = (ids) => {
+    const newBoxes = [];
+    boxes.forEach((b) => {
+      if (!ids.includes(b.id)) newBoxes.push(b);
+      else fabricRef.current?.remove(b);
+    });
+    setBoxes(newBoxes);
+    fabricRef.current?.remove(...newBoxes);
+  };
+  const handleKeyDown = (e) => {
+    if (e.key === "Delete") {
+      const selected = fabricRef.current?.getActiveObjects();
+      if (selected) {
+        const ids = selected.map((s) => s.id);
+        removeBoxes(ids);
+      }
+    }
   };
 
   const [backgroundObj, setBackgroundObj] = useState(null);
@@ -327,23 +103,29 @@ const Editor = ({ auto }) => {
         "selection:updated": fs,
       });
     };
-    const disposeFabric = () => {
-      fabricRef.current.dispose();
-    };
+
+    if (width === 0 || height === 0) {
+      message.error("이미지가 로드되지 않았습니다.");
+      setTimeout(() => {
+        navigate("/");
+      }, 1000);
+    }
+
+    document.onkeydown = handleKeyDown;
 
     initFabric();
 
     return () => {
-      disposeFabric();
+      fabricRef.current.dispose();
+      document.onkeydown = null;
       setStep(0);
     };
   }, []);
 
   // 파일 로드
   useEffect(() => {
-    for (const key in files) {
-      const file = files[key];
-      const url = URL.createObjectURL(file);
+    for (const key in urls) {
+      const url = urls[key];
       fabric.Image.fromURL(url, (obj) => {
         switch (key) {
           case "background":
@@ -358,7 +140,7 @@ const Editor = ({ auto }) => {
         }
       });
     }
-  }, [files]);
+  }, [urls]);
 
   useEffect(() => {
     boxes.forEach((box) => {
@@ -438,16 +220,12 @@ const Editor = ({ auto }) => {
             canvas={fabricRef.current}
             boxes={boxes}
             setBoxes={setBoxes}
-            idRef={idRef}
           />
           <Button onClick={convertAll}>2. 대사 일괄 변환</Button>
           <Button
             onClick={() => {
               setLayer("배경");
               setStep(3);
-              // const data = fabricRef.current.toDataURL({ format: "png" });
-              // setResult({ data, boxes });
-              // navigate("/result");
             }}
           >
             3. 완성!
@@ -473,9 +251,9 @@ const Editor = ({ auto }) => {
         </div>
       </div>
 
-      <div className="flex justify-center">
+      <div className="flex">
         <div
-          className="border m-0 p-0"
+          className="border mx-auto p-0"
           style={{
             width: width,
             height: height,
@@ -490,9 +268,8 @@ const Editor = ({ auto }) => {
           />
         </div>
         <div
-          className="border overflow-x-hidden"
+          className="border overflow-x-hidden mr-4"
           style={{
-            height: height,
             width: auto ? 0 : 520,
           }}
         >
@@ -526,7 +303,7 @@ const Editor = ({ auto }) => {
                 width: 100,
                 height: 100,
                 id: idRef.current++,
-                layer: layer,
+                layer: layer === "배경" ? "대사" : layer,
               });
               fabricRef.current?.add(box);
               setBoxes([...boxes, box]);

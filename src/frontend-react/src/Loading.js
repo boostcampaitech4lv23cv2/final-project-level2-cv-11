@@ -11,7 +11,7 @@ const Loading = () => {
   const { step, setStep } = useContext(GlobalContext);
   useEffect(() => {
     if (step === 0) setStep(10);
-  }, []);
+  }, [step]);
   const msg = {
     0: "에러",
     10: "대사 인식중...",

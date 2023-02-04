@@ -30,6 +30,7 @@ root.render(
         </Routes>
       </GlobalContextProvider>
     </BrowserRouter>
+    <div className="h-20" />
   </React.StrictMode>
 );
 

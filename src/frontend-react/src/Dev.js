@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { Input, Button, message } from "antd";
 import { fabric } from "fabric";
 import { GlobalContext } from "./GlobalContext";
@@ -16,15 +16,13 @@ const OCRView = ({ title, URL }) => {
 };
 
 const OCRTest = () => {
-  const { backendHost, files } = useContext(GlobalContext);
+  const { backendHost, files, urls } = useContext(GlobalContext);
 
   const [URL1, setURL1] = useState(null);
   const [URL2, setURL2] = useState(null);
   const [URL3, setURL3] = useState(null);
 
   const [loading, setLoading] = useState(false);
-
-  const typicalURL = files.typical ? URL.createObjectURL(files.typical) : null;
 
   const req = async (URL, formData, set) => {
     return fetch(URL, {
@@ -48,7 +46,7 @@ const OCRTest = () => {
             })
           );
         }
-        fabric.Image.fromURL(typicalURL, (obj) => {
+        fabric.Image.fromURL(urls.typical, (obj) => {
           canvas.setWidth(obj.width);
           canvas.setHeight(obj.height);
           canvas.setBackgroundImage(obj);
@@ -64,7 +62,7 @@ const OCRTest = () => {
   };
 
   const handleOCR = async () => {
-    if (!files.typical || !files.untypical) {
+    if (!files.typical) {
       message.error("파일을 먼저 업로드해주세요.");
       return;
     }
@@ -88,7 +86,6 @@ const OCRTest = () => {
       <Button loading={loading} onClick={handleOCR}>
         OCR 일괄 요청
       </Button>
-      <LayerUpload title="대사 레이어" name="typical" />
       <div className="flex justify-center">
         <OCRView title="CLOVA (후처리X)" URL={URL1} />
         <OCRView title="CLOVA (후처리O)" URL={URL2} />
@@ -179,6 +176,48 @@ const FontTest = () => {
   );
 };
 
+const MergeTest = () => {
+  const { files, urls } = useContext(GlobalContext);
+
+  const [url, setURL] = useState(null);
+
+  const handleMerge = () => {
+    if (!urls.typical) {
+      message.error("대사 레이어 없음");
+      return;
+    }
+    const canvas = new fabric.Canvas();
+    fabric.Image.fromURL(urls.typical, (obj) => {
+      canvas.setWidth(obj.width);
+      canvas.setHeight(obj.height);
+      canvas.setBackgroundColor("yellow");
+      const f = new fabric.Image.filters.RemoveColor({
+        color: "#ffffff",
+        threshold: 0.2,
+        distance: 0.5,
+      });
+      obj.filters.push(f);
+      obj.applyFilters();
+      canvas.add(obj);
+      canvas.setActiveObject(obj);
+
+      canvas.renderAll();
+      const url = canvas.toDataURL({ format: "png" });
+      setURL(url);
+    });
+  };
+
+  return (
+    <div className="border mb-2">
+      <h1 className="text-2xl">레이어 합성 테스트</h1>
+      <Button onClick={handleMerge}>합성 !</Button>
+      <div className="flex justify-center">
+        <img src={url} />
+      </div>
+    </div>
+  );
+};
+
 const Dev = () => {
   return (
     <div className="mt-4 mx-24 text-center">
@@ -186,6 +225,8 @@ const Dev = () => {
       각종 테스트 기능 추가 예정
       <br />
       <div className="h-4" />
+      <LayerUpload title="대사 레이어" name="typical" />
+      <MergeTest />
       <FontTest />
       <HostTest />
       <OCRTest />

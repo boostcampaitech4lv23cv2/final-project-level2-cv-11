@@ -7,15 +7,7 @@ const { Title, Text } = Typography;
 
 const Result = () => {
   const navigate = useNavigate();
-  const { files, result, width, height } = useContext(GlobalContext);
-  const [before, setBefore] = useState(null);
-
-  useEffect(() => {
-    const file = files["background"];
-    if (file) {
-      setBefore(URL.createObjectURL(file));
-    }
-  }, [files]);
+  const { urls, result, width, height } = useContext(GlobalContext);
 
   return (
     <div className="my-0 mx-24">
@@ -25,7 +17,12 @@ const Result = () => {
         <div className="m-2.5">
           <Title level={3}>원본</Title>
           <br />
-          <img src={before} alt="background" width={width} className="border" />
+          <img
+            src={urls.origin}
+            alt="background"
+            width={width}
+            className="border"
+          />
         </div>
         <div className="m-2.5">
           <Title level={3}>번역본</Title>

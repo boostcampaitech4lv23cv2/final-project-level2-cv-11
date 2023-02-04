@@ -24,19 +24,10 @@ const Button = styled.button`
 // title: UI 상에 표시될 제목
 // name: 전역 상태에 저장될 이름
 const LayerUpload = ({ title, name }) => {
-  const [imgURL, setImgURL] = useState(null);
-  const { files, setFiles } = useContext(GlobalContext);
+  const { files, setFiles, urls } = useContext(GlobalContext);
   const setFile = (name, file) => {
     setFiles({ ...files, [name]: file });
-    setImgURL(URL.createObjectURL(file));
   };
-
-  useEffect(() => {
-    const file = files[name];
-    if (file) {
-      setImgURL(URL.createObjectURL(file));
-    }
-  }, [files]);
 
   return (
     <div className="m-2">
@@ -62,7 +53,7 @@ const LayerUpload = ({ title, name }) => {
       >
         <Button
           className="hover:opacity-50"
-          style={{ backgroundImage: `url(${imgURL})` }}
+          style={{ backgroundImage: `url(${urls[name]})` }}
         >
           +
         </Button>
