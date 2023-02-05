@@ -1,13 +1,5 @@
 import React, { useRef, useEffect, useState, useContext } from "react";
-import {
-  message,
-  Divider,
-  Checkbox,
-  Button,
-  Popconfirm,
-  Upload,
-  Segmented,
-} from "antd";
+import { message, Button, Segmented } from "antd";
 import { useNavigate } from "react-router-dom";
 import { PlusOutlined } from "@ant-design/icons";
 import { fabric } from "fabric";
@@ -21,21 +13,12 @@ const Editor = ({ auto }) => {
   const navigate = useNavigate();
   const canvasRef = useRef(null);
   const fabricRef = useRef(null);
+  const boxContainerRef = useRef(null);
 
   const [boxes, setBoxes] = useState([]);
 
-  const {
-    files,
-    setFiles,
-    result,
-    setResult,
-    step,
-    setStep,
-    idRef,
-    width,
-    height,
-    urls,
-  } = useContext(GlobalContext);
+  const { result, setResult, step, setStep, idRef, width, height, urls } =
+    useContext(GlobalContext);
 
   const removeBox = (id) => {
     const box = boxes.find((b) => b.id === id);
@@ -50,7 +33,6 @@ const Editor = ({ auto }) => {
       else fabricRef.current?.remove(b);
     });
     setBoxes(newBoxes);
-    fabricRef.current?.remove(...newBoxes);
   };
   const handleKeyDown = (e) => {
     if (e.key === "Delete") {
@@ -111,8 +93,6 @@ const Editor = ({ auto }) => {
         navigate("/");
       }, 1000);
     }
-
-    document.onkeydown = handleKeyDown;
 
     initFabric();
 
@@ -183,6 +163,7 @@ const Editor = ({ auto }) => {
 
   useEffect(() => {
     setResult({ ...result, boxes });
+    document.onkeydown = handleKeyDown;
   }, [boxes]);
 
   useEffect(() => {
@@ -212,62 +193,71 @@ const Editor = ({ auto }) => {
   }, [step]);
 
   return (
-    <div className="text-center">
-      <div className={`flex justify-center pb-2.5 ${auto && "invisible h-0"}`}>
-        <div className="mr-16">
-          <h1 className="text-sm">레이어</h1>
-          <Segmented
-            options={["배경", "대사", "효과음"]}
-            value={layer}
-            onChange={(e) => {
-              setLayer(e);
-            }}
-          />
-        </div>
-        <div className="mt-5">
-          <OCRButton
-            canvas={fabricRef.current}
-            boxes={boxes}
-            setBoxes={setBoxes}
-          />
-          <Button onClick={convertAll}>2. 대사 일괄 변환</Button>
-          <Button
-            onClick={() => {
-              setLayer("배경");
-              setStep(3);
-            }}
-          >
-            3. 완성!
-          </Button>
-          <Button
-            className="ml-16"
-            onClick={() => {
-              const canvas = fabricRef.current;
-              canvas.remove(...canvas.getObjects());
-              setBoxes([]);
-            }}
-            danger
-          >
-            대사 일괄 삭제
-          </Button>
-          {/* <Button
-            onClick={() => {
-              console.log("boxes", boxes);
-            }}
-          >
-            디버그
-          </Button> */}
-        </div>
-      </div>
-
-      <div className="flex">
+    <div className="text-center flex">
+      <div className="w-full">
         <div
-          className="border mx-auto p-0"
-          style={{
-            width: width,
-            height: height,
-          }}
+          className={`flex justify-center py-2.5 sticky top-0 z-10 bg-white border-b ${
+            auto && "invisible h-0"
+          }`}
         >
+          <div>
+            <h1 className="text-sm">레이어</h1>
+            <Segmented
+              options={["배경", "대사", "효과음"]}
+              value={layer}
+              onChange={(e) => {
+                setLayer(e);
+              }}
+            />
+          </div>
+          <div className="mt-5 ml-16">
+            <OCRButton
+              canvas={fabricRef.current}
+              boxes={boxes}
+              setBoxes={setBoxes}
+            />
+            <Button onClick={convertAll}>2. 대사 일괄 변환</Button>
+            <Button
+              onClick={() => {
+                setLayer("배경");
+                setStep(3);
+              }}
+            >
+              3. 완성!
+            </Button>
+          </div>
+          <div className="mt-5 ml-16">
+            <Button
+              onClick={() => {
+                const box = newRect({
+                  top: 100,
+                  left: 100,
+                  width: 100,
+                  height: 100,
+                  id: idRef.current++,
+                  layer: layer === "배경" ? "대사" : layer,
+                });
+                fabricRef.current?.add(box);
+                setBoxes([...boxes, box]);
+              }}
+              icon={<PlusOutlined />}
+            >
+              대사 추가
+            </Button>
+            <Button
+              onClick={() => {
+                const canvas = fabricRef.current;
+                canvas.remove(...canvas.getObjects());
+                setBoxes([]);
+              }}
+              danger
+            >
+              대사 일괄 삭제
+            </Button>
+          </div>
+        </div>
+
+        <div className="mx-auto p-0 flex justify-center">
           <canvas
             className="border"
             ref={canvasRef}
@@ -275,13 +265,19 @@ const Editor = ({ auto }) => {
             height={height}
           />
         </div>
-        <div
-          className="border overflow-x-hidden mr-4"
-          style={{
-            width: auto ? 0 : 520,
-          }}
-        >
-          <Divider>대사 목록</Divider>
+      </div>
+
+      <div
+        className="inline-block border overflow-x-hidden mr-4 sticky right-4 top-0"
+        style={{
+          minWidth: auto ? 0 : 520,
+          width: auto ? 0 : 520,
+          height: "100vh",
+        }}
+        ref={boxContainerRef}
+      >
+        <div className="py-4 sticky top-0 z-10 bg-white">대사 목록</div>
+        <div>
           {(boxes.length > 0 &&
             boxes.map((box, i) => (
               <Box
@@ -301,26 +297,9 @@ const Editor = ({ auto }) => {
                 invisible={
                   layer !== "배경" && layer !== "전체" && box.layer !== layer
                 }
+                boxContainerRef={boxContainerRef}
               />
             ))) || <div className="m-12">대사가 없습니다</div>}
-
-          <Button
-            onClick={() => {
-              const box = newRect({
-                top: 100,
-                left: 100,
-                width: 100,
-                height: 100,
-                id: idRef.current++,
-                layer: layer === "배경" ? "대사" : layer,
-              });
-              fabricRef.current?.add(box);
-              setBoxes([...boxes, box]);
-            }}
-            icon={<PlusOutlined />}
-          >
-            대사 추가하기
-          </Button>
         </div>
       </div>
     </div>

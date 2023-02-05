@@ -17,14 +17,14 @@ const Header = () => {
             Toonslator
           </span>
         </Title>
-        <div className="inline-block ml-4">
+        {/* <div className="inline-block ml-4">
           <Link to="/">Home</Link> &nbsp;
           <Link to="/demo">Demo</Link> &nbsp;
           <Link to="/result">Result</Link> &nbsp;
           <Link to="/edit">Edit</Link> &nbsp;
           <Link to="/loading">Loading</Link> &nbsp;
           <Link to="/dev">Dev</Link> &nbsp;
-        </div>
+        </div> */}
 
         <div className="inline-block w-80 float-right"></div>
       </div>

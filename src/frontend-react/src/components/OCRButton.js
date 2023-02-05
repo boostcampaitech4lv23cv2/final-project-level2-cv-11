@@ -113,7 +113,7 @@ const OCRButton = ({ setBoxes, canvas }) => {
             .then((res) => res.blob())
             .then((blob) => blob.arrayBuffer())
             .then((ab) => {
-              const name = `생성-폰트-${idRef.current++}`;
+              const name = `Generated-${idRef.current++}`;
               const font = new FontFace(name, ab);
               console.log("font added", name);
               font

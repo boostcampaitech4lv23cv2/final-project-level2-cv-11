@@ -23,7 +23,7 @@ const Sample = ({ title, name }) => {
   };
 
   return (
-    <div className="w-72 h-72 m-2">
+    <div className="w-72 m-2">
       <Title level={5}>{title}</Title>
 
       <div className="group relative cursor-pointer" onClick={handleClick}>

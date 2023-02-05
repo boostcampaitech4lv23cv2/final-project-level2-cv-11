@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, useRef } from "react";
 import {
   Input,
   Select,
@@ -122,7 +122,8 @@ const FontSelect = ({
   );
 };
 
-const Box = ({ i, box, delBox, convertBox, invisible }) => {
+const Box = ({ i, box, delBox, convertBox, invisible, boxContainerRef }) => {
+  const self = useRef(null);
   const { backendHost } = useContext(GlobalContext);
   const [textKor, setTextKor] = useState(box.textKor);
   const [textEng, setTextEng] = useState(box.textEng);
@@ -132,6 +133,16 @@ const Box = ({ i, box, delBox, convertBox, invisible }) => {
 
   const [x, setX] = useState(0);
   const [selected, setSelected] = useState(false);
+
+  useEffect(() => {
+    if (selected) {
+      self.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+        inline: "center",
+      });
+    }
+  }, [selected]);
 
   box.setFontSize = setFontSize;
   box.setSelected = (f) => {
@@ -187,7 +198,7 @@ const Box = ({ i, box, delBox, convertBox, invisible }) => {
 
   return (
     <div
-      className={`${
+      className={`box ${
         invisible
           ? "absolute overflow-x-hidden h-0 m-0 p-0"
           : "m-2.5 p-1.25 text-center"
@@ -197,6 +208,7 @@ const Box = ({ i, box, delBox, convertBox, invisible }) => {
           ? {}
           : { border: selected ? "1px solid black" : "1px solid #d9d9d9" }
       }
+      ref={self}
     >
       <div>
         대사 #{i}

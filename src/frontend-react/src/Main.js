@@ -2,7 +2,7 @@ import { Typography, Divider } from "antd";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 
-const { Title, Text, Link } = Typography;
+const { Title, Text } = Typography;
 
 const Button = styled.button`
   width: 160px;
@@ -19,13 +19,40 @@ const Button = styled.button`
   }
 `;
 
+const Member = () => {
+  return (
+    <div className="mx-4">
+      <img src="https://via.placeholder.com/150" alt="team member" />
+      <h2>John</h2>
+      <p>CEO</p>
+    </div>
+  );
+};
+
+const Members = () => {
+  return (
+    <div>
+      <Title>팀 소개</Title>
+      <Title level={5}>저희 팀을 소개합니다</Title>
+      <div className="flex justify-center">
+        <Member />
+        <Member />
+        <Member />
+        <Member />
+        <Member />
+      </div>
+    </div>
+  );
+};
+
 const Main = () => {
   const navigate = useNavigate();
   return (
-    <div style={{ margin: "0 100px 100px" }}>
-      <div style={{ height: "20px" }} />
+    <div className="mx-24 text-center">
       <div className="mb-28">
-        <Title className="text-center">메인 페이지 작업중</Title>
+        <Title level={5} className="mt-4">
+          웹툰 번역 자동화 프로젝트 Toonslator의 홈페이지 입니다.
+        </Title>
 
         <div className="flex justify-center">
           <Button
@@ -36,11 +63,10 @@ const Main = () => {
             시작하기
           </Button>
         </div>
-        <div className="mb-32" />
 
-        <Title level={5}>
-          웹툰 번역 자동화 프로젝트 Toonslator의 홈페이지 입니다.
-        </Title>
+        {/* <Title className="text-center">메인 페이지 작업중</Title> */}
+
+        <div className="mb-32" />
 
         <Text>프로젝트 소개, 관련 사진 등 추가 예정</Text>
         <br />
@@ -101,10 +127,7 @@ const Main = () => {
 
       <Divider />
 
-      <div className="mb-28">
-        <Title>팀 소개</Title>
-        <Title level={5}>저희 팀을 소개합니다</Title>
-      </div>
+      <Members />
     </div>
   );
 };
