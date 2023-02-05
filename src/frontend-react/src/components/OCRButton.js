@@ -46,6 +46,7 @@ const OCRButton = ({ setBoxes, canvas }) => {
             color,
           });
           boxes.push(box);
+          canvas.add(box);
         }
       });
 
@@ -73,9 +74,11 @@ const OCRButton = ({ setBoxes, canvas }) => {
             color,
           });
           boxes_untypical.push(box);
+          canvas.add(box);
         }
 
         const ref_fonts = boxes_untypical.map((box) => box.fontFamily + ".ttf");
+        if (step == 10) setStep(11);
 
         const body = JSON.stringify({
           classified_font: ref_fonts,
@@ -84,7 +87,6 @@ const OCRButton = ({ setBoxes, canvas }) => {
           ),
         });
 
-        if (step == 10) setStep(11);
         return fetch(`${backendHost}untypical/generation/`, {
           method: "POST",
           headers: {
@@ -97,7 +99,7 @@ const OCRButton = ({ setBoxes, canvas }) => {
       .then((uris) => {
         if (uris.length != boxes_untypical.length) {
           console.error(
-            `폰트 개수 (${boxes_untypical.length})와 uri 개수 (${uris.length})가 일치하지 않습니다.))`
+            `효과음 개수 (${boxes_untypical.length})와 생성된 폰트 개수 (${uris.length})가 일치하지 않습니다.))`
           );
         }
         const fs = [];
@@ -111,7 +113,7 @@ const OCRButton = ({ setBoxes, canvas }) => {
             .then((res) => res.blob())
             .then((blob) => blob.arrayBuffer())
             .then((ab) => {
-              const name = `exp-font-${idRef.current++}`;
+              const name = `생성-폰트-${idRef.current++}`;
               const font = new FontFace(name, ab);
               console.log("font added", name);
               font
@@ -142,6 +144,7 @@ const OCRButton = ({ setBoxes, canvas }) => {
       .then(() => {
         console.log("then", boxes);
         message.success("OCR에 성공했습니다.");
+        canvas.remove(...canvas.getObjects("rect"));
         boxes.sort((a, b) => a.top - b.top);
         boxes.forEach((box) => {
           canvas.add(box);

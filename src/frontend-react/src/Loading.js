@@ -1,31 +1,45 @@
 import { useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import { Typography, message } from "antd";
+import { Typography, message, Steps } from "antd";
 import Editor from "./Editor";
 import { GlobalContext } from "./GlobalContext";
+import { LoadingOutlined } from "@ant-design/icons";
 
 const { Title } = Typography;
+
+const f = (step) => {
+  if (step === 10) return 0;
+  if (step === 11) return 1;
+  if (20 <= step || step <= 22 || step === 3) return 2;
+  if (step === 4) return 3;
+  return 0;
+};
 
 const Loading = () => {
   const navigate = useNavigate();
   const { step, setStep } = useContext(GlobalContext);
   useEffect(() => {
+    return () => {
+      setStep(0);
+    };
+  }, []);
+  useEffect(() => {
     if (step === 0) setStep(10);
   }, [step]);
-  const msg = {
-    0: "에러",
-    10: "대사 인식중...",
-    11: "폰트 생성중...",
-    20: "번역 중...",
-    21: "번역 중...",
-    22: "번역 중...",
-    3: "번역 중...",
-    4: "마무리 중...",
-    5: "결과 페이지로 이동...",
-  }[step.toString()];
+
+  const stepitems = [
+    { title: "OCR" },
+    { title: "폰트 생성" },
+    { title: "대사 생성" },
+    { title: "마무리" },
+  ];
+  stepitems[f(step)].icon = <LoadingOutlined />;
+
   return (
     <div>
-      <Title className="text-center">{msg}</Title>
+      <div className="w-[800px] my-10 mx-auto">
+        <Steps current={f(step)} items={stepitems} />
+      </div>
       <Editor auto />
     </div>
   );

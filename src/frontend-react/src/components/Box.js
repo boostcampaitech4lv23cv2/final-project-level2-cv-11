@@ -122,7 +122,7 @@ const FontSelect = ({
   );
 };
 
-const Box = ({ i, box, delBox, convertBox }) => {
+const Box = ({ i, box, delBox, convertBox, invisible }) => {
   const { backendHost } = useContext(GlobalContext);
   const [textKor, setTextKor] = useState(box.textKor);
   const [textEng, setTextEng] = useState(box.textEng);
@@ -187,8 +187,16 @@ const Box = ({ i, box, delBox, convertBox }) => {
 
   return (
     <div
-      className="m-2.5 p-1.25 text-center"
-      style={{ border: selected ? "1px solid black" : "1px solid #d9d9d9" }}
+      className={`${
+        invisible
+          ? "absolute overflow-x-hidden h-0 m-0 p-0"
+          : "m-2.5 p-1.25 text-center"
+      }`}
+      style={
+        invisible
+          ? {}
+          : { border: selected ? "1px solid black" : "1px solid #d9d9d9" }
+      }
     >
       <div>
         대사 #{i}

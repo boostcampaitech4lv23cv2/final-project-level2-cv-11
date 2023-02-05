@@ -62,6 +62,7 @@ const Editor = ({ auto }) => {
     }
   };
 
+  const [originObj, setOriginObj] = useState(null);
   const [backgroundObj, setBackgroundObj] = useState(null);
   const [typicalObj, setTypicalObj] = useState(null);
   const [untypicalObj, setUntypicalObj] = useState(null);
@@ -72,7 +73,7 @@ const Editor = ({ auto }) => {
     const initFabric = () => {
       fabricRef.current = new fabric.Canvas(canvasRef.current);
 
-      if (result.boxes) {
+      if (!auto && result.boxes) {
         result.boxes.forEach((box) => {
           fabricRef.current.add(box);
         });
@@ -128,6 +129,9 @@ const Editor = ({ auto }) => {
       const url = urls[key];
       fabric.Image.fromURL(url, (obj) => {
         switch (key) {
+          case "origin":
+            setOriginObj(obj);
+            break;
           case "background":
             setBackgroundObj(obj);
             break;
@@ -151,25 +155,28 @@ const Editor = ({ auto }) => {
 
   // 배경 업데이트
   useEffect(() => {
-    const obj =
-      layer === "배경"
-        ? backgroundObj
-        : layer === "대사"
-        ? typicalObj
-        : untypicalObj;
+    let obj = null;
+    if (layer === "배경") obj = backgroundObj;
+    else if (layer === "대사") obj = typicalObj;
+    else if (layer === "전체") obj = originObj;
+    else obj = untypicalObj;
     fabricRef.current?.setBackgroundImage(obj, () => {
       fabricRef.current.renderAll();
     });
-  }, [backgroundObj, typicalObj, layer]);
+  }, [originObj, backgroundObj, typicalObj, layer]);
 
   const convertAll = () => {
+    setLayer("배경");
     console.log("convertAll", boxes);
     const canvas = fabricRef.current;
-    const textboxes = boxes.map(rect2textbox);
-    canvas.remove(...boxes);
-    canvas.add(...textboxes);
+    const textboxes = [];
+    for (const box of boxes) {
+      const textbox = rect2textbox(box);
+      canvas.remove(box);
+      canvas.add(textbox);
+      textboxes.push(textbox);
+    }
     setBoxes(textboxes);
-    setLayer("배경");
     canvas.renderAll();
     if (Math.floor(step / 10) == 2) setStep(21);
   };
@@ -179,7 +186,11 @@ const Editor = ({ auto }) => {
   }, [boxes]);
 
   useEffect(() => {
-    if (step == 21) {
+    if (step == 10) {
+      setLayer("전체");
+    } else if (step == 20) {
+      convertAll();
+    } else if (step == 21) {
       const rects = boxes.filter((box) => box.get("type") === "rect");
       if (rects.length > 0) setStep(22);
       else setStep(3);
@@ -187,8 +198,6 @@ const Editor = ({ auto }) => {
       setTimeout(() => {
         setStep(21);
       }, 1000);
-    } else if (step == 20) {
-      convertAll();
     } else if (step == 3) {
       if (layer !== "배경") {
         setLayer("배경");
@@ -204,7 +213,7 @@ const Editor = ({ auto }) => {
 
   return (
     <div className="text-center">
-      <div className="flex justify-center pb-2.5">
+      <div className={`flex justify-center pb-2.5 ${auto && "invisible h-0"}`}>
         <div className="mr-16">
           <h1 className="text-sm">레이어</h1>
           <Segmented
@@ -259,7 +268,6 @@ const Editor = ({ auto }) => {
             height: height,
           }}
         >
-          {/* <canvas ref={canvasRef} width={800} height={800} /> */}
           <canvas
             className="border"
             ref={canvasRef}
@@ -275,25 +283,26 @@ const Editor = ({ auto }) => {
         >
           <Divider>대사 목록</Divider>
           {(boxes.length > 0 &&
-            boxes
-              .filter((box) => (layer === "배경" ? true : box.layer === layer))
-              .map((box, i) => (
-                <Box
-                  key={box.id}
-                  i={i}
-                  box={box}
-                  delBox={() => {
-                    removeBox(box.id);
-                  }}
-                  convertBox={() => {
-                    const canvas = fabricRef.current;
-                    const textbox = rect2textbox(box);
-                    canvas.remove(box);
-                    canvas.add(textbox);
-                    setBoxes(boxes.map((b) => (b === box ? textbox : b)));
-                  }}
-                />
-              ))) || <div className="m-12">대사가 없습니다</div>}
+            boxes.map((box, i) => (
+              <Box
+                key={box.id}
+                i={i}
+                box={box}
+                delBox={() => {
+                  removeBox(box.id);
+                }}
+                convertBox={() => {
+                  const canvas = fabricRef.current;
+                  const textbox = rect2textbox(box);
+                  canvas.remove(box);
+                  canvas.add(textbox);
+                  setBoxes(boxes.map((b) => (b === box ? textbox : b)));
+                }}
+                invisible={
+                  layer !== "배경" && layer !== "전체" && box.layer !== layer
+                }
+              />
+            ))) || <div className="m-12">대사가 없습니다</div>}
 
           <Button
             onClick={() => {
