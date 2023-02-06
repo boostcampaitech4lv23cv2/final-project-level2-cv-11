@@ -57,25 +57,32 @@ class Untypical_Pipeline:
         
     def font_generate_gasnext_font(self, classified_font, en_list):
         self.Font_Generator_gas_font(classified_font, en_list)
+    def png2svg(self, generation_type):
+        f = 100
+        blur = 1
+        t = 0.4
 
-    def png2svg(self):
+        base_str = ""
         for folder_path in glob.glob(os.path.join(os.getenv("HOME"), "tmp/*")):
-            for png_path in glob.glob(os.path.join(folder_path, "generated_mxfont/*")):
+
+            createDirectory(os.path.join(folder_path, f"generated_{generation_type}_svg"))
+            for png_path in glob.glob(os.path.join(folder_path, f"generated_{generation_type}/*")):
                 split_path, split_name = os.path.split(png_path)
                 split_name = os.path.splitext(split_name)[0]
-                createDirectory(os.path.join(folder_path, "generated_mxfont_svg"))
-                os.system(
-                    f'convert {png_path} -flatten pgm:| mkbitmap -f 1200 --blur 1 -t 0.4 - -o -| \
-                          potrace --svg -o {os.path.join(folder_path,"generated_mxfont_svg", f"{split_name}.svg")}'
-                )
-
-    def svg2ttf(self):
+                base_str += f'convert {png_path} -flatten pgm:| mkbitmap -f {f} --blur {blur} -t {t} - -o -| \
+                          potrace --svg -o {os.path.join(folder_path,f"generated_{generation_type}_svg", f"{split_name}.svg")}'
+                base_str += " & "
+        base_str += "wait"
+        os.system(base_str)
+ 
+ 
+    def svg2ttf(self,generation_type):
         ttf_list = []
         svgs2ttf_path = os.path.join(os.getenv("HOME"), "src/model/svg2ttf/svgs2ttf.py")
         example_json_path = os.path.join(
             os.getenv("HOME"), "src/model/svg2ttf/example.json"
         )
-
+        base_str = ""
         for folder_path in glob.glob(os.path.join(os.getenv("HOME"), "tmp/*")):
             folder_name = os.path.basename(folder_path)
             with open(example_json_path, "r") as f:
@@ -84,12 +91,12 @@ class Untypical_Pipeline:
             font_json["props"]["familyname"] = folder_name
             font_json["props"]["fontname"] = folder_name + "_Toon-ranslator"
             font_json["props"]["fullname"] = folder_name + "_Toon-ranslator_NTF"
-            font_json["output"] = [os.path.join(folder_path, f"{folder_name}.ttf")]
+            font_json["output"] = [os.path.join(folder_path, f"{folder_name}_{generation_type}.ttf")]
             ttf_list.append(font_json["output"])
 
             tmp = {}
             for svg_path in glob.glob(
-                os.path.join(folder_path, "generated_mxfont_svg/*")
+                os.path.join(folder_path, f"generated_{generation_type}_svg/*")
             ):
                 split_path, split_name = os.path.split(svg_path)
                 split_name = os.path.splitext(split_name)[0]
@@ -101,6 +108,9 @@ class Untypical_Pipeline:
             with open(json_path, "w", encoding="utf-8") as f:
                 json.dump(font_json, f, indent="\t")
 
-            os.system(f"fontforge -lang=py -script {svgs2ttf_path} {json_path}")
+            base_str += f"fontforge -lang=py -script {svgs2ttf_path} {json_path}"
+            base_str += " & "
+        base_str += "wait"
+        os.system(base_str)
 
         return ttf_list

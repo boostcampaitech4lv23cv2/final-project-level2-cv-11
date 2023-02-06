@@ -94,10 +94,8 @@ def eval(source_font_list, en_list):
         ref_paths = glob(os.path.join(ref_path, f"*.{extension}"))
         #ref_paths = Path(ref_path).glob(f"*.{extension}")  # WTF?
         if style_channel > len(ref_paths): 
-            print(f"len : {len(ref_paths)}")
             raise Exception("샘플 수가 적어 스타일 추출 불가! (gasnext)")
         ref_paths = random.sample(list(ref_paths), style_channel)  # 6개 랜덤 추출
-        print("paths :", ref_paths)
         ref_imgs = torch.cat(
             [load_image(ref_path, transform) for ref_path in ref_paths], 0
         )
@@ -114,7 +112,6 @@ def eval(source_font_list, en_list):
             style_img = ref_imgs.unsqueeze(0).to(device)
             #print(f"source_img type : {type(source_img)}, shape : {source_img.shape}")
             generated_images = gen((source_img, style_img))  ## 이 아웃풋 형식이 뭐지!!! 알아봐야 함
-            print("output type :", type(generated_images))
             path = os.path.join(save_dir, f"{hex(ord(char))}.png")
             
             result_img = tensor2im(generated_images)

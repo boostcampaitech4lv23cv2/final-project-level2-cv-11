@@ -1,7 +1,8 @@
-import models.ftgan_networks as ftgan_networks
+import gasnext.models.ftgan_networks as ftgan_networks
+
 import torch
 
-from .base_model import BaseModel
+from gasnext.models.base_model import BaseModel
 
 
 class FontTranslatorGANModel(BaseModel):

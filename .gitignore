@@ -25,7 +25,7 @@ notebooks/
 
 /data/
 tmp/
-
+src/model/font_generator/mxfont/data
 # 환경 변수 설정 파일
 .env
 
