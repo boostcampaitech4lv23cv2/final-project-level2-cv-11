@@ -23,7 +23,7 @@ wandb/
 experiment/
 notebooks/
 
-data/
+/data/
 tmp/
 
 # 환경 변수 설정 파일
