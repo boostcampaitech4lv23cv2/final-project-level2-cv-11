@@ -115,7 +115,7 @@ const HostTest = () => {
 
 const FontTest = () => {
   const [fontList, setFontList] = useState([]);
-  const { idRef } = useContext(GlobalContext);
+  const { backendHost, idRef } = useContext(GlobalContext);
   return (
     <div className="border">
       <h2 className="text-2xl">폰트 테스트</h2>
@@ -131,7 +131,7 @@ const FontTest = () => {
       </Button>
       <Button
         onClick={() => {
-          fetch("http://49.50.160.104:30002/test/ttf", {
+          fetch(`${backendHost}test/ttf`, {
             method: "GET",
           })
             .then((res) => {
