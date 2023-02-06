@@ -45,6 +45,8 @@ def eval(source_font_list,en_list):
     gen.load_state_dict(weight)
     
     for idx, (source_font, en) in enumerate(zip(source_font_list, en_list)):
+        if source_font == None:
+            continue
         ref_path = os.path.join(os.getenv("HOME"), f'tmp/img{idx}/referenced')
         extension = "png"
         batch_size = 3

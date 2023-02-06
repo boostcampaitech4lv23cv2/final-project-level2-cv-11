@@ -134,11 +134,14 @@ class Clova_OCR:
         for box in boxes:
             merged_list = sorted(box[3])
             infer_texts = []
+            inner_box = []
             for idx in merged_list:
                 infer_texts.append(result_orga[idx][2])
+                inner_box.append([result_orga[idx][0],result_orga[idx][1],result_orga[idx][2]])
             box[2] = " ".join(infer_texts)
+            box[3] = inner_box
 
-        return [[x[0], x[1], x[2]] for x in boxes]
+        return [[x[0], x[1], x[2],x[3]] for x in boxes]
 
     def ocr(self, image):
         result, result_orga = self.request(image)

@@ -1,25 +1,17 @@
 from fastapi import APIRouter, Query
-from backend.pipeline import typical_pipeline
+from backend.pipeline import untypical_pipeline
 
 
-router = APIRouter(prefix="/mt")
-
-Typical_pipeline = typical_pipeline.Typical_Pipeline()
-
-cache = {}
+router = APIRouter(prefix="/untypical/mt")
 
 
 @router.post("/", description="mt모델을 돌립니다.")
 async def make_mt(text: str = Query(...)):
+    Untypical_pipeline = untypical_pipeline.Untypical_Pipeline("/opt/ml/final-project-level2-cv-11/")
+    
     text = text.strip()
-
-    if text in cache:
-        return cache[text]
-
     # TODO: 한글임을 판단하는 로직 추가
     if text == "":
         return text
-    mt_result = Typical_pipeline.papago(text)
-
-    cache[text] = mt_result
+    mt_result = Untypical_pipeline.papago(text)
     return mt_result

@@ -1,6 +1,7 @@
 import sys
 import os
 from os import path
+from typing import List
 from pathlib import Path
 import glob
 
@@ -13,53 +14,37 @@ import cv2
 class Typical_Pipeline:
     def __init__(self):
         self.OCR = model.Clova_OCR()
-        self.re_OCR = model.Tesseract_OCR()
+        self.re_OCR = model.Tesseract_OCR("typical")
         self.MT = model.Papago_MT()
         self.Typical_Classification = model.FC("typical")
+        self.Font_Color = model.Font_Color()
 
-    def clova_ocr(self, image):
-        encoded_img = np.fromstring(image, dtype=np.uint8)
+    def clova_ocr(self, bytes: bytes) -> List[List]:
+        encoded_img = np.fromstring(bytes, dtype=np.uint8)
         self.img = cv2.imdecode(encoded_img, cv2.IMREAD_COLOR)
 
-        merged_boxes = self.OCR.ocr(image)
+        merged_boxes = self.OCR.ocr(bytes)
 
         return merged_boxes
 
-    def papago(self, text):
+    def papago(self, text: str) -> str:
         _, en = self.MT.request(text)
         return en
 
-    def typical_font_classification(self, merged_boxes):
+    def typical_font_classification(self, merged_boxes: List[List]) -> List[str]:
+        """
+        Args:
+            merged_boxes: 아래와 같은 형태의 리스트
+                ex)
+                [
+                    [[0, 0], [1, 1], "text"],
+                    ...
+                ]
+        """
         # tesseract + classification
-        merged_boxes_with_crop = self.re_OCR.typical_ocr(merged_boxes, self.img)
+        merged_boxes_with_crop = self.re_OCR.n_divide(merged_boxes, self.img)
         classified_font = self.Typical_Classification.classification(
             merged_boxes_with_crop
         )
-        return classified_font
-
-
-
-### example
-# import pickle
-# with open("/opt/Gobuk.pickle", 'rb') as f:
-#     data = pickle.load(f)
-
-# a = Typical_Pipeline()
-# merged_boxes = a.clova_ocr(data)
-# print("################")
-# print(merged_boxes)
-# print("################")
-
-# en_list = []
-# for i in merged_boxes:
-#     en_list.append(a.papago(i[2]))
-
-# print("################")
-# print(en_list)
-# print("################")
-
-# classification_font = a.typical_font_classification(merged_boxes)
-
-# print("################")
-# print(classification_font)
-# print("################")
+        font_color = self.Font_Color.find_color(merged_boxes_with_crop)
+        return classified_font, font_color

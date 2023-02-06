@@ -22,7 +22,7 @@ __pycache__/
 wandb/
 experiment/
 notebooks/
-src/model/font_classifier/weights/
+
 data/
 tmp/
 
@@ -31,3 +31,5 @@ tmp/
 
 # 가중치
 src/model/font_generator/mxfont/result/checkpoints/
+src/model/font_classifier/weights/untypical/weight.pth
+src/model/font_classifier/weights/typical/weight.pth
