@@ -17,12 +17,7 @@ from util.util import save_image, tensor2im
 #from datasets import read_font, render
 #from utils import save_tensor_to_image
 ################## 원래 있던 부분
-
-from data import create_dataset
-from models import create_model
 from options.test_options import TestOptions
-from util import html
-from util.visualizer import save_images
 ##################
 
 def createDirectory(directory):
@@ -96,16 +91,16 @@ def eval(source_font_list, en_list):
         batch_size = 1
         
         ref_paths = glob(os.path.join(ref_path, f"*.{extension}"))
-    #ref_paths = Path(ref_path).glob(f"*.{extension}")  # WTF?
-    if style_channel > len(ref_paths): 
-        print(f"len : {len(ref_paths)}")
-        raise Exception("샘플 수가 적어 스타일 추출 불가! (gasnext)")
+        #ref_paths = Path(ref_path).glob(f"*.{extension}")  # WTF?
+        if style_channel > len(ref_paths): 
+            print(f"len : {len(ref_paths)}")
+            raise Exception("샘플 수가 적어 스타일 추출 불가! (gasnext)")
         ref_paths = random.sample(list(ref_paths), style_channel)  # 6개 랜덤 추출
         print("paths :", ref_paths)
         ref_imgs = torch.cat(
             [load_image(ref_path, transform) for ref_path in ref_paths], 0
         )
-        
+            
         gen_chars = list(set(en))
         save_dir = os.path.join(os.getenv("HOME"), f'tmp/img{idx}/generated_gasnext')
         source_path = os.path.join(os.getenv("HOME"), 'data/font/untypical', source_font)
