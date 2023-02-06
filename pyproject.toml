@@ -21,6 +21,11 @@ fonttools = "^4.38.0"
 python-multipart = "^0.0.5"
 torch = "~1.7.0"
 torchvision = "~0.8.0"
+pygame = "^2.1.2"
+matplotlib = "^3.6.3"
+
+
+[tool.poetry.group.model_gasnext.dependencies]
 
 [build-system]
 requires = ["poetry-core"]

@@ -9,8 +9,9 @@ import sys
 import torch
 import os
 sys.path.append(str(Path(os.path.abspath(__file__)).parent))
-import models.ftgan_networks as ftgan_networks
-from datasets.utils import font2render
+from .models import ftgan_networks
+# import models.ftgan_networks as ftgan_networks
+from .datasets.utils import font2render
 from glob import glob
 from util.util import save_image, tensor2im
 

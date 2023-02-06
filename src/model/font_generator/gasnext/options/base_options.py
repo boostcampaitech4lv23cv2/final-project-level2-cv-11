@@ -4,7 +4,9 @@ import os
 import torch
 
 import data
-import models
+import sys
+sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname((os.path.abspath(__file__))))))
+from gasnext import models
 from util import util
 
 

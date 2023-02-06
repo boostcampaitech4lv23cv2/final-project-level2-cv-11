@@ -3,8 +3,9 @@ from abc import ABC, abstractmethod
 from collections import OrderedDict
 
 import torch
-
-import models.ftgan_networks as networks
+import sys
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+import ftgan_networks as networks
 
 class BaseModel(ABC):
     """This class is an abstract base class (ABC) for models.

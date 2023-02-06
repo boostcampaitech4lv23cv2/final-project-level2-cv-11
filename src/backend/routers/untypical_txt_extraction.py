@@ -17,7 +17,7 @@ class Results(BaseModel):
 
 @router.post("/", description="ocr모델을 돌립니다.", response_model=Results)
 async def make_ocr_font(file: UploadFile = File(...)):
-    Untypical_pipeline = untypical_pipeline.Untypical_Pipeline("/opt/ml/final/")
+    Untypical_pipeline = untypical_pipeline.Untypical_Pipeline("/opt/ml/final-project-level2-cv-11/")
 
     # OCR
     image_bytes = await file.read()
@@ -71,7 +71,7 @@ async def v2(file: UploadFile = File(...)):
     if h in cache:
         return cache[h]
 
-    pipeline = untypical_pipeline.Untypical_Pipeline("/opt/ml/final/")
+    pipeline = untypical_pipeline.Untypical_Pipeline("/opt/ml/final-project-level2-cv-11/")
 
     # OCR
     ocr_result = pipeline.clova_ocr(image_bytes)

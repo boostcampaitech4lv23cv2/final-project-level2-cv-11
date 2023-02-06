@@ -26,7 +26,8 @@ class Untypical_Pipeline:
         self.re_OCR = model.Tesseract_OCR("untypical")
         self.MT = model.Papago_MT()
         self.Typical_Classification = model.FC("untypical")
-        self.Font_Generator_mx_font = model.eval
+        self.Font_Generator_mx_font = model.mx_eval
+        self.Font_Generator_gas_font = model.gas_eval
         self.Font_Color = model.Font_Color()
         
     def clova_ocr(self, image):
@@ -53,6 +54,9 @@ class Untypical_Pipeline:
 
     def font_generate_mx_font(self, classified_font, en_list):
         self.Font_Generator_mx_font(classified_font, en_list)
+        
+    def font_generate_gasnext_font(self, classified_font, en_list):
+        self.Font_Generator_gas_font(classified_font, en_list)
 
     def png2svg(self):
         for folder_path in glob.glob(os.path.join(os.getenv("HOME"), "tmp/*")):
