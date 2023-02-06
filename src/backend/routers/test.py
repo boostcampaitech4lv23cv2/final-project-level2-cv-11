@@ -7,6 +7,7 @@ from dotenv import load_dotenv
 import pytesseract
 import numpy as np
 import cv2
+from pathlib import Path
 
 
 load_dotenv()
@@ -61,7 +62,7 @@ async def clova_post(file: UploadFile = File(...)):
 
     res = []
     for ocr in ocr_result:
-        p1, p2, text = ocr
+        p1, p2, text, _ = ocr
         x1, y1 = p1
         x2, y2 = p2
         box = Box(x1=x1, y1=y1, x2=x2, y2=y2, w=x2 - x1, h=y2 - y1, text=text)

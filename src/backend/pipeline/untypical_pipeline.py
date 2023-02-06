@@ -21,7 +21,7 @@ def createDirectory(directory):
 
 class Untypical_Pipeline:
     def __init__(self, git_path):
-        os.environ["HOME"] = git_path
+        os.environ["HOME"] = str(git_path)
         self.OCR = model.Clova_OCR()
         self.re_OCR = model.Tesseract_OCR("untypical")
         self.MT = model.Papago_MT()
