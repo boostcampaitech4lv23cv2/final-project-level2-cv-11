@@ -170,7 +170,13 @@ const Editor = ({ auto }) => {
     if (step == 10) {
       setLayer("전체");
     } else if (step == 20) {
-      convertAll();
+      const rects = boxes.filter((box) => box.textEng === "-");
+      if (rects.length > 0) setStep(23);
+      else convertAll();
+    } else if (step == 23) {
+      setTimeout(() => {
+        setStep(20);
+      }, 1000);
     } else if (step == 21) {
       const rects = boxes.filter((box) => box.get("type") === "rect");
       if (rects.length > 0) setStep(22);
@@ -210,7 +216,7 @@ const Editor = ({ auto }) => {
               }}
             />
           </div>
-          <div className="mt-5 ml-16">
+          <div className="mt-5 ml-8">
             <OCRButton
               canvas={fabricRef.current}
               boxes={boxes}
@@ -226,7 +232,7 @@ const Editor = ({ auto }) => {
               3. 완성!
             </Button>
           </div>
-          <div className="mt-5 ml-16">
+          <div className="mt-5 ml-8">
             <Button
               onClick={() => {
                 const box = newRect({

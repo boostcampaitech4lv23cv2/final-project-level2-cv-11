@@ -10,7 +10,7 @@ const { Title } = Typography;
 const f = (step) => {
   if (step === 10) return 0;
   if (step === 11) return 1;
-  if (20 <= step || step <= 22 || step === 3) return 2;
+  if ((20 <= step && step <= 23) || step === 3) return 2;
   if (step === 4) return 3;
   return 0;
 };

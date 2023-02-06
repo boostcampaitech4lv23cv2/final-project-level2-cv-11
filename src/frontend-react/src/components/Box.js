@@ -163,13 +163,13 @@ const Box = ({ i, box, delBox, convertBox, invisible, boxContainerRef }) => {
   }, [textKor, textEng, font, fontSize, color]);
 
   useEffect(() => {
-    if (textKor !== "" && textEng === "") onTranslate();
+    if (textKor !== "" && textEng.match(/^-?$/)) onTranslate();
   }, []);
 
   const [tLoading, setTLoading] = useState(false);
   const onTranslate = () => {
     setTLoading(true);
-    select();
+    // select();
     fetch(
       `${backendHost}mt/?` +
         new URLSearchParams({

@@ -39,6 +39,7 @@ const OCRButton = ({ setBoxes, canvas }) => {
             width: w,
             height: h,
             textKor: text,
+            textEng: "-",
             recFonts: fonts,
             fontFamily: fonts[0]["name"],
             id: idRef.current++,
@@ -67,6 +68,7 @@ const OCRButton = ({ setBoxes, canvas }) => {
             width: w,
             height: h,
             textKor: text,
+            textEng: "-",
             recFonts: fonts,
             fontFamily: fonts[0]["name"],
             id: idRef.current++,
@@ -87,57 +89,57 @@ const OCRButton = ({ setBoxes, canvas }) => {
           ),
         });
 
-        return fetch(`${backendHost}untypical/generation/`, {
+        fetch(`${backendHost}untypical/generation/`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
           body,
-        });
-      })
-      .then((res) => res.json())
-      .then((uris) => {
-        if (uris.length != boxes_untypical.length) {
-          console.error(
-            `효과음 개수 (${boxes_untypical.length})와 생성된 폰트 개수 (${uris.length})가 일치하지 않습니다.))`
-          );
-        }
-        const fs = [];
-        for (
-          let i = 0;
-          i < Math.min(uris.length, boxes_untypical.length);
-          i++
-        ) {
-          const uri = uris[i].replace(/^"/, "").replace(/"$/, "");
-          const f = fetch(uri)
-            .then((res) => res.blob())
-            .then((blob) => blob.arrayBuffer())
-            .then((ab) => {
-              const name = `Generated-${idRef.current++}`;
-              const font = new FontFace(name, ab);
-              console.log("font added", name);
-              font
-                .load()
-                .then((e) => {
-                  document.fonts.add(font);
+        })
+          .then((res) => res.json())
+          .then((uris) => {
+            if (uris.length != boxes_untypical.length) {
+              console.error(
+                `효과음 개수 (${boxes_untypical.length})와 생성된 폰트 개수 (${uris.length})가 일치하지 않습니다.))`
+              );
+            }
+            const fs = [];
+            for (
+              let i = 0;
+              i < Math.min(uris.length, boxes_untypical.length);
+              i++
+            ) {
+              const uri = uris[i].replace(/^"/, "").replace(/"$/, "");
+              const f = fetch(uri)
+                .then((res) => res.blob())
+                .then((blob) => blob.arrayBuffer())
+                .then((ab) => {
+                  const name = `Generated-${idRef.current++}`;
+                  const font = new FontFace(name, ab);
+                  console.log("font added", name);
+                  font
+                    .load()
+                    .then((e) => {
+                      document.fonts.add(font);
+                    })
+                    .catch((e) => {
+                      console.error("error", font.family, e);
+                    });
+                  console.log("set", i, boxes_untypical);
+                  boxes_untypical[i].fontFamily = name;
+                  boxes_untypical[i].recFonts.push({ name, prob: "생성" });
                 })
                 .catch((e) => {
-                  console.error("error", font.family, e);
+                  console.error("error", e);
                 });
-              console.log("set", i, boxes_untypical);
-              boxes_untypical[i].fontFamily = name;
-              boxes_untypical[i].recFonts.push({ name, prob: "생성" });
-            })
-            .catch((e) => {
-              console.error("error", e);
-            });
-          fs.push(f);
-        }
-        return Promise.all(fs);
-      })
-      .then(() => {
-        console.log("boxes_untypical", boxes_untypical);
-        boxes.push(...boxes_untypical);
+              fs.push(f);
+            }
+            return Promise.all(fs);
+          })
+          .then(() => {
+            console.log("boxes_untypical", boxes_untypical);
+            boxes.push(...boxes_untypical);
+          });
       });
 
     await Promise.all([p1, p2])
