@@ -12,8 +12,8 @@ async def gen_font(classified_font : List[str], en_list: List[str]):
     Untypical_pipeline = untypical_pipeline.Untypical_Pipeline("/opt/ml/final-project-level2-cv-11/")
     
     Untypical_pipeline.font_generate_mx_font(classified_font, en_list)
-    Untypical_pipeline.png2svg()
-    font_path = Untypical_pipeline.svg2ttf()
+    Untypical_pipeline.png2svg('mxfont')
+    font_path = Untypical_pipeline.svg2ttf('mxfont')
     
     res = []
     for fp in font_path:
@@ -30,8 +30,8 @@ async def gen_font(classified_font : List[str], en_list: List[str]):
     Untypical_pipeline = untypical_pipeline.Untypical_Pipeline("/opt/ml/final-project-level2-cv-11/")
     
     Untypical_pipeline.font_generate_gasnext_font(classified_font, en_list)
-    Untypical_pipeline.png2svg()
-    font_path = Untypical_pipeline.svg2ttf()
+    Untypical_pipeline.png2svg('gasnext')
+    font_path = Untypical_pipeline.svg2ttf('gasnext')
     
     res = []
     for fp in font_path:
