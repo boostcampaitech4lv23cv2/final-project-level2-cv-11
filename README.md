@@ -20,20 +20,20 @@
 
 ## 목차
 
-- [프로젝트 소개]
-  * [🧑‍🎨Toonslator🎨](#)
-  * [Environments](#)
-  * [프로젝트 배경](#)
-  * [문제정의 및 프로젝트 목표](#)
-  * [서비스 아키텍쳐](#)
-  * [서비스 파이프라인](#)
+- [프로젝트 소개](#프로젝트-소개)
+  * [Toonslator](#toonslator)
+  * [Environments](#environments)
+  * [프로젝트 배경](#프로젝트-배경)
+  * [문제정의 및 프로젝트 목표](#문제정의-및-프로젝트-목표)
+  * [서비스 아키텍처](#서비스-아키텍처)
+  * [서비스 파이프라인](#서비스-파이프라인)
   
-- [Demo](#)
-- [실행방법](#)
-  * [Frontend](#)
-  * [Backend](#)
-  * [Training](#)
-- [Reference](#)
+- [Demo](#demo)
+- [실행방법](#실행방법)
+  * [Frontend](#frontend)
+  * [Backend](#backend)
+  * [Training](#training)
+- [Reference](#reference)
 
 
 # **📃** 프로젝트 소개
@@ -54,7 +54,7 @@
 > - Nginx
 > - OpenCV
 
-## ******************************프로젝트 배경******************************
+## **프로젝트 배경**
 
 디지털 만화시장의 점유율이 점차 높아져 결국 2019년에는 인쇄 만화 시장을 뛰어 넘었습니다.
 
@@ -99,6 +99,7 @@
 ![image](https://user-images.githubusercontent.com/54363784/217152527-0a5e631a-94c9-43de-9234-8cbacd1bbe66.png)
 
 ## 결과물
+![image](https://user-images.githubusercontent.com/54363784/217299454-60cd10a4-f10f-4f5f-84b9-c408695230d4.png)
 
 # 📹Demo
 
@@ -116,20 +117,20 @@ cd src
 cd frontend-react
 ```
 
-1. Nodejs 설치 (우분투)
+2. Nodejs 설치 (우분투)
 
 ```bash
 curl -fsSL https://deb.nodesource.com/setup_16.x | sudo -E bash - &&\
 sudo apt-get install -y nodejs
 ```
 
-1. 패키지 설치
+3. 패키지 설치
 
 ```bash
 npm install
 ```
 
-1. 서버 시작
+4. 서버 시작
 
 ```bash
 npm start
@@ -137,7 +138,7 @@ npm start
 
 ## Backend
 
-1. 패키기 환경 설정
+1. 패키지 환경 설정
 
 ```bash
 pip install --user poetry
@@ -148,7 +149,7 @@ poetry config virtualenvs.in-project true
 poetry shell
 ```
 
-1. 가중치, font 다운로드 및 환경변수 설정
+2. 가중치, font 다운로드 및 환경변수 설정
 - Font Classifier 가중치
 
 ```bash
@@ -179,7 +180,15 @@ unzip data/font/untypical.zip -d data/font
 - .env 파일 설정
 
 ```bash
+# .env파일 만들고 아래 입력
+# 사용을 위해서 두 사이트에서 key를 발급받아야 합니다.
+# 파파고:https://developers.naver.com/docs/papago/papago-nmt-example-code.md
+# Clova OCR: https://guide-fin.ncloud-docs.com/docs/ocr-ocr-1-4
 
+PAPAGO_ID="인증 ID를 입력해주세요"
+PAPAGO_SECRET="인증 key를 입력해주세요"
+CLOVA_URL="인증 URL을 입력해주세요"
+CLOVA_KEY="인증 key를 입력해주세요"
 ```
 
 - 실행
