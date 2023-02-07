@@ -3,7 +3,9 @@ from typing import List, Any
 from fastapi import APIRouter, UploadFile, File
 from backend.pipeline import untypical_pipeline
 import copy
+from pathlib import Path
 
+PROJECT_ROOT = Path(__file__).parents[3]
 
 router = APIRouter(prefix="/untypical/txt_extraction")
 
@@ -17,7 +19,7 @@ class Results(BaseModel):
 
 @router.post("/", description="ocr모델을 돌립니다.", response_model=Results)
 async def make_ocr_font(file: UploadFile = File(...)):
-    Untypical_pipeline = untypical_pipeline.Untypical_Pipeline("/opt/ml/final-project-level2-cv-11/")
+    Untypical_pipeline = untypical_pipeline.Untypical_Pipeline(PROJECT_ROOT)
 
     # OCR
     image_bytes = await file.read()
@@ -71,7 +73,7 @@ async def v2(file: UploadFile = File(...)):
     if h in cache:
         return cache[h]
 
-    pipeline = untypical_pipeline.Untypical_Pipeline("/opt/ml/final-project-level2-cv-11/")
+    pipeline = untypical_pipeline.Untypical_Pipeline(PROJECT_ROOT)
 
     # OCR
     ocr_result = pipeline.clova_ocr(image_bytes)

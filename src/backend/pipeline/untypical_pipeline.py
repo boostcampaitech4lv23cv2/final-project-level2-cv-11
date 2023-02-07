@@ -21,7 +21,7 @@ def createDirectory(directory):
 
 class Untypical_Pipeline:
     def __init__(self, git_path):
-        os.environ["HOME"] = git_path
+        os.environ["HOME"] = str(git_path)
         self.OCR = model.Clova_OCR()
         self.re_OCR = model.Tesseract_OCR("untypical")
         self.MT = model.Papago_MT()
@@ -29,7 +29,7 @@ class Untypical_Pipeline:
         self.Font_Generator_mx_font = model.mx_eval
         self.Font_Generator_gas_font = model.gas_eval
         self.Font_Color = model.Font_Color()
-        
+
     def clova_ocr(self, image):
         encoded_img = np.fromstring(image, dtype=np.uint8)
         self.img = cv2.imdecode(encoded_img, cv2.IMREAD_COLOR)
@@ -45,11 +45,12 @@ class Untypical_Pipeline:
     def untypical_font_classification(self, merged_boxes):
         # tesseract + classification
         merged_boxes_with_crop = self.re_OCR.n_divide(merged_boxes, self.img)
-        classified_font, classified_font_all = self.Typical_Classification.classification(
-            merged_boxes_with_crop
-        )
+        (
+            classified_font,
+            classified_font_all,
+        ) = self.Typical_Classification.classification(merged_boxes_with_crop)
         font_color = self.Font_Color.find_color(merged_boxes_with_crop)
-        
+
         return classified_font, classified_font_all, font_color
 
     def font_generate_mx_font(self, classified_font, en_list):
