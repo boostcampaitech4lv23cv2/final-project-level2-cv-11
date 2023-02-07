@@ -7,6 +7,8 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "3.8.5"
+torch = "~1.7.0"
+torchvision = "~0.8.0"
 
 
 [tool.poetry.group.prod.dependencies]
@@ -19,8 +21,14 @@ pytesseract = "^0.3.10"
 sconf = "^0.2.5"
 fonttools = "^4.38.0"
 python-multipart = "^0.0.5"
-torch = "~1.7.0"
-torchvision = "~0.8.0"
+pygame = "^2.1.2"
+matplotlib = "^3.6.3"
+
+
+[tool.poetry.group.model_gasnext.dependencies]
+dominate = "^2.7.0"
+visdom = "^0.2.3"
+albumentations = "^1.3.0"
 
 [build-system]
 requires = ["poetry-core"]
