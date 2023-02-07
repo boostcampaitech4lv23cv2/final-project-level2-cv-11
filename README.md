@@ -6,6 +6,7 @@
 | :-: | :-: | :-: | :-: | :-: | 
 | <img src="https://avatars.githubusercontent.com/u/62556539?v=4" width="200"> | <img src="https://avatars.githubusercontent.com/u/48004826?v=4" width="200"> | <img src="https://avatars.githubusercontent.com/u/54363784?v=4"  width="200"> | <img src="https://avatars.githubusercontent.com/u/30896956?v=4" width="200"> | <img src="https://avatars.githubusercontent.com/u/57178359?v=4" width="200"> |  
 |[Blog](https://kkwong-guin.tistory.com/)  |[Blog](https://velog.io/@goodheart50)|[Blog](https://velog.io/@ta1231)| [Blog](https://dddd.ac/blog) | [Blog](https://yedoong.tistory.com/) |
+| <code>모델링</code><br><code>파이프라인</code><br><code>데이터 수집</code> | <code>모델링</code><br><code>연구</code><br><code>데이터 수집</code>  |  <code>백엔드</code><br><code>발표자료</code><br><code>협업 관리</code>  | <code>프론트엔드</code><br><code>서비스 배포</code><br><code>파이프라인</code> | <code>백엔드</code><br><code>서비스 배포</code><br><code>파이프라인</code> |
 
 <div align="center">
 
@@ -17,10 +18,25 @@
 
 </div align="center">
 
+## 목차
+
+- [프로젝트 소개]
+  * [🧑‍🎨Toonslator🎨](#)
+  * [Environments](#)
+  * [프로젝트 배경](#)
+  * [문제정의 및 프로젝트 목표](#)
+  * [서비스 아키텍쳐](#)
+  * [서비스 파이프라인](#)
+  
+- [Demo](#)
+- [실행방법](#)
+  * [Frontend](#)
+  * [Backend](#)
+  * [Training](#)
+- [Reference](#)
+
 
 # **📃** 프로젝트 소개
-
----
 
 ## 🧑‍🎨Toonslator🎨
 
@@ -86,11 +102,10 @@
 
 # 📹Demo
 
----
+
 
 # 🚀실행방법
 
----
 
 ## Frontend
 
@@ -181,11 +196,16 @@ python -m backend
 
 - Font Generation
     - mxfont
-    - gasnext
+        - paper: [https://arxiv.org/abs/2104.00887](https://arxiv.org/abs/2104.00887)
+        - repo: [https://github.com/clovaai/mxfont](https://github.com/clovaai/mxfont)
+    - gasnext:
+        - paper: [https://arxiv.org/abs/2212.02886](https://arxiv.org/abs/2212.02886)
+        - repo: [https://github.com/cmu-11785-F22-55/GAS-NeXt](https://github.com/cmu-11785-F22-55/GAS-NeXt)
 - Dataset
-    - 예시
+    - typical:
+    - untypical:
 - Open source
-    - a
-    - b
-    - c
-    - d
+    - svg2ttf: [https://github.com/fontello/svg2ttf](https://github.com/fontello/svg2ttf)
+    - pytesseract: [https://github.com/tesseract-ocr/tesstrain](https://github.com/tesseract-ocr/tesstrain)
+    - tesseract: [https://github.com/tesseract-ocr/tesseract](https://github.com/tesseract-ocr/tesseract)
+    - 
