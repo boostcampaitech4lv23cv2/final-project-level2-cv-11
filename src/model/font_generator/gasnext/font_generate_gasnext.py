@@ -104,7 +104,7 @@ def eval(source_font_list, en_list):
             
         gen_chars = list(set(en))
         save_dir = os.path.join(os.getenv("HOME"), f'tmp/img{idx}/generated_gasnext')
-        source_path = os.path.join(os.getenv("HOME"), 'data/font/untypical', source_font)
+        source_path = os.path.join(os.getenv("HOME"), 'data/font/Gulim-01.ttf')
         
         createDirectory(save_dir)
         
