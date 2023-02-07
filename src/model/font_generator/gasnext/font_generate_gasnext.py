@@ -14,12 +14,8 @@ from .models import ftgan_networks
 from .datasets.utils import font2render
 from glob import glob
 from util.util import save_image, tensor2im
-
-#from datasets import read_font, render
-#from utils import save_tensor_to_image
-################## 원래 있던 부분
 from options.test_options import TestOptions
-##################
+import shutil
 
 def createDirectory(directory):
     try:
@@ -91,11 +87,17 @@ def eval(source_font_list, en_list):
         extension = "png"
         batch_size = 1
         
-        ref_paths = glob(os.path.join(ref_path, f"*.{extension}"))
-        #ref_paths = Path(ref_path).glob(f"*.{extension}")  # WTF?
+        ref_paths = list(glob(os.path.join(ref_path, f"*.{extension}")))
         if style_channel > len(ref_paths): 
-            raise Exception("샘플 수가 적어 스타일 추출 불가! (gasnext)")
-        ref_paths = random.sample(list(ref_paths), style_channel)  # 6개 랜덤 추출
+            #raise Exception("샘플 수가 적어 스타일 추출 불가! (gasnext)")
+            # 랜덤 중복 추출 style_channel-ref_paths 만큼 해서 복제해주기!
+            for i in range(style_channel-len(ref_paths)): 
+                random_img = random.choice(ref_paths)
+                ref_img_name, ext = os.path.splitext(random_img)
+                shutil.copy(random_img, f'{ref_img_name}_copied_{i}{ext}')
+                ref_paths.append(f'{ref_img_name}_copied_{i}{ext}')
+
+        ref_paths = random.sample(ref_paths, style_channel)  # 6개 랜덤 추출
         ref_imgs = torch.cat(
             [load_image(ref_path, transform) for ref_path in ref_paths], 0
         )
