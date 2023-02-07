@@ -20,12 +20,14 @@ const Demo = () => {
       </div>
 
       <DemoButton />
-      <div className="m-8 border-b" />
+      <div className="my-8 border-b" />
 
       <Title level={5}>사진이 없다면 샘플 이미지로 체험해보세요.</Title>
       <div className="flex justify-center">
         <Sample title="샘플 1" name="sample1" />
         <Sample title="샘플 2" name="sample2" />
+        <Sample title="샘플 3" name="sample3" />
+        <Sample title="샘플 4" name="sample4" />
       </div>
     </div>
   );

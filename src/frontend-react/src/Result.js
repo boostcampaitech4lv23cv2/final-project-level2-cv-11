@@ -10,7 +10,7 @@ const Result = () => {
   const { urls, result, width, height } = useContext(GlobalContext);
 
   return (
-    <div className="my-0 mx-24">
+    <div className="my-0 mx-24 mb-24">
       <Title className="text-center">결과</Title>
 
       <div className="flex justify-center text-center">

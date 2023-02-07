@@ -81,66 +81,75 @@ const OCRButton = ({ setBoxes, canvas }) => {
         }
       });
 
-    const p3 = p2
-      .then(() => {
-        const ref_fonts = boxes_untypical.map((box) => box.fontFamily + ".ttf");
-        if (step == 10) setStep(11);
+    const p3 = p2.then(() => {
+      if (step == 10) setStep(11);
+      const ref_fonts = boxes_untypical.map((box) => box.fontFamily + ".ttf");
 
-        const body = JSON.stringify({
-          classified_font: ref_fonts,
-          en_list: Array(ref_fonts.length).fill(
-            "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-          ),
-        });
+      const body = JSON.stringify({
+        classified_font: ref_fonts,
+        en_list: Array(ref_fonts.length).fill(
+          "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+        ),
+      });
+      const options = {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body,
+      };
 
-        return fetch(`${backendHost}untypical/generation/`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body,
-        });
-      })
-      .then((res) => res.json())
-      .then((uris) => {
-        if (uris.length != boxes_untypical.length) {
-          console.error(
-            `효과음 개수 (${boxes_untypical.length})와 생성된 폰트 개수 (${uris.length})가 일치하지 않습니다.))`
-          );
-        }
-        const fs = [];
-        for (
-          let i = 0;
-          i < Math.min(uris.length, boxes_untypical.length);
-          i++
-        ) {
-          const uri = uris[i].replace(/^"/, "").replace(/"$/, "");
-          const f = fetch(uri)
-            .then((res) => res.blob())
-            .then((blob) => blob.arrayBuffer())
-            .then((ab) => {
-              const name = `Generated-${idRef.current++}`;
-              const font = new FontFace(name, ab);
-              console.log("font added", name);
-              font
-                .load()
-                .then((e) => {
-                  document.fonts.add(font);
+      const fetchGeneration = (type, idx) => {
+        return fetch(`${backendHost}untypical/generation/${type}`, options)
+          .then((res) => res.json())
+          .then((uris) => {
+            if (uris.length != boxes_untypical.length) {
+              console.error(
+                `효과음 개수 (${boxes_untypical.length})와 생성된 폰트 개수 (${uris.length})가 일치하지 않습니다.))`
+              );
+            }
+            const fs = [];
+            for (
+              let i = 0;
+              i < Math.min(uris.length, boxes_untypical.length);
+              i++
+            ) {
+              const uri = uris[i].replace(/^"/, "").replace(/"$/, "");
+              const f = fetch(uri)
+                .then((res) => res.blob())
+                .then((blob) => blob.arrayBuffer())
+                .then((ab) => {
+                  const name = `Generated-${type}-${idRef.current++}`;
+                  const font = new FontFace(name, ab);
+                  console.log("font added", name);
+                  font
+                    .load()
+                    .then((e) => {
+                      document.fonts.add(font);
+                    })
+                    .catch((e) => {
+                      console.error("error", font.family, e);
+                    });
+                  // mxfont를 기본 폰트로 설정
+                  if (idx == 1) boxes_untypical[i].fontFamily = name;
+                  boxes_untypical[i].recFonts.push({
+                    name,
+                    prob: `생성 ${idx}`,
+                  });
                 })
                 .catch((e) => {
-                  console.error("error", font.family, e);
+                  console.error("error", e);
                 });
-              console.log("set", i, boxes_untypical);
-              boxes_untypical[i].fontFamily = name;
-              boxes_untypical[i].recFonts.push({ name, prob: "생성" });
-            })
-            .catch((e) => {
-              console.error("error", e);
-            });
-          fs.push(f);
-        }
-        return Promise.all(fs);
-      });
+              fs.push(f);
+            }
+            return Promise.all(fs);
+          });
+      };
+
+      const f1 = fetchGeneration("mx", 1);
+      const f2 = fetchGeneration("gasnext", 2);
+      return Promise.all([f1, f2]);
+    });
 
     await Promise.all([p1, p2])
       .then(async () => {

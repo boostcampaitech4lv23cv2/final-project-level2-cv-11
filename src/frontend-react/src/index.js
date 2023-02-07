@@ -28,7 +28,6 @@ root.render(
           <Route path="/loading" element={<Loading />} />
           <Route path="/dev" element={<Dev />} />
         </Routes>
-        <div className="h-20" />
       </GlobalContextProvider>
     </BrowserRouter>
   </React.StrictMode>
