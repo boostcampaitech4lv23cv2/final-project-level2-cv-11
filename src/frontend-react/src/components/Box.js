@@ -1,107 +1,168 @@
-import { useState, useEffect } from "react";
-import { Input, Select, Button, InputNumber, message, Typography } from "antd";
+import { useState, useEffect, useContext, useRef } from "react";
+import { Input, Select, Button, message, Typography, InputNumber } from "antd";
 import { RightOutlined } from "@ant-design/icons";
-import FontList from "../FontList";
+import FontList from "../FontList.json";
+import { GlobalContext } from "../GlobalContext";
 
 const { TextArea } = Input;
 const { Option } = Select;
 const { Text } = Typography;
 
-const FontSelect = ({ font, setFont, fontSize, setFontSize, onFocus }) => {
+const FontSelect = ({
+  font,
+  setFont,
+  fontSize,
+  setFontSize,
+  onFocus,
+  recFonts,
+  rect,
+  color,
+  setColor,
+}) => {
+  const recFontNames = recFonts ? recFonts.map(({ name }) => name) : [];
+  const [f, setF] = useState(font);
   return (
     <div>
       폰트
       <div>
+        <style>
+          {`.box-${rect.id} .ant-select-selection-item { font-family: ${f}; }`}
+        </style>
         <Select
-          style={{
-            width: 180,
-          }}
-          showSearch
-          filterOption={(input, option) =>
-            (option?.children ?? "").toLowerCase().includes(input.toLowerCase())
-          }
+          className={`w-60 box-${rect.id}`}
+          // showSearch
+          // filterOption={(input, option) => {
+          //   return (option?.children ?? "").toLowerCase().includes(input.toLowerCase())
+          // }}
           value={font}
           onSelect={(value) => {
             setFont(value);
+            setF(value);
           }}
           onFocus={onFocus}
         >
-          <Select.OptGroup label="추천 폰트(미구현)">
-            <Option value="Noto Sans KR">
-              <Text type="success" strong>
-                99%
-              </Text>{" "}
-              Noto Sans KR
-            </Option>
-          </Select.OptGroup>
+          {recFonts && (
+            <Select.OptGroup label="추천 폰트">
+              {recFonts.map(({ name, prob }) => {
+                const p =
+                  typeof prob === "number"
+                    ? `${Math.round(prob * 100)}%`
+                    : prob;
+                return (
+                  <Option key={name} name={name} value={name}>
+                    <Text type="success" strong>{`${p} `}</Text>
+                    <span style={{ fontFamily: name }}>{name}</span>
+                  </Option>
+                );
+              })}
+            </Select.OptGroup>
+          )}
           <Select.OptGroup label="기본 폰트">
-            {FontList.map(({ name }) => {
-              return (
-                <Option key={name} value={name}>
-                  {name}
-                </Option>
-              );
-            })}
+            {FontList.filter(({ name }) => !recFontNames.includes(name)).map(
+              ({ name }) => {
+                return (
+                  <Option key={name} value={name} style={{ fontFamily: name }}>
+                    {name}
+                  </Option>
+                );
+              }
+            )}
           </Select.OptGroup>
         </Select>
-        <Select
-          style={{
-            width: 100,
-          }}
-          value={fontSize}
-          onSelect={(value) => {
-            setFontSize(value);
+        <InputNumber
+          className="w-24 h-8 translate-y-[-4px]"
+          value={rect.get("type") === "textbox" ? fontSize : 0}
+          onChange={(value) => {
+            if (rect.get("type") === "textbox") setFontSize(value);
           }}
           onFocus={onFocus}
-        >
-          {[32, 36, 40, 44, 48, 52].map((value) => {
-            return (
-              <Option key={value} value={value}>
-                {value}
-              </Option>
-            );
-          })}
-        </Select>
+        />
+        <input
+          className="w-8 h-8 translate-y-[6px]"
+          type="color"
+          onChange={(e) => {
+            console.log("onchange", e);
+            setColor(e.target.value);
+          }}
+          value={color}
+        />
       </div>
+      {/* <Checkbox
+        onClick={(e) => {
+          const bold = e.target.checked ? "bold" : "normal";
+          rect.fontWeight = bold;
+          rect.canvas.renderAll();
+        }}
+      >
+        굵게(임시)
+      </Checkbox>
+      <Checkbox
+        onClick={(e) => {
+          if (e.target.checked) {
+            rect.stroke = "red";
+            rect.strokeWidth = 1;
+          } else {
+            rect.stroke = null;
+            rect.strokeWidth = 0;
+          }
+          rect.canvas.renderAll();
+        }}
+      >
+        외곽선(임시)
+      </Checkbox> */}
     </div>
   );
 };
 
-const Box = ({ i, rect, delBox, convertBox }) => {
-  const [textKor, setTextKor] = useState(rect.textKor);
-  const [textEng, setTextEng] = useState(rect.textEng);
-  const [font, setFont] = useState(rect.fontFamily);
-  const [fontSize, setFontSize] = useState(rect.fontSize);
+const Box = ({ i, box, delBox, convertBox, invisible, boxContainerRef }) => {
+  const self = useRef(null);
+  const { backendHost } = useContext(GlobalContext);
+  const [textKor, setTextKor] = useState(box.textKor);
+  const [textEng, setTextEng] = useState(box.textEng);
+  const [font, setFont] = useState(box.fontFamily);
+  const [fontSize, setFontSize] = useState(box.fontSize);
+  const [color, setColor] = useState(box.color);
 
   const [x, setX] = useState(0);
   const [selected, setSelected] = useState(false);
 
-  rect.setSelected = (f) => {
+  useEffect(() => {
+    if (selected) {
+      self.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+        inline: "center",
+      });
+    }
+  }, [selected]);
+
+  box.setFontSize = setFontSize;
+  box.setSelected = (f) => {
     setSelected(f);
   };
-  rect.refresh = ({ text }) => {
+  box.refresh = ({ text }) => {
     setX((x) => x + 1);
     setTextEng(text);
   };
   useEffect(() => {
-    rect.textKor = textKor;
-    rect.text = rect.textEng = textEng;
-    rect.fontFamily = font;
-    rect.fontSize = fontSize;
-    rect.canvas?.renderAll();
-  }, [textKor, textEng, font, fontSize]);
+    box.textKor = textKor;
+    box.textEng = textEng;
+    box.set("fontFamily", font);
+    box.set("fontSize", fontSize);
+    box.set("text", textEng);
+    if (box.get("type") == "textbox") box.set("fill", color);
+    box.canvas?.renderAll();
+  }, [textKor, textEng, font, fontSize, color]);
 
   useEffect(() => {
-    console.log("Box Created", i, rect.id);
-    if (textKor !== "") onTranslate();
+    if (textKor !== "" && textEng.match(/^-?$/)) onTranslate();
   }, []);
 
   const [tLoading, setTLoading] = useState(false);
   const onTranslate = () => {
     setTLoading(true);
-    select();
     fetch(
-      "http://49.50.160.104:30002/mt/?" +
+      `${backendHost}mt/?` +
         new URLSearchParams({
           text: textKor,
         }),
@@ -122,37 +183,32 @@ const Box = ({ i, rect, delBox, convertBox }) => {
   };
 
   const select = () => {
-    rect.canvas?.setActiveObject(rect);
-    rect.canvas?.renderAll();
+    box.canvas?.setActiveObject(box);
+    box.canvas?.renderAll();
   };
 
   return (
     <div
-      style={{
-        margin: 10,
-        padding: 5,
-        border: selected ? "1px solid black" : "1px solid #d9d9d9",
-      }}
+      className={`box ${
+        invisible
+          ? "absolute overflow-x-hidden h-0 m-0 p-0"
+          : "m-2.5 p-1.25 text-center"
+      }`}
+      style={
+        invisible
+          ? {}
+          : { border: selected ? "1px solid black" : "1px solid #d9d9d9" }
+      }
+      ref={self}
     >
-      <div
-        style={{
-          textAlign: "center",
-        }}
-      >
+      <div>
         대사 #{i}
-        <div
-          style={{
-            // position: 'relative',
-            top: 0,
-            right: 0,
-            margin: "0 0 0 10",
-          }}
-        >
-          <Button>인식(미구현)</Button>
+        <div>
+          {/* <Button disabled>인식(미구현)</Button> */}
           <Button onClick={onTranslate} loading={tLoading}>
             번역
           </Button>
-          {rect.get("type") === "rect" && (
+          {box.get("type") === "rect" && (
             <Button onClick={convertBox}>변환</Button>
           )}
           <Button onClick={delBox} danger>
@@ -160,18 +216,8 @@ const Box = ({ i, rect, delBox, convertBox }) => {
           </Button>
         </div>
       </div>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-        }}
-      >
-        <div
-          style={{
-            padding: 5,
-            width: "100%",
-          }}
-        >
+      <div className="flex justify-center">
+        <div className="p-1.25 w-full ml-2">
           한국어 대사
           <TextArea
             onChange={(event) => {
@@ -182,21 +228,10 @@ const Box = ({ i, rect, delBox, convertBox }) => {
             onFocus={select}
           />
         </div>
-        <div
-          style={{
-            marginTop: 21,
-            display: "flex",
-            alignItems: "center",
-          }}
-        >
+        <div className="flex items-center mt-5">
           <RightOutlined />
         </div>
-        <div
-          style={{
-            padding: 5,
-            width: "100%",
-          }}
-        >
+        <div className="p-1.25 w-full mr-2">
           영어 대사
           <TextArea
             onChange={(event) => {
@@ -214,7 +249,26 @@ const Box = ({ i, rect, delBox, convertBox }) => {
         fontSize={fontSize}
         setFontSize={setFontSize}
         onFocus={select}
+        recFonts={box.recFonts}
+        rect={box}
+        color={color}
+        setColor={setColor}
       />
+      {/* <div>
+        x: {box.left};
+        y: {box.top};
+        w: {box.width * box.scaleX};
+        h: {box.height * box.scaleY};
+      </div>
+      <Button
+        onClick={() => {
+          box.height = 100;
+          box.width = 200;
+          box.canvas.renderAll();
+        }}
+      >
+        테스트
+      </Button> */}
     </div>
   );
 };
