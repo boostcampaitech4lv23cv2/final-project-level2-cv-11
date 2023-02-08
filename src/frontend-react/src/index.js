@@ -1,13 +1,41 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import React from "react";
+import ReactDOM from "react-dom/client";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import "./index.css";
+import "./font.css";
+import reportWebVitals from "./reportWebVitals";
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
+import Main from "./Main";
+import Demo from "./Demo";
+import Result from "./Result";
+import Header from "./components/Header";
+import { GlobalContextProvider } from "./GlobalContext";
+import Editor from "./Editor";
+import Loading from "./Loading";
+import Dev from "./Dev";
+import Footer from "./Footer";
+import NotFound from "./NotFound";
+
+const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    <App />
+    <BrowserRouter>
+      <GlobalContextProvider>
+        <div className="min-h-screen relative">
+          <Header />
+          <Routes>
+            <Route path="/" element={<Main />} />
+            <Route path="/edit" element={<Editor />} />
+            <Route path="/demo" element={<Demo />} />
+            <Route path="/result" element={<Result />} />
+            <Route path="/loading" element={<Loading />} />
+            <Route path="/dev" element={<Dev />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+          <Footer />
+        </div>
+      </GlobalContextProvider>
+    </BrowserRouter>
   </React.StrictMode>
 );
 
