@@ -25,16 +25,18 @@
 - [프로젝트 소개](#프로젝트-소개)
   * [Toonslator](#toonslator)
   * [Environments](#environments)
+  * [Repository Tree](#repository-구조)
   * [프로젝트 배경](#프로젝트-배경)
   * [문제정의 및 프로젝트 목표](#문제정의-및-프로젝트-목표)
   * [서비스 아키텍처](#서비스-아키텍처)
   * [서비스 파이프라인](#서비스-파이프라인)
   
 - [Demo](#demo)
+
 - [실행방법](#실행방법)
   * [Frontend](#frontend)
   * [Backend](#backend)
-  * [Training](#training)
+  
 - [Reference](#reference)
 
 
@@ -55,6 +57,98 @@
 > - FastAPI
 > - Nginx
 > - OpenCV
+
+## **Repository 구조**
+
+```
+<final-project-level2-cv-11>
+|
+📜-- README.md
+📂-- notebooks
+|   📜-- font_ex.ipynb
+|   📄-- imagemaker.py
+|   📄-- tesseract_boxes.py
+|   📜-- txt2json.ipynb
+⚙️-- poetry.lock
+⚙️-- pyproject.toml
+📂-- src
+    📄-- __init__.py
+    📂-- backend
+    |   📄-- __main__.py
+    |   📄-- main.py
+    |   📂-- pipeline
+    |   |   📄-- __init_.py
+    |   |   📄-- typical_pipeline.py
+    |   |   📄-- untypical_pipeline.py
+    |   📂-- routers
+    |       📄-- machine_translation.py
+    |       📄-- test.py
+    |       📄-- txt_extraction.py
+    |       📄-- untypical_generation.py
+    |       📄-- untypical_machine_translation.py
+    |       📄-- untypical_txt_extraction.py
+    📂-- frontend
+    |   📄-- frontend.py
+    |   📂-- pages
+    |   |   📄-- result.py
+    |   📂-- st_component
+    |   |   📄-- areas.py
+    |   |   📄-- buttons.py
+    |   📂-- test_file
+    |       🖼️- windbreaker_en.PNG
+    |       🖼️-- windbreaker_ko.PNG
+    📂-- frontend-react
+    |   📜-- README.md
+    |   📜-- package-lock.json
+    |   📜-- package.json
+    |   📂-- public
+    |   |   🖼️-- background.png
+    |   |   🖼️-- favicon.ico
+    |   |   📜-- index.html
+    |   |   🖼️-- logo192.png
+    |   |   🖼️-- logo512.png
+    |   |   📜-- manifest.json
+    |   |   📜-- robots.txt
+    |   |   🖼️-- typical.png
+    |   📂-- src
+    |       📜-- App.css
+    |       📜-- App.js
+    |       📜-- App.test.js
+    |       📜-- Editor.css
+    |       📜-- Editor.js
+    |       📜-- FontList.js
+    |       📂-- components
+    |       📜-- index.css
+    |       📜-- index.js
+    |       🖼️-- logo.svg
+    |       📜-- reportWebVitals.js
+    |       📜-- setupTests.js
+    📂-- model
+        📂-- MachineTranslate
+        |   📄-- papago_MT.py
+        📂-- OCR
+        |   📄-- clova_OCR.py
+        |   📄-- tesseract_OCR.py
+        📄-- __init__.py
+        📂-- font_classifier
+        |   📄-- FC.py
+        |   📄-- dataset_font.py
+        |   📄-- inference_font.py
+        |   📄-- loss.py
+        |   📄-- model_font.py
+        |   📜-- requirements.txt
+        |   📄-- scheduler.py
+        |   📄-- train_font.py
+        |   📂-- weights
+        📂-- font_color
+        |   📄-- font_color.py
+        📂-- font_generator
+        |   📂-- gasnext
+        |   📂-- mxfont
+        📂-- svg2ttf
+            📜-- example.json
+            📄-- svgs2ttf.py
+```
 
 ## **프로젝트 배경**
 
@@ -104,7 +198,7 @@
 ![image](https://user-images.githubusercontent.com/54363784/217299454-60cd10a4-f10f-4f5f-84b9-c408695230d4.png)
 
 # 📹Demo
-
+![ggg](https://user-images.githubusercontent.com/62556539/217452558-466a97d4-3e85-441f-be8d-6f6d207a0775.gif)
 
 
 # 🚀실행방법
@@ -215,7 +309,7 @@ cd src/
 python -m backend
 ```
 
-## Training
+
 
 # 🗞️Reference
 
@@ -227,10 +321,13 @@ python -m backend
         - paper: [https://arxiv.org/abs/2212.02886](https://arxiv.org/abs/2212.02886)
         - repo: [https://github.com/cmu-11785-F22-55/GAS-NeXt](https://github.com/cmu-11785-F22-55/GAS-NeXt)
 - Dataset
-    - typical:
-    - untypical:
+    - font repo: [https://noonnu.cc/](https://noonnu.cc/)
+    - typical font list: [https://twitter.com/Gold7ll/status/1351568186374721539](https://twitter.com/Gold7ll/status/1351568186374721539)
 - Open source
-    - svg2ttf: [https://github.com/fontello/svg2ttf](https://github.com/fontello/svg2ttf)
+    - svgs2ttf: [https://github.com/pteromys/svgs2ttf](https://github.com/pteromys/svgs2ttf)
     - pytesseract: [https://github.com/tesseract-ocr/tesstrain](https://github.com/tesseract-ocr/tesstrain)
     - tesseract: [https://github.com/tesseract-ocr/tesseract](https://github.com/tesseract-ocr/tesseract)
-    - 
+    - fontforge: [https://fontforge.org/en-US/](https://fontforge.org/en-US/)
+ - API
+    - PAPAGO: [https://developers.naver.com/products/papago/nmt/nmt.md](https://developers.naver.com/products/papago/nmt/nmt.md)
+    - Clova OCR: [https://www.ncloud.com/product/aiService/ocr](https://www.ncloud.com/product/aiService/ocr)
