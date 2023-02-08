@@ -28,7 +28,7 @@ const Sample = ({ title, name }) => {
 
       <div className="group relative cursor-pointer" onClick={handleClick}>
         <img
-          src={`/${name}/background.png`}
+          src={`/${name}/origin.png`}
           className="w-full h-full border group-hover:border-slate-400 group-hover:opacity-50"
         />
       </div>
