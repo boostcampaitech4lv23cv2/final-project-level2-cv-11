@@ -14,6 +14,7 @@ import Editor from "./Editor";
 import Loading from "./Loading";
 import Dev from "./Dev";
 import Footer from "./Footer";
+import NotFound from "./NotFound";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -29,6 +30,7 @@ root.render(
             <Route path="/result" element={<Result />} />
             <Route path="/loading" element={<Loading />} />
             <Route path="/dev" element={<Dev />} />
+            <Route path="*" element={<NotFound />} />
           </Routes>
           <Footer />
         </div>
