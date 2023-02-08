@@ -51,7 +51,7 @@ const FontSelect = ({
                 return (
                   <Option key={name} name={name} value={name}>
                     <Text type="success" strong>{`${p} `}</Text>
-                    {name}
+                    <span style={{ fontFamily: name }}>{name}</span>
                   </Option>
                 );
               })}

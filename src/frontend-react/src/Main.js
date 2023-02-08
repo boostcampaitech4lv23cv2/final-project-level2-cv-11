@@ -64,8 +64,8 @@ const Main = () => {
           <h1 className="text-3xl font-bold">발표 영상</h1>
           <div className="flex justify-center mt-8">
             <iframe
-              width="800"
-              height="400"
+              width="900"
+              height="500"
               src="https://www.youtube.com/embed/Jy2VKCZ2d3k"
               title="네이버 Boostcamp AI Tech 최종프로젝트 - 웹툰 번역(Toonslator)"
               frameborder="0"
