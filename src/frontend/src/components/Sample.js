@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { Button, Typography } from "antd";
+import { Typography } from "antd";
 import { GlobalContext } from "../GlobalContext";
 
 const { Title } = Typography;
@@ -28,6 +28,7 @@ const Sample = ({ title, name }) => {
 
       <div className="group relative cursor-pointer" onClick={handleClick}>
         <img
+          alt="샘플 이미지"
           src={`/${name}/origin.png`}
           className="w-full h-full border group-hover:border-slate-400 group-hover:opacity-50"
         />

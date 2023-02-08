@@ -9,7 +9,7 @@ const OCRButton = ({ setBoxes, canvas }) => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (files.typical && files.untypical && step == 10) onClick();
+    if (files.typical && files.untypical && step === 10) onClick();
   }, [step, files]);
 
   const onClick = async () => {
@@ -82,7 +82,7 @@ const OCRButton = ({ setBoxes, canvas }) => {
       });
 
     const p3 = p2.then(() => {
-      if (step == 10) setStep(11);
+      if (step === 10) setStep(11);
       const ref_fonts = boxes_untypical.map((box) => box.fontFamily + ".ttf");
 
       const body = JSON.stringify({
@@ -103,7 +103,7 @@ const OCRButton = ({ setBoxes, canvas }) => {
         return fetch(`${backendHost}untypical/generation/${type}`, options)
           .then((res) => res.json())
           .then((uris) => {
-            if (uris.length != boxes_untypical.length) {
+            if (uris.length !== boxes_untypical.length) {
               console.error(
                 `효과음 개수 (${boxes_untypical.length})와 생성된 폰트 개수 (${uris.length})가 일치하지 않습니다.))`
               );
@@ -131,7 +131,7 @@ const OCRButton = ({ setBoxes, canvas }) => {
                       console.error("error", font.family, e);
                     });
                   // mxfont를 기본 폰트로 설정
-                  if (idx == 2) boxes_untypical[i].fontFamily = name;
+                  if (idx === 2) boxes_untypical[i].fontFamily = name;
                   boxes_untypical[i].recFonts.push({
                     name,
                     prob: `생성 ${idx}`,
@@ -162,7 +162,7 @@ const OCRButton = ({ setBoxes, canvas }) => {
         });
         await p3;
         setBoxes(boxes);
-        if (Math.floor(step / 10) == 1)
+        if (Math.floor(step / 10) === 1)
           setTimeout(() => {
             setStep(20);
           }, 1000);
@@ -170,7 +170,7 @@ const OCRButton = ({ setBoxes, canvas }) => {
       .catch((e) => {
         console.error(e);
         message.error("OCR에 실패했습니다.");
-        if (step != 0) setStep(-1);
+        if (step !== 0) setStep(-1);
       })
       .finally(() => {
         setLoading(false);

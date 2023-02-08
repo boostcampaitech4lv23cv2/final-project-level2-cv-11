@@ -1,5 +1,4 @@
 import { useEffect, useContext } from "react";
-import { useNavigate } from "react-router-dom";
 import { Steps } from "antd";
 import Editor from "./Editor";
 import { GlobalContext } from "./GlobalContext";
@@ -14,7 +13,6 @@ const f = (step) => {
 };
 
 const Loading = () => {
-  const navigate = useNavigate();
   const { step, setStep } = useContext(GlobalContext);
   useEffect(() => {
     window.scrollTo(0, 0);

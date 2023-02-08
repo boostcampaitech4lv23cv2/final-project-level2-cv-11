@@ -143,7 +143,7 @@ const Editor = ({ auto }) => {
     fabricRef.current?.setBackgroundImage(obj, () => {
       fabricRef.current.renderAll();
     });
-  }, [originObj, backgroundObj, typicalObj, layer]);
+  }, [originObj, backgroundObj, typicalObj, untypicalObj, layer]);
 
   const convertAll = () => {
     setLayer("배경");
@@ -158,7 +158,7 @@ const Editor = ({ auto }) => {
     }
     setBoxes(textboxes);
     canvas.renderAll();
-    if (Math.floor(step / 10) == 2) setStep(21);
+    if (Math.floor(step / 10) === 2) setStep(21);
   };
 
   useEffect(() => {
@@ -167,25 +167,25 @@ const Editor = ({ auto }) => {
   }, [boxes]);
 
   useEffect(() => {
-    if (step == 10) {
+    if (step === 10) {
       setLayer("전체");
-    } else if (step == 20) {
+    } else if (step === 20) {
       const rects = boxes.filter((box) => box.textEng === "-");
       if (rects.length > 0) setStep(23);
       else convertAll();
-    } else if (step == 23) {
+    } else if (step === 23) {
       setTimeout(() => {
         setStep(20);
       }, 1000);
-    } else if (step == 21) {
+    } else if (step === 21) {
       const rects = boxes.filter((box) => box.get("type") === "rect");
       if (rects.length > 0) setStep(22);
       else setStep(3);
-    } else if (step == 22) {
+    } else if (step === 22) {
       setTimeout(() => {
         setStep(21);
       }, 1000);
-    } else if (step == 3) {
+    } else if (step === 3) {
       if (layer !== "배경") {
         setLayer("배경");
         return;

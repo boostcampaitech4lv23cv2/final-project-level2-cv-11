@@ -1,4 +1,4 @@
-import { useState, useContext, useEffect } from "react";
+import { useState, useContext } from "react";
 import { Input, Button, message } from "antd";
 import { fabric } from "fabric";
 import { GlobalContext } from "./GlobalContext";
@@ -177,7 +177,7 @@ const FontTest = () => {
 };
 
 const MergeTest = () => {
-  const { files, urls } = useContext(GlobalContext);
+  const { urls } = useContext(GlobalContext);
 
   const [url, setURL] = useState(null);
 
@@ -212,7 +212,7 @@ const MergeTest = () => {
       <h1 className="text-2xl">레이어 합성 테스트</h1>
       <Button onClick={handleMerge}>합성 !</Button>
       <div className="flex justify-center">
-        <img src={url} />
+        <img alt="합성 결과" src={url} />
       </div>
     </div>
   );

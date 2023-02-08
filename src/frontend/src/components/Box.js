@@ -150,7 +150,7 @@ const Box = ({ i, box, delBox, convertBox, invisible, boxContainerRef }) => {
     box.set("fontFamily", font);
     box.set("fontSize", fontSize);
     box.set("text", textEng);
-    if (box.get("type") == "textbox") box.set("fill", color);
+    if (box.get("type") === "textbox") box.set("fill", color);
     box.canvas?.renderAll();
   }, [textKor, textEng, font, fontSize, color]);
 
