@@ -87,7 +87,7 @@
     |       📄-- untypical_generation.py
     |       📄-- untypical_machine_translation.py
     |       📄-- untypical_txt_extraction.py
-    📂-- frontend-react
+    📂-- frontend
     |   📜-- README.md
     |   📜-- package-lock.json
     |   📜-- package.json
@@ -180,7 +180,7 @@
 
 ```bash
 cd src
-cd frontend-react
+cd frontend
 ```
 
 2. Nodejs 설치 (우분투)
