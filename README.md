@@ -3,8 +3,8 @@
 # **💁** 팀 소개
 ## CV 11조 🦊구미호🦊
 | [류건](https://github.com/jerry-ryu) | [심건희](https://github.com/jane79) | [윤태준](https://github.com/ta1231) | [이강희](https://github.com/ganghe74) | [이예라](https://github.com/Yera10) |
-| :-: | :-: | :-: | :-: | :-: | 
-| <img src="https://avatars.githubusercontent.com/u/62556539?v=4" width="200"> | <img src="https://avatars.githubusercontent.com/u/48004826?v=4" width="200"> | <img src="https://avatars.githubusercontent.com/u/54363784?v=4"  width="200"> | <img src="https://avatars.githubusercontent.com/u/30896956?v=4" width="200"> | <img src="https://avatars.githubusercontent.com/u/57178359?v=4" width="200"> |  
+| :-: | :-: | :-: | :-: | :-: |
+| <img src="https://avatars.githubusercontent.com/u/62556539?v=4" width="200"> | <img src="https://avatars.githubusercontent.com/u/48004826?v=4" width="200"> | <img src="https://avatars.githubusercontent.com/u/54363784?v=4"  width="200"> | <img src="https://avatars.githubusercontent.com/u/30896956?v=4" width="200"> | <img src="https://avatars.githubusercontent.com/u/57178359?v=4" width="200"> |
 |[Blog](https://kkwong-guin.tistory.com/)  |[Blog](https://velog.io/@goodheart50)|[Blog](https://velog.io/@ta1231)| [Blog](https://dddd.ac/blog) | [Blog](https://yedoong.tistory.com/) |
 | <code>모델링</code><br><code>파이프라인</code><br><code>데이터 수집</code> | <code>모델링</code><br><code>연구</code><br><code>데이터 수집</code>  |  <code>백엔드</code><br><code>발표자료</code><br><code>협업 관리</code>  | <code>프론트엔드</code><br><code>서비스 배포</code><br><code>파이프라인</code> | <code>백엔드</code><br><code>서비스 배포</code><br><code>파이프라인</code> |
 
@@ -30,13 +30,13 @@
   * [문제정의 및 프로젝트 목표](#문제정의-및-프로젝트-목표)
   * [서비스 아키텍처](#서비스-아키텍처)
   * [서비스 파이프라인](#서비스-파이프라인)
-  
+
 - [Demo](#demo)
 
 - [실행방법](#실행방법)
   * [Frontend](#frontend)
   * [Backend](#backend)
-  
+
 - [Reference](#reference)
 
 
@@ -87,42 +87,12 @@
     |       📄-- untypical_generation.py
     |       📄-- untypical_machine_translation.py
     |       📄-- untypical_txt_extraction.py
-    📂-- frontend
-    |   📄-- frontend.py
-    |   📂-- pages
-    |   |   📄-- result.py
-    |   📂-- st_component
-    |   |   📄-- areas.py
-    |   |   📄-- buttons.py
-    |   📂-- test_file
-    |       🖼️- windbreaker_en.PNG
-    |       🖼️-- windbreaker_ko.PNG
     📂-- frontend-react
     |   📜-- README.md
     |   📜-- package-lock.json
     |   📜-- package.json
     |   📂-- public
-    |   |   🖼️-- background.png
-    |   |   🖼️-- favicon.ico
-    |   |   📜-- index.html
-    |   |   🖼️-- logo192.png
-    |   |   🖼️-- logo512.png
-    |   |   📜-- manifest.json
-    |   |   📜-- robots.txt
-    |   |   🖼️-- typical.png
     |   📂-- src
-    |       📜-- App.css
-    |       📜-- App.js
-    |       📜-- App.test.js
-    |       📜-- Editor.css
-    |       📜-- Editor.js
-    |       📜-- FontList.js
-    |       📂-- components
-    |       📜-- index.css
-    |       📜-- index.js
-    |       🖼️-- logo.svg
-    |       📜-- reportWebVitals.js
-    |       📜-- setupTests.js
     📂-- model
         📂-- MachineTranslate
         |   📄-- papago_MT.py
