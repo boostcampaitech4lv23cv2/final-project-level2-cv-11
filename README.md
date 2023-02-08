@@ -154,9 +154,23 @@ poetry shell
 
 ```bash
 # 링크1 : https://drive.google.com/file/d/1a28eDYyOUrJEhvLHsfI1iFBHhA7LlWl7/view?usp=sharing
+# -O 옵션에 다운받을 경로 지정
 wget --load-cookies ~/cookies.txt "https://docs.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies ~/cookies.txt --keep-session-cookies --no-check-certificate 'https://docs.google.com/uc?export=download&id=1a28eDYyOUrJEhvLHsfI1iFBHhA7LlWl7' -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')&id=1a28eDYyOUrJEhvLHsfI1iFBHhA7LlWl7" -O /opt/ml/final-project-level2-cv-11/src/model/font_classifier/weights/typical/weight.pth && rm -rf ~/cookies.txt
+```
+```bash
 # 링크2 : https://drive.google.com/file/d/107iA6ir5Fbii-5JimkGaL-HBomTDeKR1/view?usp=sharing
 wget --load-cookies ~/cookies.txt "https://docs.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies ~/cookies.txt --keep-session-cookies --no-check-certificate 'https://docs.google.com/uc?export=download&id=107iA6ir5Fbii-5JimkGaL-HBomTDeKR1' -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')&id=107iA6ir5Fbii-5JimkGaL-HBomTDeKR1" -O /opt/ml/final-project-level2-cv-11/src/model/font_classifier/weights/untypical/weight.pth && rm -rf ~/cookies.txt
+```
+
+- Font Generator 가중치
+
+```bash
+# mxfont링크: https://drive.google.com/file/d/1URxBMtHx1SXAAJ4b4A2jbmD44S1Ns1Jp/view?usp=sharing
+wget --load-cookies ~/cookies.txt "https://docs.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies ~/cookies.txt --keep-session-cookies --no-check-certificate 'https://docs.google.com/uc?export=download&id=1URxBMtHx1SXAAJ4b4A2jbmD44S1Ns1Jp' -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')&id=1URxBMtHx1SXAAJ4b4A2jbmD44S1Ns1Jp" -O /opt/ml/final-project-level2-cv-11/src/model/font_generator/mxfont/mxfont_weight.pth && rm -rf ~/cookies.txt
+```
+```bash
+# gasnext링크: https://drive.google.com/file/d/173SEHgYuSoJ6eze-BaofzJutjd6bAIGo/view?usp=sharing
+wget --load-cookies ~/cookies.txt "https://docs.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies ~/cookies.txt --keep-session-cookies --no-check-certificate 'https://docs.google.com/uc?export=download&id=173SEHgYuSoJ6eze-BaofzJutjd6bAIGo' -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')&id=173SEHgYuSoJ6eze-BaofzJutjd6bAIGo" -O /opt/ml/final-project-level2-cv-11/src/model/font_generator/gasnext/checkpoints/gasnext_weight.pth && rm -rf ~/cookies.txt
 ```
 
 - Script Font 다운로드
