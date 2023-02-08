@@ -1,13 +1,5 @@
 import { useState, useEffect, useContext, useRef } from "react";
-import {
-  Input,
-  Select,
-  Button,
-  message,
-  Typography,
-  Checkbox,
-  InputNumber,
-} from "antd";
+import { Input, Select, Button, message, Typography, InputNumber } from "antd";
 import { RightOutlined } from "@ant-design/icons";
 import FontList from "../FontList.json";
 import { GlobalContext } from "../GlobalContext";
@@ -169,7 +161,6 @@ const Box = ({ i, box, delBox, convertBox, invisible, boxContainerRef }) => {
   const [tLoading, setTLoading] = useState(false);
   const onTranslate = () => {
     setTLoading(true);
-    // select();
     fetch(
       `${backendHost}mt/?` +
         new URLSearchParams({

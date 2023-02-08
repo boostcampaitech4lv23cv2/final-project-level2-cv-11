@@ -131,7 +131,7 @@ const OCRButton = ({ setBoxes, canvas }) => {
                       console.error("error", font.family, e);
                     });
                   // mxfont를 기본 폰트로 설정
-                  if (idx == 1) boxes_untypical[i].fontFamily = name;
+                  if (idx == 2) boxes_untypical[i].fontFamily = name;
                   boxes_untypical[i].recFonts.push({
                     name,
                     prob: `생성 ${idx}`,

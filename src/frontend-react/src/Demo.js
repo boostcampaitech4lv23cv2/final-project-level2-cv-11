@@ -1,11 +1,9 @@
-import { Typography, Upload, Button, Row, Col, message } from "antd";
-import { UploadOutlined } from "@ant-design/icons";
-import { useNavigate } from "react-router-dom";
+import { Typography } from "antd";
 import DemoButton from "./components/DemoButton";
 import LayerUpload from "./components/LayerUpload";
 import Sample from "./components/Sample";
 
-const { Title, Text } = Typography;
+const { Title } = Typography;
 
 const Demo = () => {
   return (
@@ -23,11 +21,12 @@ const Demo = () => {
       <div className="my-8 border-b" />
 
       <Title level={5}>사진이 없다면 샘플 이미지로 체험해보세요.</Title>
-      <div className="flex justify-center">
+      <div className="flex justify-center mb-24">
         <Sample title="샘플 1" name="sample1" />
         <Sample title="샘플 2" name="sample2" />
         <Sample title="샘플 3" name="sample3" />
         <Sample title="샘플 4" name="sample4" />
+        <Sample title="샘플 5" name="sample5" />
       </div>
     </div>
   );

@@ -32,19 +32,23 @@ const GithubButton = () => {
 
 const Footer = () => {
   return (
-    <footer
-      style={{
-        backgroundColor: "#333",
-        color: "white",
-        padding: "2em",
-        textAlign: "center",
-        borderTop: "1px solid white",
-      }}
-    >
-      <p>부스트캠프 AI Tech 4기</p>
-      <p>CV 11조 구미호</p>
-      <GithubButton />
-    </footer>
+    <>
+      <div className="h-40" />
+      <footer
+        className="absolute bottom-0 w-full"
+        style={{
+          backgroundColor: "#333",
+          color: "white",
+          padding: "2em",
+          textAlign: "center",
+          borderTop: "1px solid white",
+        }}
+      >
+        <p>부스트캠프 AI Tech 4기</p>
+        <p>CV 11조 구미호</p>
+        <GithubButton />
+      </footer>
+    </>
   );
 };
 

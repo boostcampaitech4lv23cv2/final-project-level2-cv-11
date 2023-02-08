@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import { Button, message } from "antd";
+import { message } from "antd";
 import { GlobalContext } from "../GlobalContext";
 
 const DemoButton = () => {
@@ -8,7 +8,8 @@ const DemoButton = () => {
   const { files, setResult } = useContext(GlobalContext);
   return (
     <div>
-      <Button
+      <button
+        class="bg-blue-500 hover:bg-blue-700 text-white text-3xl font-bold py-4 px-6 rounded m-6"
         onClick={() => {
           if (!files.background || !files.typical || !files.untypical) {
             message.error("배경, 대사, 효과음 레이어를 모두 업로드 해주세요.");
@@ -19,7 +20,7 @@ const DemoButton = () => {
         }}
       >
         번역하기
-      </Button>
+      </button>
     </div>
   );
 };

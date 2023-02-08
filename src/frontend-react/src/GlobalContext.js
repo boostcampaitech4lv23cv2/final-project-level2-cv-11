@@ -29,7 +29,6 @@ export const GlobalContextProvider = ({ children }) => {
   const idRef = useRef(0);
   const [width, setWidth] = useState(100);
   const [height, setHeight] = useState(100);
-  // const [backendHost, setBackendHost] = useState("http://49.50.160.104:30002/");
   const [backendHost, setBackendHost] = useState(
     "https://toonslator.kro.kr/api/"
   );

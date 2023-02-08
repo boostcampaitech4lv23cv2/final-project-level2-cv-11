@@ -1,5 +1,5 @@
-import { useState, useContext, useEffect } from "react";
-import { Col, Typography, Upload, message } from "antd";
+import { useContext } from "react";
+import { Typography, Upload, message } from "antd";
 import styled from "styled-components";
 import { GlobalContext } from "../GlobalContext";
 

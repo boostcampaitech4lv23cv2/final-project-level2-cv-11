@@ -1,11 +1,9 @@
 import { useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import { Typography, message, Steps } from "antd";
+import { Steps } from "antd";
 import Editor from "./Editor";
 import { GlobalContext } from "./GlobalContext";
 import { LoadingOutlined } from "@ant-design/icons";
-
-const { Title } = Typography;
 
 const f = (step) => {
   if (step === 10) return 0;
@@ -19,6 +17,7 @@ const Loading = () => {
   const navigate = useNavigate();
   const { step, setStep } = useContext(GlobalContext);
   useEffect(() => {
+    window.scrollTo(0, 0);
     return () => {
       setStep(0);
     };

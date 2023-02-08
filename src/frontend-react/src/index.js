@@ -13,21 +13,25 @@ import { GlobalContextProvider } from "./GlobalContext";
 import Editor from "./Editor";
 import Loading from "./Loading";
 import Dev from "./Dev";
+import Footer from "./Footer";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <BrowserRouter>
       <GlobalContextProvider>
-        <Header />
-        <Routes>
-          <Route path="/" element={<Main />} />
-          <Route path="/edit" element={<Editor />} />
-          <Route path="/demo" element={<Demo />} />
-          <Route path="/result" element={<Result />} />
-          <Route path="/loading" element={<Loading />} />
-          <Route path="/dev" element={<Dev />} />
-        </Routes>
+        <div className="min-h-screen relative">
+          <Header />
+          <Routes>
+            <Route path="/" element={<Main />} />
+            <Route path="/edit" element={<Editor />} />
+            <Route path="/demo" element={<Demo />} />
+            <Route path="/result" element={<Result />} />
+            <Route path="/loading" element={<Loading />} />
+            <Route path="/dev" element={<Dev />} />
+          </Routes>
+          <Footer />
+        </div>
       </GlobalContextProvider>
     </BrowserRouter>
   </React.StrictMode>
