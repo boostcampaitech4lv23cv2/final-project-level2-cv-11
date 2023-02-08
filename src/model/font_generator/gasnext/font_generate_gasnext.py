@@ -62,7 +62,7 @@ def eval(source_font_list, en_list):
     )  # get device name: CPU or GPU  
     style_channel = 6
     dir_path = os.path.dirname(os.path.abspath(__file__))
-    weight_path = os.path.join(dir_path, "checkpoints/gas_test_100ep_aug/100_net_G.pth")  # epoch_net_G.pth
+    weight_path = os.path.join(dir_path, "checkpoints/gasnext_weight.pth")  # epoch_net_G.pth
     gen = ftgan_networks.define_G(
         opt.style_channel + 1,  # number of style image + 1 content image
         1,

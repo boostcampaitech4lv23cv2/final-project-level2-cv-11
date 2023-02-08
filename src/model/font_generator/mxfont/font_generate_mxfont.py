@@ -29,7 +29,7 @@ def createDirectory(directory):
 def eval(source_font_list,en_list):
     dir_path = os.path.dirname(os.path.abspath(__file__))
     #weight_path =os.path.join(dir_path, "result/checkpoints/last.pth")
-    weight_path =os.path.join(dir_path, "generator.pth")
+    weight_path =os.path.join(dir_path, "mxfont_weight.pth")
     cfg = Config(os.path.join(dir_path, "cfgs/defaults.yaml"))
     
     transform = transforms.Compose(
