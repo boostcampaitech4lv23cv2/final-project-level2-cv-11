@@ -171,6 +171,10 @@
 ![image](https://user-images.githubusercontent.com/54363784/217299454-60cd10a4-f10f-4f5f-84b9-c408695230d4.png)
 
 # 📹Demo
+
+### 프로젝트 영상
+
+https://www.youtube.com/watch?v=ILJyhd24qd4
 ![ggg](https://user-images.githubusercontent.com/62556539/217452558-466a97d4-3e85-441f-be8d-6f6d207a0775.gif)
 
 
