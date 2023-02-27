@@ -286,6 +286,18 @@ cd src/
 python -m backend
 ```
 
+## Model
+1. gasnext 학습 가중치 파일 다운로드  
+```bash
+mkdir src/model/font_generator/gasnext/checkpoints
+mkdir src/model/font_generator/gasnext/checkpoints/gas_test_100ep_aug
+cd src/model/font_generator/gasnext/checkpoints/gas_test_100ep_aug
+```
+100epoch 학습시킨 [gasnext 가중치 파일](https://drive.google.com/file/d/1tcOgqr2PxmHKfqDiu7gWCXKjBd8iad7S/view?usp=share_link)을 다운, gasnext/font_generate_gasnext.py 65 line 참조  
+2. gasnext ttf 샘플 다운로드  
+[샘플 data](https://drive.google.com/file/d/1dCJFN8cGKi61qWil5TgA6efqJvnjt5mY/view?usp=sharing) 다운 및 레포 root에서 압축 풀기
+
+
 
 
 # 🗞️Reference
